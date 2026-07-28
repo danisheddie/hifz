@@ -26,6 +26,14 @@ make it feel heavy or cluttered.
 - `getSurah(number, opts)` and `listSurahs()` are Hifz-specific additions on top of the page-based data layer: `getSurah` walks the mushaf pages a surah spans (via `SURAH_PAGES`/`SURAH_AYAHS`) and filters ayahs by surah number, so the app can be surah-centric even though the underlying bundle is organised by page.
 - QCF per-page fonts load from jsDelivr (`mushafFontUrl`, `src/utils/fonts.js`). The KFGQPC Uthmanic Hafs unicode font is self-hosted (`public/fonts/`), used as the fallback whenever a page's glyph font hasn't loaded (also the only rendering path in this dev sandbox, since the jsDelivr CDN is unreachable through the sandbox proxy — works normally in production/browsers with real network access).
 
+## Offline caching (`public/sw.js`)
+The whole app works offline after one online visit, not just pages the user happened to open:
+- **Precached in the background on `activate`** (fire-and-forget, doesn't block install/activation): `meta.json`, `ayah-pages.json`, all 604 `page/N.json` files, and every translation edition — the full Qur'an dataset, ~14MB of text. The edition list is hardcoded in `sw.js` (`TRANSLATION_EDITIONS`) and must be kept in sync with `TRANSLATIONS`/`TRANSLITERATION` in `src/utils/api.js` by hand, since the service worker is a plain script and can't import app modules.
+- **Deliberately NOT precached**: the QCF per-page glyph fonts (external jsDelivr CDN) — still cached lazily as pages are viewed via the existing cache-first rule; an offline, never-visited page falls back to the self-hosted KFGQPC font instead (bundled in the app shell, needs no network), so text is never unreadable offline, just not in the exact per-page mushaf glyph. Audio (streamed, not meant to be stored) and tafsir (a third-party API with no bulk-fetch endpoint — precaching it for all 6236 ayahs would mean thousands of requests per install) also stay online-only.
+- `src/main.jsx` calls `navigator.storage.persist()` on boot (best-effort) so the browser is less likely to evict the cache under storage pressure.
+- Cache is versioned (`hifz-cache-v2`); bump the version string whenever the caching strategy changes so `activate` cleanly replaces the old cache.
+- Verified directly: built the app, served it, waited for the precache to reach 612 cached entries, went offline, and opened a surah never visited in that session — it rendered fully (Arabic, translation, all controls) from cache alone.
+
 ## Key files
 - `src/utils/api.js` — data layer (pages, surahs, translations, reciters, juz/surah tables, `getAyahPagesIndex` for juz-membership stats).
 - `src/utils/storage.js` — localStorage: settings (theme, appLang, translation prefs) + the per-surah status map (`hifz:surahStatus`). `notes` (tadabbur) joins the per-surah record in the next phase.
@@ -72,7 +80,7 @@ confirm with the product owner before building it.
 3. ✅ Tadabbur notes editor (collapsible, autosaved) + per-ayah tafsir toggle (quran.com API, cached forever in localStorage since the text is static).
 4. ✅ Audio with single-ayah repeat and loop-range playback (bitrate-fallback chain); "test yourself" hide/first-word/reveal recall mode.
 5. ✅ Full Revision screen (`/revision`, all revision-due surahs ordered by longest-since-revised) + "mark confident" action; dashboard preview trimmed to 3 with a link to the full screen.
-6. Phase 2: full PWA offline caching, then optional Cloudflare Worker + KV sync (mirrors Daily Tilawah's `worker/` + `cloudSync.js`).
+6. Phase 2: ✅ full PWA offline caching (whole Qur'an dataset precached in the background, not just visited pages). Optional next: Cloudflare Worker + KV sync (mirrors Daily Tilawah's `worker/` + `cloudSync.js`).
 
 ## Assets
 - `assets/icon-master.svg` — the app icon source (open Qur'an on a rehal, emerald tile, amber revision-loop + bookmark accent). `npm run icons` (`scripts/gen-icons.mjs`) rasterizes it into `public/icons/`.

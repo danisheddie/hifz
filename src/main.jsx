@@ -48,3 +48,7 @@ if ('serviceWorker' in navigator) {
       .catch(() => {})
   })
 }
+
+// Ask the browser not to evict the offline Qur'an data cache under storage
+// pressure. Best-effort — silently ignored where unsupported or declined.
+navigator.storage?.persist?.().catch(() => {})
