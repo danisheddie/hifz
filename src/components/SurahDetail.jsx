@@ -1,6 +1,6 @@
-// A single surah: Arabic ayahs in exact QCF glyphs, with an optional
-// translation. Status controls, notes, tafsir and audio arrive in later
-// phases — this is the reading surface they'll build on.
+// A single surah: Arabic ayahs in exact QCF glyphs, with optional
+// translation and per-ayah tafsir, a status control, and tadabbur notes.
+// Audio with repeat/loop arrives in a later phase.
 
 import { useCallback, useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
@@ -10,6 +10,7 @@ import { ensurePageFont } from '../utils/fonts'
 import { useLang } from '../utils/i18n.jsx'
 import AyahCard from './AyahCard'
 import StatusControl from './StatusControl'
+import NotesEditor from './NotesEditor'
 
 export default function SurahDetail() {
   const { number } = useParams()
@@ -62,13 +63,13 @@ export default function SurahDetail() {
     setStatus(getSurahStatus(surahNumber))
   }, [surahNumber])
 
-  function toggleTranslation() {
-    setSettings(setSetting('showTranslation', !settings.showTranslation))
-  }
-
   function changeStatus(next) {
     setSurahStatus(surahNumber, next)
     setStatus(next)
+  }
+
+  function toggleSetting(key) {
+    setSettings(setSetting(key, !settings[key]))
   }
 
   return (
@@ -93,21 +94,44 @@ export default function SurahDetail() {
             </p>
           )}
         </div>
-        <button
-          onClick={toggleTranslation}
-          aria-pressed={settings.showTranslation}
-          className={`rounded-full px-2.5 py-1.5 text-xs font-medium transition active:scale-90 ${
-            settings.showTranslation ? 'text-amber' : 'text-muted'
-          }`}
-        >
-          {settings.showTranslation ? t('detail.translation') : t('detail.arabicOnly')}
-        </button>
+        <span className="w-[34px]" aria-hidden="true" />
       </header>
 
       {surah && (
-        <div className="border-b border-emerald/5 px-5 py-3">
-          <StatusControl status={status} onChange={changeStatus} />
-        </div>
+        <>
+          <div className="border-b border-emerald/5 px-5 py-3">
+            <StatusControl status={status} onChange={changeStatus} />
+          </div>
+
+          <div className="flex gap-2 border-b border-emerald/5 px-5 py-3">
+            <button
+              type="button"
+              onClick={() => toggleSetting('showTranslation')}
+              aria-pressed={settings.showTranslation}
+              className={`rounded-full px-3.5 py-1.5 text-xs font-medium transition active:scale-95 ${
+                settings.showTranslation
+                  ? 'bg-amber/15 text-amber ring-1 ring-amber/40'
+                  : 'text-muted ring-1 ring-emerald/10'
+              }`}
+            >
+              {t('detail.translation')}
+            </button>
+            <button
+              type="button"
+              onClick={() => toggleSetting('showTafsir')}
+              aria-pressed={settings.showTafsir}
+              className={`rounded-full px-3.5 py-1.5 text-xs font-medium transition active:scale-95 ${
+                settings.showTafsir
+                  ? 'bg-amber/15 text-amber ring-1 ring-amber/40'
+                  : 'text-muted ring-1 ring-emerald/10'
+              }`}
+            >
+              {t('tafsir.title')}
+            </button>
+          </div>
+
+          <NotesEditor surahNumber={surahNumber} />
+        </>
       )}
 
       <main className="px-5 pb-16 pt-4">
@@ -147,6 +171,7 @@ export default function SurahDetail() {
                   !!ayah.words?.length && ayah.words.every((w) => glyphPages.has(w.page))
                 }
                 showTranslation={settings.showTranslation}
+                showTafsirToggle={settings.showTafsir}
               />
             ))}
           </>

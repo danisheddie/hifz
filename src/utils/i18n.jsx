@@ -50,6 +50,14 @@ const en = {
   'dashboard.lastRevisedToday': 'Revised today',
   'dashboard.lastRevisedYesterday': 'Revised yesterday',
   'dashboard.lastRevisedDaysAgo': 'Revised {n} days ago',
+
+  'notes.title': 'Tadabbur notes',
+  'notes.placeholder': 'What did you reflect on while memorizing this surah?',
+
+  'tafsir.title': 'Tafsir',
+  'tafsir.toggle': 'Show tafsir',
+  'tafsir.loading': 'Loading tafsir…',
+  'tafsir.unable': 'Couldn’t load tafsir. Check your connection and try again.',
 }
 
 const ms = {
@@ -91,6 +99,14 @@ const ms = {
   'dashboard.lastRevisedToday': 'Diulang kaji hari ini',
   'dashboard.lastRevisedYesterday': 'Diulang kaji semalam',
   'dashboard.lastRevisedDaysAgo': 'Diulang kaji {n} hari lalu',
+
+  'notes.title': 'Nota tadabbur',
+  'notes.placeholder': 'Apakah renungan anda semasa menghafal surah ini?',
+
+  'tafsir.title': 'Tafsir',
+  'tafsir.toggle': 'Tunjuk tafsir',
+  'tafsir.loading': 'Memuatkan tafsir…',
+  'tafsir.unable': 'Tidak dapat memuatkan tafsir. Semak sambungan anda dan cuba lagi.',
 }
 
 const id = {
@@ -132,6 +148,14 @@ const id = {
   'dashboard.lastRevisedToday': 'Diulang hari ini',
   'dashboard.lastRevisedYesterday': 'Diulang kemarin',
   'dashboard.lastRevisedDaysAgo': 'Diulang {n} hari lalu',
+
+  'notes.title': 'Catatan tadabbur',
+  'notes.placeholder': 'Apa refleksi Anda saat menghafal surah ini?',
+
+  'tafsir.title': 'Tafsir',
+  'tafsir.toggle': 'Tampilkan tafsir',
+  'tafsir.loading': 'Memuat tafsir…',
+  'tafsir.unable': 'Tidak dapat memuat tafsir. Periksa koneksi Anda dan coba lagi.',
 }
 
 const DICT = { en, ms, id }

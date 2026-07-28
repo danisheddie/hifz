@@ -25,6 +25,7 @@ export const DEFAULT_SETTINGS = {
   readingSize: 'm',
   showTranslation: true,
   translationEdition: 'en.asad',
+  showTafsir: false,
 }
 
 function read(key, fallback = null) {
@@ -55,10 +56,9 @@ export function setSetting(key, value) {
 }
 
 // --- per-surah status --------------------------------------------------
-// { [surahNumber]: { status, lastRevised, updatedAt } }. `notes` (tadabbur)
-// joins this record in the next phase.
+// { [surahNumber]: { status, lastRevised, updatedAt, notes } }.
 
-const DEFAULT_ENTRY = { status: 'new', lastRevised: null, updatedAt: null }
+const DEFAULT_ENTRY = { status: 'new', lastRevised: null, updatedAt: null, notes: '' }
 
 export function getSurahStatusMap() {
   return read(KEYS.surahStatus, {})
@@ -88,6 +88,19 @@ export function setSurahStatus(number, status) {
   map[number] = next
   write(KEYS.surahStatus, map)
   return next
+}
+
+// --- per-surah tadabbur notes --------------------------------------------
+
+export function getSurahNotes(number) {
+  return getSurahEntry(number).notes || ''
+}
+
+export function setSurahNotes(number, notes) {
+  const map = getSurahStatusMap()
+  const prev = map[number] || DEFAULT_ENTRY
+  map[number] = { ...prev, notes }
+  write(KEYS.surahStatus, map)
 }
 
 // Counts of surahs in each status, for dashboard/index chips.
