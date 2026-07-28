@@ -39,6 +39,17 @@ const en = {
   'detail.loading': 'Loading…',
   'detail.unable': 'Unable to load. Please check your connection.',
   'detail.tryAgain': 'Try again',
+
+  'dashboard.memorized': 'of the Qur’an memorized',
+  'dashboard.juz': '{n} of 30 Juz',
+  'dashboard.surahs': '{n} of 114 Surahs',
+  'dashboard.currentlyMemorizing': 'Currently memorizing',
+  'dashboard.emptyMemorizing': 'Nothing in progress yet — pick a surah to begin.',
+  'dashboard.dueForRevision': 'Due for revision',
+  'dashboard.lastRevisedNever': 'Not yet revised',
+  'dashboard.lastRevisedToday': 'Revised today',
+  'dashboard.lastRevisedYesterday': 'Revised yesterday',
+  'dashboard.lastRevisedDaysAgo': 'Revised {n} days ago',
 }
 
 const ms = {
@@ -69,6 +80,17 @@ const ms = {
   'detail.loading': 'Memuatkan…',
   'detail.unable': 'Tidak dapat dimuatkan. Sila semak sambungan anda.',
   'detail.tryAgain': 'Cuba lagi',
+
+  'dashboard.memorized': 'daripada al-Qur’an dihafal',
+  'dashboard.juz': '{n} daripada 30 Juzuk',
+  'dashboard.surahs': '{n} daripada 114 Surah',
+  'dashboard.currentlyMemorizing': 'Sedang dihafal',
+  'dashboard.emptyMemorizing': 'Belum ada yang sedang dihafal — pilih satu surah untuk mula.',
+  'dashboard.dueForRevision': 'Perlu diulang kaji',
+  'dashboard.lastRevisedNever': 'Belum diulang kaji',
+  'dashboard.lastRevisedToday': 'Diulang kaji hari ini',
+  'dashboard.lastRevisedYesterday': 'Diulang kaji semalam',
+  'dashboard.lastRevisedDaysAgo': 'Diulang kaji {n} hari lalu',
 }
 
 const id = {
@@ -99,6 +121,17 @@ const id = {
   'detail.loading': 'Memuat…',
   'detail.unable': 'Tidak dapat memuat. Silakan periksa koneksi Anda.',
   'detail.tryAgain': 'Coba lagi',
+
+  'dashboard.memorized': 'dari Al-Qur’an dihafal',
+  'dashboard.juz': '{n} dari 30 Juz',
+  'dashboard.surahs': '{n} dari 114 Surah',
+  'dashboard.currentlyMemorizing': 'Sedang dihafal',
+  'dashboard.emptyMemorizing': 'Belum ada yang sedang dihafal — pilih surah untuk mulai.',
+  'dashboard.dueForRevision': 'Perlu diulang',
+  'dashboard.lastRevisedNever': 'Belum diulang',
+  'dashboard.lastRevisedToday': 'Diulang hari ini',
+  'dashboard.lastRevisedYesterday': 'Diulang kemarin',
+  'dashboard.lastRevisedDaysAgo': 'Diulang {n} hari lalu',
 }
 
 const DICT = { en, ms, id }

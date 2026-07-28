@@ -5,10 +5,11 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { getSurah } from '../utils/api'
-import { getSettings, setSetting } from '../utils/storage'
+import { getSettings, setSetting, getSurahStatus, setSurahStatus } from '../utils/storage'
 import { ensurePageFont } from '../utils/fonts'
 import { useLang } from '../utils/i18n.jsx'
 import AyahCard from './AyahCard'
+import StatusControl from './StatusControl'
 
 export default function SurahDetail() {
   const { number } = useParams()
@@ -17,6 +18,7 @@ export default function SurahDetail() {
   const { t } = useLang()
 
   const [settings, setSettings] = useState(() => getSettings())
+  const [status, setStatus] = useState(() => getSurahStatus(surahNumber))
   const [surah, setSurah] = useState(null)
   const [glyphPages, setGlyphPages] = useState(() => new Set())
   const [loading, setLoading] = useState(true)
@@ -56,8 +58,17 @@ export default function SurahDetail() {
     load()
   }, [load])
 
+  useEffect(() => {
+    setStatus(getSurahStatus(surahNumber))
+  }, [surahNumber])
+
   function toggleTranslation() {
     setSettings(setSetting('showTranslation', !settings.showTranslation))
+  }
+
+  function changeStatus(next) {
+    setSurahStatus(surahNumber, next)
+    setStatus(next)
   }
 
   return (
@@ -92,6 +103,12 @@ export default function SurahDetail() {
           {settings.showTranslation ? t('detail.translation') : t('detail.arabicOnly')}
         </button>
       </header>
+
+      {surah && (
+        <div className="border-b border-emerald/5 px-5 py-3">
+          <StatusControl status={status} onChange={changeStatus} />
+        </div>
+      )}
 
       <main className="px-5 pb-16 pt-4">
         {loading && (

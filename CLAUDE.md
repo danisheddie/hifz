@@ -26,35 +26,41 @@ make it feel heavy or cluttered.
 - QCF per-page fonts load from jsDelivr (`mushafFontUrl`, `src/utils/fonts.js`). The KFGQPC Uthmanic Hafs unicode font is self-hosted (`public/fonts/`), used as the fallback whenever a page's glyph font hasn't loaded (also the only rendering path in this dev sandbox, since the jsDelivr CDN is unreachable through the sandbox proxy — works normally in production/browsers with real network access).
 
 ## Key files
-- `src/utils/api.js` — data layer (pages, surahs, translations, reciters, juz/surah tables).
-- `src/utils/storage.js` — localStorage: settings (theme, appLang, translation prefs). The per-surah status/notes/lastRevised model arrives in the next phase.
+- `src/utils/api.js` — data layer (pages, surahs, translations, reciters, juz/surah tables, `getAyahPagesIndex` for juz-membership stats).
+- `src/utils/storage.js` — localStorage: settings (theme, appLang, translation prefs) + the per-surah status map (`hifz:surahStatus`). `notes` (tadabbur) joins the per-surah record in the next phase.
+- `src/utils/progress.js` — `computeProgress()`: turns the status map into dashboard stats (% memorized by ayah count, Juz completed, surahs memorized). Juz completion is computed at ayah granularity (via `getAyahPagesIndex` + `juzForPage`) since a surah can straddle a Juz boundary even though status is tracked per-surah.
+- `src/utils/statusStyle.js` — color classes per status (badge/dot/active/ring), shared by `StatusBadge`, `StatusControl`, and the surah-index number-circle ring.
+- `src/utils/dateUtils.js` — `daysAgo()`, used for revision-list relative dates.
 - `src/utils/i18n.jsx` — UI strings in **en / ms / id**. Every user-facing string must have a key in all three.
 - `src/utils/fonts.js` — lazy-loads QCF v2 per-page glyph fonts, cached on `document.fonts`.
 - `src/utils/theme.js` — applies the `light`/`dark`/`sepia` theme via a `data-theme` attribute.
-- Components: `Home` (landing), `SurahIndex` (114 surahs, searchable), `SurahDetail` (Arabic + translation), `AyahCard` (single-ayah render, QCF glyphs with Uthmani-text fallback).
+- Components: `Home` (dashboard: progress summary, currently-memorizing shortcut, due-for-revision list — falls back to a simple welcome screen when nothing is tracked yet), `SurahIndex` (114 surahs, searchable, filterable by status, color-coded), `SurahDetail` (Arabic + translation + `StatusControl`), `AyahCard`, `StatusBadge`, `StatusControl`.
 
 ## Data model (per surah; MVP is surah-level, not per-ayah)
-Planned for the next phase (`src/utils/storage.js`):
-- `status`: `'new' | 'memorizing' | 'memorized' | 'revision'`
-- `notes`: free-text tadabbur (reflection) notes
-- `lastRevised`: date, powers the revision-due list
-- lightweight daily activity, for dashboard stats
+`src/utils/storage.js`, key `hifz:surahStatus` — `{ [surahNumber]: { status, lastRevised, updatedAt } }`:
+- `status`: `'new' | 'memorizing' | 'memorized' | 'revision'` — `isMemorizedStatus()` treats `memorized` and `revision` as both counting toward "memorized" progress (a `revision` surah is memorized, just flagged as needing review).
+- `lastRevised`: set when status transitions **to** `memorized` (i.e. "I just confirmed this"). Flagging `revision` does *not* bump it — the Revision screen's "mark revised" action (later phase) is what does that.
+- `notes` (tadabbur reflection text) joins this record in the next phase — not yet stored.
+
+No daily-activity/streak log has been built. Tilawah's streak mechanic is
+explicitly a habit-tracking device; Hifz's philosophy is "no guilt-tripping,"
+so that shape of feature needs a deliberate go/no-go, not a silent port.
 
 Per-ayah status is a possible future extension (heavier data model) —
 confirm with the product owner before building it.
 
 ## Conventions
-- Themes via CSS variables (`light`/`dark`/`sepia`) in `index.css`; `paper`/`emerald`/`amber`/`muted` Tailwind colors map to them. Applied pre-paint by an inline script in `index.html`.
-- Palette: emerald primary (`--c-emerald`) + amber accent (`--c-amber`) — a sister palette to Tilawah's navy/gold, not a clone. Same warm-paper base surface.
+- Themes via CSS variables (`light`/`dark`/`sepia`) in `index.css`; `paper`/`emerald`/`amber`/`clay`/`muted` Tailwind colors map to them. Applied pre-paint by an inline script in `index.html`.
+- Palette: emerald primary (`--c-emerald`) + amber accent (`--c-amber`) — a sister palette to Tilawah's navy/gold, not a clone. Same warm-paper base surface. `clay` (soft terracotta) was added in phase 2 purely as a fourth status color (revision-needed) — it's a functional/status token, not part of the core brand pair.
 - All settings live in `DEFAULT_SETTINGS` (`storage.js`).
 - After changes: `npm run build` to verify; commit; push to the working branch.
 
 ## Build order (tracked progress)
 1. ✅ Scaffold + Qur'an data layer + surah index + surah detail (Arabic + translation).
-2. Status model (new/memorizing/memorized/revision) + color-coded badges + per-surah status controls + dashboard progress stats.
+2. ✅ Status model (new/memorizing/memorized/revision) + color-coded badges + filter + per-surah status control + dashboard progress stats (% memorized, Juz completed, surahs memorized, currently-memorizing shortcut, due-for-revision list).
 3. Tadabbur notes editor + tafsir toggle (quran.com tafsir API, cached locally).
 4. Audio with single-ayah repeat/loop; "test yourself" hide/reveal recall mode.
-5. Revision list + `lastRevised` tracking.
+5. Full Revision screen (all revision-due surahs, ordered by longest-since-revised) + "mark revised/confident" action.
 6. Phase 2: full PWA offline caching, then optional Cloudflare Worker + KV sync (mirrors Daily Tilawah's `worker/` + `cloudSync.js`).
 
 ## Assets

@@ -58,6 +58,11 @@ async function loadMeta() {
   if (metaCache === undefined) metaCache = await loadJson('meta.json')
   return metaCache
 }
+let ayahPagesCache
+async function loadAyahPagesIndex() {
+  if (ayahPagesCache === undefined) ayahPagesCache = await loadJson('ayah-pages.json')
+  return ayahPagesCache
+}
 async function loadLocalPage(page) {
   if (!(page in pageCache)) pageCache[page] = await loadJson(`page/${page}.json`)
   return pageCache[page]
@@ -301,6 +306,12 @@ export async function getSurah(surahNumber, opts = {}) {
   }
 }
 
+// The full surah:ayah → mushaf page index, for callers (progress stats) that
+// need to know every ayah's juz. Cached after the first call.
+export async function getAyahPagesIndex() {
+  return loadAyahPagesIndex()
+}
+
 // Every surah's basic info (number, Arabic/English name, ayah count) — the
 // data behind the surah index. Cheap: only meta.json is fetched.
 export async function listSurahs() {
@@ -402,7 +413,7 @@ export async function getAyahPage(surah, ayah) {
   const ref = `${surah}:${ayah}`
 
   // Local-first: the bundled ayah→page index.
-  const idx = await loadJson('ayah-pages.json')
+  const idx = await loadAyahPagesIndex()
   if (idx && idx[ref]) return idx[ref]
 
   const key = `hifz:ayahpage:${ref}`

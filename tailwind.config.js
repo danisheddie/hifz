@@ -9,6 +9,7 @@ export default {
         paper: 'rgb(var(--c-paper) / <alpha-value>)',
         emerald: 'rgb(var(--c-emerald) / <alpha-value>)',
         amber: 'rgb(var(--c-amber) / <alpha-value>)',
+        clay: 'rgb(var(--c-clay) / <alpha-value>)',
         muted: 'rgb(var(--c-muted) / <alpha-value>)',
       },
       fontFamily: {
