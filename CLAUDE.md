@@ -18,6 +18,7 @@ make it feel heavy or cluttered.
 - **Cloudflare Pages** (planned): build `npm run build`, output `dist`.
 - Vite `base` auto-detects (`vite.config.js`): GitHub Actions build → `/hifz/`; everything else (Cloudflare, local) → `/`. No env var needed.
 - SPA routing on Cloudflare via `public/_redirects` (`/* /index.html 200`). (Do NOT re-add a GitHub `404.html` — it mangles URLs on Cloudflare.)
+- **GitHub Pages preview** (`.github/workflows/deploy.yml`, temporary): builds and pushes `dist/` to a `gh-pages` branch on every push to `main` or the active work branch, served at `danisheddie.github.io/hifz/`. Uses classic branch-based publishing (`peaceiris/actions-gh-pages`, needs only `contents: write`) rather than the newer OIDC/environment method (`actions/deploy-pages`) — the latter gates deploys on the auto-created `github-pages` environment's branch-protection rule, which defaults to the repo's default branch only and wasn't editable from this account's Environments settings UI. Remove this workflow once Cloudflare Pages is wired up.
 
 ## Qur'an data (local-first, with live fallback)
 - `npm run build-data` (`scripts/build-quran-data.mjs`, copied from Daily Tilawah) writes `public/data/`: `meta.json`, `page/<1..604>.json` (QCF v2 glyph lines + per-verse words/text), `translation/<edition>.json`, `ayah-pages.json`. See `scripts/DATA.md`.
@@ -30,12 +31,12 @@ make it feel heavy or cluttered.
 - `src/utils/storage.js` — localStorage: settings (theme, appLang, translation prefs) + the per-surah status map (`hifz:surahStatus`). `notes` (tadabbur) joins the per-surah record in the next phase.
 - `src/utils/progress.js` — `computeProgress()`: turns the status map into dashboard stats (% memorized by ayah count, Juz completed, surahs memorized). Juz completion is computed at ayah granularity (via `getAyahPagesIndex` + `juzForPage`) since a surah can straddle a Juz boundary even though status is tracked per-surah.
 - `src/utils/statusStyle.js` — color classes per status (badge/dot/active/ring), shared by `StatusBadge`, `StatusControl`, and the surah-index number-circle ring.
-- `src/utils/dateUtils.js` — `daysAgo()`, used for revision-list relative dates.
+- `src/utils/dateUtils.js` — `daysAgo()` and `formatLastRevised()`, shared by the dashboard's revision preview and the full `RevisionScreen`.
 - `src/utils/tafsir.js` — per-ayah tafsir from the quran.com API, cached forever in localStorage (the text never changes). Resolves the English tafsir resource id dynamically (prefers Ibn Kathir, then al-Jalalayn, then whatever's first) rather than hardcoding one; strips the API's HTML to plain text via a detached-element `textContent` read (decodes entities, never inserts untrusted HTML into the page). No bundled/local tafsir data — this feature is online-only and degrades to an inline "couldn't load" message when the API is unreachable, same as the QCF glyph font CDN.
 - `src/utils/i18n.jsx` — UI strings in **en / ms / id**. Every user-facing string must have a key in all three.
 - `src/utils/fonts.js` — lazy-loads QCF v2 per-page glyph fonts, cached on `document.fonts`.
 - `src/utils/theme.js` — applies the `light`/`dark`/`sepia` theme via a `data-theme` attribute.
-- Components: `Home` (dashboard: progress summary, currently-memorizing shortcut, due-for-revision list — falls back to a simple welcome screen when nothing is tracked yet), `SurahIndex` (114 surahs, searchable, filterable by status, color-coded), `SurahDetail` (Arabic + per-ayah translation/tafsir toggles + `StatusControl` + `NotesEditor` + the audio engine + test-mode/loop-range state), `AyahCard` (play button, tafsir expand/collapse, test-mode hide/reveal, range-select tap target — all controlled by SurahDetail), `AudioPlayer` (play/pause/loading button), `StatusBadge`, `StatusControl`, `NotesEditor` (collapsible, debounced autosave).
+- Components: `Home` (dashboard: progress summary, currently-memorizing shortcut, due-for-revision preview capped at 3 with a link to `/revision` — falls back to a simple welcome screen when nothing is tracked yet), `SurahIndex` (114 surahs, searchable, filterable by status, color-coded), `SurahDetail` (Arabic + per-ayah translation/tafsir toggles + `StatusControl` + `NotesEditor` + the audio engine + test-mode/loop-range state), `RevisionScreen` (every `revision`-status surah, ordered by longest-since-revised, with an inline "mark confident" action), `AyahCard` (play button, tafsir expand/collapse, test-mode hide/reveal, range-select tap target — all controlled by SurahDetail), `AudioPlayer` (play/pause/loading button), `StatusBadge`, `StatusControl`, `NotesEditor` (collapsible, debounced autosave).
 
 ## Audio: repeat and loop-range (`SurahDetail`)
 One shared `<audio>` element, orchestrated in `SurahDetail` (not `AyahCard`, so only one ayah can ever sound at a time):
@@ -49,7 +50,7 @@ The "Test yourself" chip cycles **off → hide → first word → off**. In `hid
 ## Data model (per surah; MVP is surah-level, not per-ayah)
 `src/utils/storage.js`, key `hifz:surahStatus` — `{ [surahNumber]: { status, lastRevised, updatedAt, notes } }`:
 - `status`: `'new' | 'memorizing' | 'memorized' | 'revision'` — `isMemorizedStatus()` treats `memorized` and `revision` as both counting toward "memorized" progress (a `revision` surah is memorized, just flagged as needing review).
-- `lastRevised`: set when status transitions **to** `memorized` (i.e. "I just confirmed this"). Flagging `revision` does *not* bump it — the Revision screen's "mark revised" action (later phase) is what does that.
+- `lastRevised`: set when status transitions **to** `memorized` (i.e. "I just confirmed this"). Flagging `revision` does *not* bump it — `RevisionScreen`'s "Mark confident" action calls `setSurahStatus(number, 'memorized')`, which both clears the flag and bumps `lastRevised` in one call; no separate "mark revised" storage function was needed.
 - `notes`: free-text tadabbur (reflection) text, edited via `NotesEditor` (`getSurahNotes`/`setSurahNotes`), autosaved ~400ms after the user stops typing.
 
 No daily-activity/streak log has been built. Tilawah's streak mechanic is
@@ -70,7 +71,7 @@ confirm with the product owner before building it.
 2. ✅ Status model (new/memorizing/memorized/revision) + color-coded badges + filter + per-surah status control + dashboard progress stats (% memorized, Juz completed, surahs memorized, currently-memorizing shortcut, due-for-revision list).
 3. ✅ Tadabbur notes editor (collapsible, autosaved) + per-ayah tafsir toggle (quran.com API, cached forever in localStorage since the text is static).
 4. ✅ Audio with single-ayah repeat and loop-range playback (bitrate-fallback chain); "test yourself" hide/first-word/reveal recall mode.
-5. Full Revision screen (all revision-due surahs, ordered by longest-since-revised) + "mark revised/confident" action.
+5. ✅ Full Revision screen (`/revision`, all revision-due surahs ordered by longest-since-revised) + "mark confident" action; dashboard preview trimmed to 3 with a link to the full screen.
 6. Phase 2: full PWA offline caching, then optional Cloudflare Worker + KV sync (mirrors Daily Tilawah's `worker/` + `cloudSync.js`).
 
 ## Assets

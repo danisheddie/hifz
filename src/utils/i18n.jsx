@@ -50,6 +50,10 @@ const en = {
   'dashboard.lastRevisedToday': 'Revised today',
   'dashboard.lastRevisedYesterday': 'Revised yesterday',
   'dashboard.lastRevisedDaysAgo': 'Revised {n} days ago',
+  'dashboard.seeAll': 'See all {n}',
+
+  'revision.empty': 'Nothing needs revision right now.',
+  'revision.markConfident': 'Mark confident',
 
   'notes.title': 'Tadabbur notes',
   'notes.placeholder': 'What did you reflect on while memorizing this surah?',
@@ -117,6 +121,10 @@ const ms = {
   'dashboard.lastRevisedToday': 'Diulang kaji hari ini',
   'dashboard.lastRevisedYesterday': 'Diulang kaji semalam',
   'dashboard.lastRevisedDaysAgo': 'Diulang kaji {n} hari lalu',
+  'dashboard.seeAll': 'Lihat semua {n}',
+
+  'revision.empty': 'Tiada apa yang perlu diulang kaji sekarang.',
+  'revision.markConfident': 'Tandakan yakin',
 
   'notes.title': 'Nota tadabbur',
   'notes.placeholder': 'Apakah renungan anda semasa menghafal surah ini?',
@@ -184,6 +192,10 @@ const id = {
   'dashboard.lastRevisedToday': 'Diulang hari ini',
   'dashboard.lastRevisedYesterday': 'Diulang kemarin',
   'dashboard.lastRevisedDaysAgo': 'Diulang {n} hari lalu',
+  'dashboard.seeAll': 'Lihat semua {n}',
+
+  'revision.empty': 'Tidak ada yang perlu diulang saat ini.',
+  'revision.markConfident': 'Tandai yakin',
 
   'notes.title': 'Catatan tadabbur',
   'notes.placeholder': 'Apa refleksi Anda saat menghafal surah ini?',

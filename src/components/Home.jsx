@@ -7,17 +7,13 @@ import { Link } from 'react-router-dom'
 import { listSurahs } from '../utils/api'
 import { getSurahStatusMap } from '../utils/storage'
 import { computeProgress } from '../utils/progress'
-import { daysAgo } from '../utils/dateUtils'
+import { daysAgo, formatLastRevised } from '../utils/dateUtils'
 import { useLang } from '../utils/i18n.jsx'
 import StatusBadge from './StatusBadge'
 
-function lastRevisedLabel(t, lastRevised) {
-  if (!lastRevised) return t('dashboard.lastRevisedNever')
-  const n = daysAgo(lastRevised)
-  if (n <= 0) return t('dashboard.lastRevisedToday')
-  if (n === 1) return t('dashboard.lastRevisedYesterday')
-  return t('dashboard.lastRevisedDaysAgo', { n })
-}
+// Keep the dashboard preview short — the full, sortable list lives at
+// /revision so this section never grows to dominate the home screen.
+const REVISION_PREVIEW_LIMIT = 3
 
 export default function Home() {
   const { t } = useLang()
@@ -109,11 +105,18 @@ export default function Home() {
 
           {revision.length > 0 && (
             <section className="mt-8">
-              <h2 className="text-sm font-semibold text-emerald">
-                {t('dashboard.dueForRevision')}
-              </h2>
+              <Link to="/revision" className="flex items-center justify-between">
+                <h2 className="text-sm font-semibold text-emerald">
+                  {t('dashboard.dueForRevision')}
+                </h2>
+                {revision.length > REVISION_PREVIEW_LIMIT && (
+                  <span className="text-xs font-medium text-muted">
+                    {t('dashboard.seeAll', { n: revision.length })}
+                  </span>
+                )}
+              </Link>
               <ul className="mt-3 flex flex-col gap-2">
-                {revision.map((s) => (
+                {revision.slice(0, REVISION_PREVIEW_LIMIT).map((s) => (
                   <li key={s.number}>
                     <Link
                       to={`/surah/${s.number}`}
@@ -124,7 +127,7 @@ export default function Home() {
                           {s.englishName}
                         </span>
                         <span className="block text-xs text-muted">
-                          {lastRevisedLabel(t, s.entry?.lastRevised)}
+                          {formatLastRevised(t, s.entry?.lastRevised)}
                         </span>
                       </span>
                       <StatusBadge status="revision" />
