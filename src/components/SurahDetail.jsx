@@ -14,6 +14,7 @@ import {
   REPEAT_OPTIONS,
 } from '../utils/storage'
 import { ensurePageFont } from '../utils/fonts'
+import { schedulePush } from '../utils/cloudSync'
 import { useLang } from '../utils/i18n.jsx'
 import AyahCard from './AyahCard'
 import StatusControl from './StatusControl'
@@ -95,6 +96,7 @@ export default function SurahDetail() {
   function changeStatus(next) {
     setSurahStatus(surahNumber, next)
     setStatus(next)
+    schedulePush()
   }
 
   function toggleSetting(key) {

@@ -3,6 +3,7 @@
 
 import { useEffect, useRef, useState } from 'react'
 import { getSurahNotes, setSurahNotes } from '../utils/storage'
+import { schedulePush } from '../utils/cloudSync'
 import { useLang } from '../utils/i18n.jsx'
 
 export default function NotesEditor({ surahNumber }) {
@@ -21,7 +22,10 @@ export default function NotesEditor({ surahNumber }) {
   function onChange(value) {
     setNotes(value)
     clearTimeout(saveTimer.current)
-    saveTimer.current = setTimeout(() => setSurahNotes(surahNumber, value), 400)
+    saveTimer.current = setTimeout(() => {
+      setSurahNotes(surahNumber, value)
+      schedulePush()
+    }, 400)
   }
 
   useEffect(() => () => clearTimeout(saveTimer.current), [])

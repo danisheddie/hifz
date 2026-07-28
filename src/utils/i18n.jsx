@@ -80,6 +80,44 @@ const en = {
   'audio.rangeEnd': 'End',
   'audio.loopingRange': 'Looping ayah {start}–{end}',
   'audio.clearRange': 'Clear loop range',
+
+  'settings.title': 'Settings',
+  'settings.language': 'App language',
+  'settings.theme': 'Theme',
+  'settings.theme.light': 'Light',
+  'settings.theme.dark': 'Dark',
+  'settings.theme.sepia': 'Sepia',
+
+  'sync.title': 'Back up & sync',
+  'sync.intro':
+    'Optional. Keep your progress backed up and in sync across devices — sign in with Google, or use a private sync code. The app works fully without this.',
+  'sync.notConnected':
+    'Sync isn’t connected yet. It activates once the sync service is set up.',
+  'sync.orUseCode': 'or use a sync code',
+  'sync.yourCode': 'Your sync code',
+  'sync.copy': 'Copy',
+  'sync.codeHint':
+    'Enter this code on another device to restore your progress there. Keep it private — anyone with it can read your data.',
+  'sync.syncNow': 'Sync now',
+  'sync.stop': 'Stop syncing',
+  'sync.createCode': 'Create a sync code',
+  'sync.haveCode': 'Already have a code?',
+  'sync.restore': 'Restore',
+  'sync.created': 'Sync code created. Save it somewhere safe.',
+  'sync.restored': 'Restored and synced. Your progress is now backed up.',
+  'sync.synced': 'Synced.',
+  'sync.syncFail': 'Sync failed. Check your connection and try again.',
+  'sync.stopped': 'This device is no longer syncing. Your data stays on it.',
+  'sync.copied': 'Code copied to clipboard.',
+  'sync.createFail': 'Could not create a sync code.',
+  'sync.linkFail': 'Could not link that code.',
+
+  'google.synced': 'Syncing across your devices via Google. ✓',
+  'google.signOut': 'Sign out',
+  'google.hint': 'Sign in once on each device and your progress stays in sync automatically.',
+  'google.signingIn': 'Signing in…',
+  'google.loadFail': 'Could not load Google sign-in.',
+  'google.signInFail': 'Sign-in failed.',
 }
 
 const ms = {
@@ -151,6 +189,44 @@ const ms = {
   'audio.rangeEnd': 'Akhir',
   'audio.loopingRange': 'Mengulang ayat {start}–{end}',
   'audio.clearRange': 'Kosongkan julat gelung',
+
+  'settings.title': 'Tetapan',
+  'settings.language': 'Bahasa aplikasi',
+  'settings.theme': 'Tema',
+  'settings.theme.light': 'Cerah',
+  'settings.theme.dark': 'Gelap',
+  'settings.theme.sepia': 'Sepia',
+
+  'sync.title': 'Sandaran & penyegerakan',
+  'sync.intro':
+    'Pilihan. Kekalkan kemajuan anda tersandar dan segerak merentas peranti — log masuk dengan Google, atau guna kod penyegerakan peribadi. Aplikasi berfungsi sepenuhnya tanpa ini.',
+  'sync.notConnected':
+    'Penyegerakan belum disambung. Ia aktif setelah perkhidmatan disediakan.',
+  'sync.orUseCode': 'atau guna kod penyegerakan',
+  'sync.yourCode': 'Kod penyegerakan anda',
+  'sync.copy': 'Salin',
+  'sync.codeHint':
+    'Masukkan kod ini pada peranti lain untuk memulihkan kemajuan anda di sana. Rahsiakan ia — sesiapa yang memilikinya boleh membaca data anda.',
+  'sync.syncNow': 'Segerak sekarang',
+  'sync.stop': 'Henti penyegerakan',
+  'sync.createCode': 'Cipta kod penyegerakan',
+  'sync.haveCode': 'Sudah ada kod?',
+  'sync.restore': 'Pulih',
+  'sync.created': 'Kod penyegerakan dicipta. Simpan di tempat yang selamat.',
+  'sync.restored': 'Dipulihkan dan disegerakkan. Kemajuan anda kini tersandar.',
+  'sync.synced': 'Disegerakkan.',
+  'sync.syncFail': 'Penyegerakan gagal. Semak sambungan dan cuba lagi.',
+  'sync.stopped': 'Peranti ini tidak lagi disegerakkan. Data anda kekal padanya.',
+  'sync.copied': 'Kod disalin ke papan keratan.',
+  'sync.createFail': 'Tidak dapat mencipta kod penyegerakan.',
+  'sync.linkFail': 'Tidak dapat memautkan kod itu.',
+
+  'google.synced': 'Disegerakkan merentas peranti anda melalui Google. ✓',
+  'google.signOut': 'Log keluar',
+  'google.hint': 'Log masuk sekali pada setiap peranti dan kemajuan anda kekal segerak secara automatik.',
+  'google.signingIn': 'Sedang log masuk…',
+  'google.loadFail': 'Tidak dapat memuatkan log masuk Google.',
+  'google.signInFail': 'Log masuk gagal.',
 }
 
 const id = {
@@ -222,6 +298,44 @@ const id = {
   'audio.rangeEnd': 'Akhir',
   'audio.loopingRange': 'Mengulang ayat {start}–{end}',
   'audio.clearRange': 'Hapus rentang perulangan',
+
+  'settings.title': 'Pengaturan',
+  'settings.language': 'Bahasa aplikasi',
+  'settings.theme': 'Tema',
+  'settings.theme.light': 'Terang',
+  'settings.theme.dark': 'Gelap',
+  'settings.theme.sepia': 'Sepia',
+
+  'sync.title': 'Cadangkan & sinkronkan',
+  'sync.intro':
+    'Opsional. Jaga kemajuan Anda tercadang dan tersinkron antar perangkat — masuk dengan Google, atau gunakan kode sinkronisasi pribadi. Aplikasi berfungsi penuh tanpa ini.',
+  'sync.notConnected':
+    'Sinkronisasi belum tersambung. Ini aktif setelah layanan disiapkan.',
+  'sync.orUseCode': 'atau gunakan kode sinkronisasi',
+  'sync.yourCode': 'Kode sinkronisasi Anda',
+  'sync.copy': 'Salin',
+  'sync.codeHint':
+    'Masukkan kode ini di perangkat lain untuk memulihkan kemajuan Anda di sana. Rahasiakan — siapa pun yang memilikinya bisa membaca data Anda.',
+  'sync.syncNow': 'Sinkronkan sekarang',
+  'sync.stop': 'Hentikan sinkronisasi',
+  'sync.createCode': 'Buat kode sinkronisasi',
+  'sync.haveCode': 'Sudah punya kode?',
+  'sync.restore': 'Pulihkan',
+  'sync.created': 'Kode sinkronisasi dibuat. Simpan di tempat yang aman.',
+  'sync.restored': 'Dipulihkan dan tersinkron. Kemajuan Anda kini tercadang.',
+  'sync.synced': 'Tersinkron.',
+  'sync.syncFail': 'Sinkronisasi gagal. Periksa koneksi dan coba lagi.',
+  'sync.stopped': 'Perangkat ini tidak lagi tersinkron. Data Anda tetap ada di dalamnya.',
+  'sync.copied': 'Kode disalin ke papan klip.',
+  'sync.createFail': 'Tidak dapat membuat kode sinkronisasi.',
+  'sync.linkFail': 'Tidak dapat menautkan kode itu.',
+
+  'google.synced': 'Tersinkron antar perangkat Anda melalui Google. ✓',
+  'google.signOut': 'Keluar',
+  'google.hint': 'Masuk sekali di setiap perangkat dan kemajuan Anda tetap tersinkron otomatis.',
+  'google.signingIn': 'Sedang masuk…',
+  'google.loadFail': 'Tidak dapat memuat masuk dengan Google.',
+  'google.signInFail': 'Gagal masuk.',
 }
 
 const DICT = { en, ms, id }

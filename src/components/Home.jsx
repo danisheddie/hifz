@@ -15,6 +15,21 @@ import StatusBadge from './StatusBadge'
 // /revision so this section never grows to dominate the home screen.
 const REVISION_PREVIEW_LIMIT = 3
 
+function SettingsLink({ t, className = '' }) {
+  return (
+    <Link
+      to="/settings"
+      aria-label={t('settings.title')}
+      className={`rounded-full p-1.5 text-muted transition active:scale-90 ${className}`}
+    >
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+        <circle cx="12" cy="12" r="3" />
+        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
+      </svg>
+    </Link>
+  )
+}
+
 export default function Home() {
   const { t } = useLang()
   const [progress, setProgress] = useState(null)
@@ -39,7 +54,8 @@ export default function Home() {
 
   if (!hasProgress) {
     return (
-      <div className="mx-auto flex h-screen max-w-2xl flex-col items-center justify-center px-6 text-center">
+      <div className="relative mx-auto flex h-screen max-w-2xl flex-col items-center justify-center px-6 text-center">
+        <SettingsLink t={t} className="absolute right-5 top-5" />
         <p className="font-quran text-4xl leading-loose text-emerald sm:text-5xl" dir="rtl" lang="ar">
           حِفْظ
         </p>
@@ -54,9 +70,12 @@ export default function Home() {
 
   return (
     <div className="mx-auto h-screen max-w-2xl overflow-y-auto px-6 pb-16 pt-10">
-      <p className="font-quran text-3xl leading-none text-emerald" dir="rtl" lang="ar">
-        حِفْظ
-      </p>
+      <div className="flex items-start justify-between">
+        <p className="font-quran text-3xl leading-none text-emerald" dir="rtl" lang="ar">
+          حِفْظ
+        </p>
+        <SettingsLink t={t} />
+      </div>
       <h1 className="mt-2 text-xl font-semibold text-emerald">{t('common.appName')}</h1>
 
       {progress && (

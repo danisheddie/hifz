@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { listSurahs } from '../utils/api'
 import { getSurahStatusMap, setSurahStatus } from '../utils/storage'
+import { schedulePush } from '../utils/cloudSync'
 import { daysAgo, formatLastRevised } from '../utils/dateUtils'
 import { useLang } from '../utils/i18n.jsx'
 
@@ -32,6 +33,7 @@ export default function RevisionScreen() {
   function markConfident(number) {
     setSurahStatus(number, 'memorized')
     setSurahs((list) => list.filter((s) => s.number !== number))
+    schedulePush()
   }
 
   return (
