@@ -76,8 +76,14 @@ async function loadTranslation(edition) {
 
 // Per-ayah recitation streams from the islamic.network CDN by global ayah
 // number (1–6236) — the same files alquran.cloud points to, just computed.
+// Not every reciter is hosted at every bitrate, so callers that actually play
+// audio (AyahCard/SurahDetail) fall through AUDIO_BITRATES on error.
+export const AUDIO_BITRATES = [128, 64, 192]
+export function audioUrlAt(edition, globalNumber, bitrate = AUDIO_BITRATES[0]) {
+  return `https://cdn.islamic.network/quran/audio/${bitrate}/${edition}/${globalNumber}.mp3`
+}
 function audioUrl(edition, globalNumber) {
-  return `https://cdn.islamic.network/quran/audio/128/${edition}/${globalNumber}.mp3`
+  return audioUrlAt(edition, globalNumber)
 }
 
 function surahsFromVerses(verses, meta) {

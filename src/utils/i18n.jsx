@@ -58,6 +58,24 @@ const en = {
   'tafsir.toggle': 'Show tafsir',
   'tafsir.loading': 'Loading tafsir…',
   'tafsir.unable': 'Couldn’t load tafsir. Check your connection and try again.',
+
+  'options.reading': 'Reading',
+  'options.practice': 'Practice',
+
+  'test.mode.off': 'Test yourself: Off',
+  'test.mode.hide': 'Test yourself: Hidden',
+  'test.mode.firstWord': 'Test yourself: First word',
+  'test.tapToReveal': 'Tap to reveal',
+
+  'audio.play': 'Play',
+  'audio.pause': 'Pause',
+  'audio.repeat': 'Repeat ×{n}',
+  'audio.loopRange': 'Loop range',
+  'audio.selectRangeHint': 'Tap two ayahs to set the loop range.',
+  'audio.rangeStart': 'Start',
+  'audio.rangeEnd': 'End',
+  'audio.loopingRange': 'Looping ayah {start}–{end}',
+  'audio.clearRange': 'Clear loop range',
 }
 
 const ms = {
@@ -107,6 +125,24 @@ const ms = {
   'tafsir.toggle': 'Tunjuk tafsir',
   'tafsir.loading': 'Memuatkan tafsir…',
   'tafsir.unable': 'Tidak dapat memuatkan tafsir. Semak sambungan anda dan cuba lagi.',
+
+  'options.reading': 'Bacaan',
+  'options.practice': 'Latihan',
+
+  'test.mode.off': 'Uji diri: Tutup',
+  'test.mode.hide': 'Uji diri: Disembunyikan',
+  'test.mode.firstWord': 'Uji diri: Perkataan pertama',
+  'test.tapToReveal': 'Ketik untuk dedah',
+
+  'audio.play': 'Main',
+  'audio.pause': 'Jeda',
+  'audio.repeat': 'Ulang ×{n}',
+  'audio.loopRange': 'Gelung julat',
+  'audio.selectRangeHint': 'Ketik dua ayat untuk menetapkan julat gelung.',
+  'audio.rangeStart': 'Mula',
+  'audio.rangeEnd': 'Akhir',
+  'audio.loopingRange': 'Mengulang ayat {start}–{end}',
+  'audio.clearRange': 'Kosongkan julat gelung',
 }
 
 const id = {
@@ -156,6 +192,24 @@ const id = {
   'tafsir.toggle': 'Tampilkan tafsir',
   'tafsir.loading': 'Memuat tafsir…',
   'tafsir.unable': 'Tidak dapat memuat tafsir. Periksa koneksi Anda dan coba lagi.',
+
+  'options.reading': 'Bacaan',
+  'options.practice': 'Latihan',
+
+  'test.mode.off': 'Uji diri: Mati',
+  'test.mode.hide': 'Uji diri: Disembunyikan',
+  'test.mode.firstWord': 'Uji diri: Kata pertama',
+  'test.tapToReveal': 'Ketuk untuk tampilkan',
+
+  'audio.play': 'Putar',
+  'audio.pause': 'Jeda',
+  'audio.repeat': 'Ulang ×{n}',
+  'audio.loopRange': 'Putar ulang rentang',
+  'audio.selectRangeHint': 'Ketuk dua ayat untuk menetapkan rentang perulangan.',
+  'audio.rangeStart': 'Mulai',
+  'audio.rangeEnd': 'Akhir',
+  'audio.loopingRange': 'Mengulang ayat {start}–{end}',
+  'audio.clearRange': 'Hapus rentang perulangan',
 }
 
 const DICT = { en, ms, id }

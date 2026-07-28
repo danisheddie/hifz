@@ -21,7 +21,7 @@ make it feel heavy or cluttered.
 
 ## Qur'an data (local-first, with live fallback)
 - `npm run build-data` (`scripts/build-quran-data.mjs`, copied from Daily Tilawah) writes `public/data/`: `meta.json`, `page/<1..604>.json` (QCF v2 glyph lines + per-verse words/text), `translation/<edition>.json`, `ayah-pages.json`. See `scripts/DATA.md`.
-- `src/utils/api.js` is **local-first**: `getPage`/`getMushafPage`/`getAyahPage` use `public/data/` when present, else fall back to live APIs (quran.com for glyphs, alquran.cloud for translations). Audio streams from islamic.network CDN via computed URLs (not yet wired into the UI — arrives with the repeat/loop phase).
+- `src/utils/api.js` is **local-first**: `getPage`/`getMushafPage`/`getAyahPage` use `public/data/` when present, else fall back to live APIs (quran.com for glyphs, alquran.cloud for translations). Audio streams from islamic.network CDN via `audioUrlAt(edition, globalNumber, bitrate)`; `AUDIO_BITRATES` (128/64/192) is the fallback chain SurahDetail tries in order, since not every reciter is hosted at every bitrate.
 - `getSurah(number, opts)` and `listSurahs()` are Hifz-specific additions on top of the page-based data layer: `getSurah` walks the mushaf pages a surah spans (via `SURAH_PAGES`/`SURAH_AYAHS`) and filters ayahs by surah number, so the app can be surah-centric even though the underlying bundle is organised by page.
 - QCF per-page fonts load from jsDelivr (`mushafFontUrl`, `src/utils/fonts.js`). The KFGQPC Uthmanic Hafs unicode font is self-hosted (`public/fonts/`), used as the fallback whenever a page's glyph font hasn't loaded (also the only rendering path in this dev sandbox, since the jsDelivr CDN is unreachable through the sandbox proxy — works normally in production/browsers with real network access).
 
@@ -35,7 +35,16 @@ make it feel heavy or cluttered.
 - `src/utils/i18n.jsx` — UI strings in **en / ms / id**. Every user-facing string must have a key in all three.
 - `src/utils/fonts.js` — lazy-loads QCF v2 per-page glyph fonts, cached on `document.fonts`.
 - `src/utils/theme.js` — applies the `light`/`dark`/`sepia` theme via a `data-theme` attribute.
-- Components: `Home` (dashboard: progress summary, currently-memorizing shortcut, due-for-revision list — falls back to a simple welcome screen when nothing is tracked yet), `SurahIndex` (114 surahs, searchable, filterable by status, color-coded), `SurahDetail` (Arabic + per-ayah translation/tafsir toggles + `StatusControl` + `NotesEditor`), `AyahCard` (also owns per-ayah tafsir expand/collapse), `StatusBadge`, `StatusControl`, `NotesEditor` (collapsible, debounced autosave).
+- Components: `Home` (dashboard: progress summary, currently-memorizing shortcut, due-for-revision list — falls back to a simple welcome screen when nothing is tracked yet), `SurahIndex` (114 surahs, searchable, filterable by status, color-coded), `SurahDetail` (Arabic + per-ayah translation/tafsir toggles + `StatusControl` + `NotesEditor` + the audio engine + test-mode/loop-range state), `AyahCard` (play button, tafsir expand/collapse, test-mode hide/reveal, range-select tap target — all controlled by SurahDetail), `AudioPlayer` (play/pause/loading button), `StatusBadge`, `StatusControl`, `NotesEditor` (collapsible, debounced autosave).
+
+## Audio: repeat and loop-range (`SurahDetail`)
+One shared `<audio>` element, orchestrated in `SurahDetail` (not `AyahCard`, so only one ayah can ever sound at a time):
+- **Single-ayah repeat**: tapping an ayah's play button repeats *that ayah* `settings.repeatCount` times (`1 | 3 | 5 | 10 | 'inf'`, cycled via the "Repeat ×n" chip). If every bitrate fails for that ayah, playback stops immediately rather than retrying the same broken URL on every remaining repeat.
+- **Loop range**: the "Loop range" chip enters a selection mode — tapping two ayahs sets a start/end range (highlighted inline, with "Start"/"End" labels), then a floating bottom bar ("Looping ayah X–Y") plays that range in sequence, looping the whole range `repeatCount` times. A broken ayah inside a range doesn't stall the loop — playback just advances to the next ayah.
+- Audio always stops (and range/test-mode state resets) on surah change and on unmount.
+
+## "Test yourself" recall mode (`AyahCard`, driven by `SurahDetail`)
+The "Test yourself" chip cycles **off → hide → first word → off**. In `hide`, the Arabic (and translation) are replaced with a "Tap to reveal" placeholder per ayah; in `firstWord`, only the ayah's first word is shown as a memory prompt. The play button stays visible in both — listening without seeing the text is a valid recall technique. Per-ayah revealed state resets automatically on mode change via a `key={ayah.number}-${testMode}` remount, not an effect. Test mode is session-only (not persisted) — it's a practice action, not a standing preference.
 
 ## Data model (per surah; MVP is surah-level, not per-ayah)
 `src/utils/storage.js`, key `hifz:surahStatus` — `{ [surahNumber]: { status, lastRevised, updatedAt, notes } }`:
@@ -60,7 +69,7 @@ confirm with the product owner before building it.
 1. ✅ Scaffold + Qur'an data layer + surah index + surah detail (Arabic + translation).
 2. ✅ Status model (new/memorizing/memorized/revision) + color-coded badges + filter + per-surah status control + dashboard progress stats (% memorized, Juz completed, surahs memorized, currently-memorizing shortcut, due-for-revision list).
 3. ✅ Tadabbur notes editor (collapsible, autosaved) + per-ayah tafsir toggle (quran.com API, cached forever in localStorage since the text is static).
-4. Audio with single-ayah repeat/loop; "test yourself" hide/reveal recall mode.
+4. ✅ Audio with single-ayah repeat and loop-range playback (bitrate-fallback chain); "test yourself" hide/first-word/reveal recall mode.
 5. Full Revision screen (all revision-due surahs, ordered by longest-since-revised) + "mark revised/confident" action.
 6. Phase 2: full PWA offline caching, then optional Cloudflare Worker + KV sync (mirrors Daily Tilawah's `worker/` + `cloudSync.js`).
 

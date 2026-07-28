@@ -26,7 +26,13 @@ export const DEFAULT_SETTINGS = {
   showTranslation: true,
   translationEdition: 'en.asad',
   showTafsir: false,
+  reciter: 'ar.alafasy',
+  // How many times a single ayah (or a looped range) repeats before
+  // stopping: 1 | 3 | 5 | 10 | 'inf'.
+  repeatCount: 3,
 }
+
+export const REPEAT_OPTIONS = [1, 3, 5, 10, 'inf']
 
 function read(key, fallback = null) {
   try {
