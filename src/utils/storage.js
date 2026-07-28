@@ -4,6 +4,8 @@
 const KEYS = {
   settings: 'hifz:settings',
   surahStatus: 'hifz:surahStatus',
+  onboarded: 'hifz:onboarded',
+  name: 'hifz:userName',
 }
 
 // The four memorization states a surah can be in (MVP is per-surah; a
@@ -118,4 +120,25 @@ export function getStatusCounts() {
     counts[status] = (counts[status] || 0) + 1
   }
   return counts
+}
+
+// --- onboarding + name ---------------------------------------------------
+
+export function isOnboarded() {
+  return read(KEYS.onboarded, false) === true
+}
+
+export function getName() {
+  const name = read(KEYS.name, '')
+  return typeof name === 'string' ? name : ''
+}
+
+export function setName(name) {
+  const clean = typeof name === 'string' ? name.trim().slice(0, 40) : ''
+  write(KEYS.name, clean)
+}
+
+export function completeOnboarding(name) {
+  setName(name)
+  write(KEYS.onboarded, true)
 }

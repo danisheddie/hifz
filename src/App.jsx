@@ -1,7 +1,10 @@
-// Routing. No onboarding gate yet — that arrives with the status model.
+// Routing + first-launch gate. Onboarding takes over until a name is set;
+// afterwards the core routes are available.
 
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
+import { isOnboarded } from './utils/storage'
+import Onboarding from './components/Onboarding'
 import Home from './components/Home'
 import SurahIndex from './components/SurahIndex'
 import SurahDetail from './components/SurahDetail'
@@ -10,11 +13,17 @@ import Settings from './components/Settings'
 import { syncNow } from './utils/cloudSync'
 
 export default function App() {
+  const [onboarded, setOnboarded] = useState(() => isOnboarded())
+
   // If the device is linked to a sync code (or Google account), reconcile
   // with the cloud on load. No-ops entirely when sync isn't configured.
   useEffect(() => {
     syncNow().catch(() => {})
   }, [])
+
+  if (!onboarded) {
+    return <Onboarding onDone={() => setOnboarded(true)} />
+  }
 
   return (
     <Routes>

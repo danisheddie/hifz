@@ -1,11 +1,11 @@
-// Dashboard: overall progress, a shortcut to what's currently being
-// memorized, and a due-for-revision list. Shows a simple welcome instead
-// when there's nothing tracked yet.
+// Dashboard: a personal greeting, overall progress, a shortcut to what's
+// currently being memorized, and a due-for-revision list. Shows a simple
+// welcome instead when there's nothing tracked yet.
 
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { listSurahs } from '../utils/api'
-import { getSurahStatusMap } from '../utils/storage'
+import { getSurahStatusMap, getName } from '../utils/storage'
 import { computeProgress } from '../utils/progress'
 import { daysAgo, formatLastRevised } from '../utils/dateUtils'
 import { useLang } from '../utils/i18n.jsx'
@@ -30,8 +30,19 @@ function SettingsLink({ t, className = '' }) {
   )
 }
 
+// A warm, unhurried message reflecting where things stand right now — never
+// a nudge about time elapsed or a count of what's "overdue".
+function greetingMessage(t, { hasProgress, revisionCount, memorizing }) {
+  if (!hasProgress) return t('home.messageBegin')
+  if (revisionCount > 0) return t('home.messageRevision')
+  if (memorizing.length === 1) return t('home.messageOneSurah', { surah: memorizing[0].englishName })
+  if (memorizing.length > 1) return t('home.messageMemorizing')
+  return t('home.messageCaughtUp')
+}
+
 export default function Home() {
   const { t } = useLang()
+  const name = getName()
   const [progress, setProgress] = useState(null)
   const [memorizing, setMemorizing] = useState([])
   const [revision, setRevision] = useState([])
@@ -51,16 +62,18 @@ export default function Home() {
   }, [])
 
   const hasProgress = progress && (progress.surahsMemorized > 0 || memorizing.length > 0)
+  const greeting = name ? t('home.greetingName', { name }) : t('home.greeting')
+  const message = greetingMessage(t, { hasProgress, revisionCount: revision.length, memorizing })
 
   if (!hasProgress) {
     return (
       <div className="relative mx-auto flex h-screen max-w-2xl flex-col items-center justify-center px-6 text-center">
         <SettingsLink t={t} className="absolute right-5 top-5" />
-        <p className="font-quran text-4xl leading-loose text-emerald sm:text-5xl" dir="rtl" lang="ar">
+        <p className="font-quran text-3xl leading-loose text-emerald sm:text-4xl" dir="rtl" lang="ar">
           حِفْظ
         </p>
-        <h1 className="mt-4 text-2xl font-semibold text-emerald">{t('common.appName')}</h1>
-        <p className="mt-2 max-w-xs text-sm text-muted">{t('home.subtitle')}</p>
+        <h1 className="mt-4 text-2xl font-semibold text-emerald">{greeting}</h1>
+        <p className="mt-2 max-w-xs text-sm text-muted">{message}</p>
         <Link to="/surahs" className="btn-primary mt-10">
           {t('home.browseSurahs')}
         </Link>
@@ -71,12 +84,13 @@ export default function Home() {
   return (
     <div className="mx-auto h-screen max-w-2xl overflow-y-auto px-6 pb-16 pt-10">
       <div className="flex items-start justify-between">
-        <p className="font-quran text-3xl leading-none text-emerald" dir="rtl" lang="ar">
+        <p className="font-quran text-2xl leading-none text-emerald" dir="rtl" lang="ar">
           حِفْظ
         </p>
         <SettingsLink t={t} />
       </div>
-      <h1 className="mt-2 text-xl font-semibold text-emerald">{t('common.appName')}</h1>
+      <h1 className="mt-3 text-2xl font-semibold text-emerald">{greeting}</h1>
+      <p className="mt-1 text-sm text-muted">{message}</p>
 
       {progress && (
         <>

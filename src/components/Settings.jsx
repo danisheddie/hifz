@@ -4,9 +4,10 @@
 
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { getSettings, setSetting } from '../utils/storage'
+import { getSettings, setSetting, getName, setName as saveName } from '../utils/storage'
 import { applyTheme } from '../utils/theme'
 import { LANGUAGES, useLang } from '../utils/i18n.jsx'
+import { schedulePush } from '../utils/cloudSync'
 import SyncSettings from './SyncSettings'
 
 const THEMES = ['light', 'dark', 'sepia']
@@ -15,10 +16,17 @@ export default function Settings() {
   const navigate = useNavigate()
   const { t, lang, setLang } = useLang()
   const [settings, setSettings] = useState(() => getSettings())
+  const [name, setName] = useState(() => getName())
 
   function changeTheme(theme) {
     setSettings(setSetting('theme', theme))
     applyTheme(theme)
+  }
+
+  function changeName(value) {
+    setName(value)
+    saveName(value)
+    schedulePush()
   }
 
   return (
@@ -38,6 +46,17 @@ export default function Settings() {
 
       <main className="px-5 pb-16 pt-4">
         <section>
+          <h2 className="text-sm font-semibold text-emerald">{t('settings.yourName')}</h2>
+          <input
+            type="text"
+            value={name}
+            onChange={(e) => changeName(e.target.value)}
+            maxLength={40}
+            className="mt-2 w-full rounded-xl border border-emerald/15 bg-transparent px-4 py-2.5 text-sm text-emerald outline-none transition placeholder:text-muted/60 focus:border-emerald"
+          />
+        </section>
+
+        <section className="mt-8">
           <h2 className="text-sm font-semibold text-emerald">{t('settings.language')}</h2>
           <div className="mt-2 flex flex-wrap gap-2">
             {LANGUAGES.map((l) => (

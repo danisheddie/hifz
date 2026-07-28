@@ -10,7 +10,7 @@ import { WORKER_URL, googleAuthConfigured } from '../config'
 
 // localStorage keys that make up a syncable snapshot. Device-specific keys
 // (the sync code/session themselves) are deliberately excluded.
-export const SYNC_KEYS = ['hifz:settings', 'hifz:surahStatus']
+export const SYNC_KEYS = ['hifz:settings', 'hifz:surahStatus', 'hifz:userName']
 
 const CODE_KEY = 'hifz:syncCode'
 const GTOKEN_KEY = 'hifz:gToken'
@@ -161,9 +161,15 @@ export function mergeSnapshots(a = {}, b = {}) {
   const bT = b._updatedAt || 0
   const newer = bT >= aT ? b : a
 
+  // Name: prefer a non-empty value; newer wins if both sides have one.
+  const aName = a['hifz:userName'] || ''
+  const bName = b['hifz:userName'] || ''
+  const name = aName && bName ? newer['hifz:userName'] : aName || bName
+
   return {
     'hifz:settings': newer['hifz:settings'] ?? a['hifz:settings'] ?? b['hifz:settings'],
     'hifz:surahStatus': mergeSurahStatus(a['hifz:surahStatus'], b['hifz:surahStatus']),
+    'hifz:userName': name,
     _updatedAt: Math.max(aT, bT),
   }
 }

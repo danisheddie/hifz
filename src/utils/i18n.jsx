@@ -15,14 +15,35 @@ const en = {
   'common.appName': 'Hifz',
   'common.appTagline': 'Memorize the Qur’an, one surah at a time.',
   'common.back': 'Back',
+  'common.continue': 'Continue',
   'common.ayah': 'ayah',
   'common.ayahs': 'ayahs',
 
   'nav.surahs': 'Surahs',
 
+  'onboarding.welcomeBody':
+    'A calm space to memorize, revise, and reflect on the Qur’an — at your own pace.',
+  'onboarding.begin': 'Begin',
+  'onboarding.nameTitle': 'What should we call you?',
+  'onboarding.nameSub': 'So the app can greet you properly.',
+  'onboarding.namePlaceholder': 'Your name',
+  'onboarding.quickStartTitle': 'Already memorized something?',
+  'onboarding.quickStartSub':
+    'Pick any surahs you already know by heart. You can always update this later.',
+  'onboarding.skipForNow': 'Skip for now',
+  'onboarding.bismillahMeaning': 'In the name of Allah, the Most Gracious, the Most Merciful.',
+  'onboarding.enter': 'Enter',
+
   'home.browseSurahs': 'Browse Surahs',
   'home.subtitle':
     'A calm space to memorize, revise, and reflect on the Qur’an.',
+  'home.greeting': 'Assalamu’alaikum',
+  'home.greetingName': 'Assalamu’alaikum, {name}',
+  'home.messageBegin': 'Ready whenever you are — pick a surah to begin.',
+  'home.messageRevision': 'A few surahs are ready for a gentle revisit.',
+  'home.messageOneSurah': 'Keep going on {surah} — you’re building it up.',
+  'home.messageMemorizing': 'A few surahs are in progress — keep going.',
+  'home.messageCaughtUp': 'You’re all caught up. Well done.',
 
   'status.new': 'New',
   'status.memorizing': 'Memorizing',
@@ -87,6 +108,7 @@ const en = {
   'settings.theme.light': 'Light',
   'settings.theme.dark': 'Dark',
   'settings.theme.sepia': 'Sepia',
+  'settings.yourName': 'Your name',
 
   'sync.title': 'Back up & sync',
   'sync.intro':
@@ -124,14 +146,35 @@ const ms = {
   'common.appName': 'Hifz',
   'common.appTagline': 'Hafal al-Qur’an, satu surah pada satu masa.',
   'common.back': 'Kembali',
+  'common.continue': 'Teruskan',
   'common.ayah': 'ayat',
   'common.ayahs': 'ayat',
 
   'nav.surahs': 'Surah',
 
+  'onboarding.welcomeBody':
+    'Ruang yang tenang untuk menghafal, mengulang kaji, dan meneliti al-Qur’an — mengikut kadar anda sendiri.',
+  'onboarding.begin': 'Mula',
+  'onboarding.nameTitle': 'Apa nama panggilan anda?',
+  'onboarding.nameSub': 'Supaya aplikasi boleh menyapa anda dengan sepatutnya.',
+  'onboarding.namePlaceholder': 'Nama anda',
+  'onboarding.quickStartTitle': 'Sudah menghafal sesuatu?',
+  'onboarding.quickStartSub':
+    'Pilih mana-mana surah yang anda sudah hafal. Anda boleh kemas kini ini kemudian.',
+  'onboarding.skipForNow': 'Langkau buat masa ini',
+  'onboarding.bismillahMeaning': 'Dengan nama Allah Yang Maha Pemurah lagi Maha Mengasihani.',
+  'onboarding.enter': 'Masuk',
+
   'home.browseSurahs': 'Lihat Surah',
   'home.subtitle':
     'Ruang yang tenang untuk menghafal, mengulang kaji, dan meneliti al-Qur’an.',
+  'home.greeting': 'Assalamualaikum',
+  'home.greetingName': 'Assalamualaikum, {name}',
+  'home.messageBegin': 'Sedia bila-bila masa — pilih satu surah untuk bermula.',
+  'home.messageRevision': 'Beberapa surah sudah sedia untuk diulang kaji semula.',
+  'home.messageOneSurah': 'Teruskan usaha pada {surah} — anda sedang membinanya.',
+  'home.messageMemorizing': 'Beberapa surah sedang dalam proses — teruskan.',
+  'home.messageCaughtUp': 'Semuanya sudah dikemas kini. Syabas.',
 
   'status.new': 'Baharu',
   'status.memorizing': 'Sedang dihafal',
@@ -196,6 +239,7 @@ const ms = {
   'settings.theme.light': 'Cerah',
   'settings.theme.dark': 'Gelap',
   'settings.theme.sepia': 'Sepia',
+  'settings.yourName': 'Nama anda',
 
   'sync.title': 'Sandaran & penyegerakan',
   'sync.intro':
@@ -233,14 +277,35 @@ const id = {
   'common.appName': 'Hifz',
   'common.appTagline': 'Menghafal Al-Qur’an, satu surah setiap kali.',
   'common.back': 'Kembali',
+  'common.continue': 'Lanjutkan',
   'common.ayah': 'ayat',
   'common.ayahs': 'ayat',
 
   'nav.surahs': 'Surah',
 
+  'onboarding.welcomeBody':
+    'Ruang tenang untuk menghafal, mengulang, dan merenungkan Al-Qur’an — sesuai kecepatan Anda sendiri.',
+  'onboarding.begin': 'Mulai',
+  'onboarding.nameTitle': 'Siapa nama Anda?',
+  'onboarding.nameSub': 'Agar aplikasi bisa menyapa Anda dengan tepat.',
+  'onboarding.namePlaceholder': 'Nama Anda',
+  'onboarding.quickStartTitle': 'Sudah hafal sesuatu?',
+  'onboarding.quickStartSub':
+    'Pilih surah yang sudah Anda hafal. Anda selalu bisa memperbarui ini nanti.',
+  'onboarding.skipForNow': 'Lewati dulu',
+  'onboarding.bismillahMeaning': 'Dengan nama Allah Yang Maha Pengasih, Maha Penyayang.',
+  'onboarding.enter': 'Masuk',
+
   'home.browseSurahs': 'Lihat Surah',
   'home.subtitle':
     'Ruang tenang untuk menghafal, mengulang, dan merenungkan Al-Qur’an.',
+  'home.greeting': 'Assalamualaikum',
+  'home.greetingName': 'Assalamualaikum, {name}',
+  'home.messageBegin': 'Siap kapan saja — pilih surah untuk mulai.',
+  'home.messageRevision': 'Beberapa surah siap untuk diulang kembali.',
+  'home.messageOneSurah': 'Terus semangat di {surah} — Anda sedang membangunnya.',
+  'home.messageMemorizing': 'Beberapa surah sedang dalam proses — terus lanjutkan.',
+  'home.messageCaughtUp': 'Semua sudah rapi. Kerja bagus.',
 
   'status.new': 'Baru',
   'status.memorizing': 'Sedang dihafal',
@@ -305,6 +370,7 @@ const id = {
   'settings.theme.light': 'Terang',
   'settings.theme.dark': 'Gelap',
   'settings.theme.sepia': 'Sepia',
+  'settings.yourName': 'Nama Anda',
 
   'sync.title': 'Cadangkan & sinkronkan',
   'sync.intro':
