@@ -1,0 +1,50 @@
+name: Deploy to GitHub Pages
+
+on:
+  # Deploy from main once merged, and from the active work branch for now
+  # (this app hasn't been merged yet) so there's always a reviewable preview.
+  push:
+    branches: [main, claude/quran-hifz-pwa-5uuo8f]
+  # Allow manual runs from the Actions tab.
+  workflow_dispatch:
+
+# Permissions required by the Pages deployment.
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Allow one in-flight deployment at a time.
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - uses: actions/configure-pages@v5
+        # Turn on GitHub Pages (Actions source) automatically on first run,
+        # so no manual Settings toggle is required.
+        with:
+          enablement: true
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
