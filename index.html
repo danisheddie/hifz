@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="theme-color" content="#FAF9F6" />
+    <title>Hifz — memorize the Qur'an</title>
+
+    <!-- Apply the saved theme before paint to avoid a flash of the wrong one. -->
+    <script>
+      try {
+        var s = JSON.parse(localStorage.getItem('hifz:settings') || '{}')
+        if (s.theme && s.theme !== 'light')
+          document.documentElement.dataset.theme = s.theme
+      } catch (e) {}
+    </script>
+
+    <!-- PWA: installable, offline-capable -->
+    <link rel="manifest" href="/hifz/manifest.webmanifest" />
+    <link rel="apple-touch-icon" href="/hifz/icons/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="192x192" href="/hifz/icons/icon-192.png" />
+    <link rel="icon" type="image/png" sizes="512x512" href="/hifz/icons/icon-512.png" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="Hifz" />
+    <!--
+      Decodes the path that 404.html encoded into the query string (the SPA
+      redirect trick), restoring the real URL before React Router reads it.
+    -->
+    <script>
+      ;(function (l) {
+        if (l.search[1] === '/') {
+          var decoded = l.search
+            .slice(1)
+            .split('&')
+            .map(function (s) {
+              return s.replace(/~and~/g, '&')
+            })
+            .join('?')
+          window.history.replaceState(
+            null,
+            null,
+            l.pathname.slice(0, -1) + decoded + l.hash
+          )
+        }
+      })(window.location)
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Amiri+Quran&family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <script type="module" crossorigin src="/hifz/assets/index-QEqyC6RL.js"></script>
+    <link rel="stylesheet" crossorigin href="/hifz/assets/index-BiZZ_Wko.css">
+  </head>
+  <body>
+    <div id="root"></div>
+  </body>
+</html>
