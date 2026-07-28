@@ -8,19 +8,21 @@ on:
   # Allow manual runs from the Actions tab.
   workflow_dispatch:
 
-# Permissions required by the Pages deployment.
+# Classic branch-based Pages deployment: pushes dist/ to a gh-pages branch
+# with the default GITHUB_TOKEN. Deliberately not using actions/deploy-pages
+# (the environment/OIDC-based method) — that requires the auto-created
+# "github-pages" environment's branch-protection rule to allow this branch,
+# which isn't editable from this account/repo's Settings UI. This approach
+# only needs `contents: write` and has no such gate.
 permissions:
-  contents: read
-  pages: write
-  id-token: write
+  contents: write
 
-# Allow one in-flight deployment at a time.
 concurrency:
   group: pages
   cancel-in-progress: true
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -30,21 +32,7 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run build
-      - uses: actions/configure-pages@v5
-        # Turn on GitHub Pages (Actions source) automatically on first run,
-        # so no manual Settings toggle is required.
+      - uses: peaceiris/actions-gh-pages@v4
         with:
-          enablement: true
-      - uses: actions/upload-pages-artifact@v3
-        with:
-          path: dist
-
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - id: deployment
-        uses: actions/deploy-pages@v4
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
