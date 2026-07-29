@@ -460,7 +460,7 @@ export default function SurahDetail() {
 
       {surah && optionsOpen && (
         <div className="sticky top-[85px] z-[5] bg-paper/95 backdrop-blur">
-          <div className="border-b border-emerald/5 px-5 py-3">
+          <div className="border-b border-emerald/5 px-5 py-2.5">
             <StatusControl status={status} onChange={changeStatus} />
             {entry.ranges && entry.ranges.length > 0 && (
               <p className="mt-2 text-xs text-muted">
@@ -472,10 +472,7 @@ export default function SurahDetail() {
             )}
           </div>
 
-          <div className="border-b border-emerald/5 px-5 py-3">
-            <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-muted">
-              {t('options.reading')}
-            </p>
+          <div className="border-b border-emerald/5 px-5 py-2.5">
             <div className="flex flex-wrap gap-2">
               <button
                 type="button"
@@ -501,14 +498,6 @@ export default function SurahDetail() {
               >
                 {t('tafsir.title')}
               </button>
-            </div>
-          </div>
-
-          <div className="border-b border-emerald/5 px-5 py-3">
-            <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-muted">
-              {t('options.practice')}
-            </p>
-            <div className="flex flex-wrap gap-2">
               <button
                 type="button"
                 onClick={cycleTestMode}
@@ -562,6 +551,17 @@ export default function SurahDetail() {
               <p className="mt-2 text-xs text-muted">{t('ayahRange.selectHint')}</p>
             )}
           </div>
+
+          <button
+            type="button"
+            onClick={() => setOptionsOpen(false)}
+            className="flex w-full items-center justify-center gap-1.5 border-b border-emerald/10 py-2 text-xs font-medium text-muted transition active:bg-emerald/5"
+          >
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" aria-hidden="true">
+              <path d="m6 15 6-6 6 6" />
+            </svg>
+            {t('detail.hideOptions')}
+          </button>
         </div>
       )}
 

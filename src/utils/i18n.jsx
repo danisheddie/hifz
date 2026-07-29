@@ -70,6 +70,7 @@ const en = {
   'detail.goToAyahPlaceholder': 'Ayah number (1–{n})',
   'detail.go': 'Go',
   'detail.toggleOptions': 'Show/hide status and options',
+  'detail.hideOptions': 'Hide',
 
   'bookmark.add': 'Bookmark this ayah',
   'bookmark.remove': 'Remove bookmark',
@@ -103,9 +104,6 @@ const en = {
   'tafsir.toggle': 'Show tafsir',
   'tafsir.loading': 'Loading tafsir…',
   'tafsir.unable': 'Couldn’t load tafsir. Check your connection and try again.',
-
-  'options.reading': 'Reading',
-  'options.practice': 'Practice',
 
   'test.mode.off': 'Test yourself: Off',
   'test.mode.hide': 'Test yourself: Hidden',
@@ -251,6 +249,7 @@ const ms = {
   'detail.goToAyahPlaceholder': 'Nombor ayat (1–{n})',
   'detail.go': 'Pergi',
   'detail.toggleOptions': 'Tunjuk/sembunyi status dan pilihan',
+  'detail.hideOptions': 'Sembunyi',
 
   'bookmark.add': 'Tanda buku ayat ini',
   'bookmark.remove': 'Buang tanda buku',
@@ -284,9 +283,6 @@ const ms = {
   'tafsir.toggle': 'Tunjuk tafsir',
   'tafsir.loading': 'Memuatkan tafsir…',
   'tafsir.unable': 'Tidak dapat memuatkan tafsir. Semak sambungan anda dan cuba lagi.',
-
-  'options.reading': 'Bacaan',
-  'options.practice': 'Latihan',
 
   'test.mode.off': 'Uji diri: Tutup',
   'test.mode.hide': 'Uji diri: Disembunyikan',
@@ -432,6 +428,7 @@ const id = {
   'detail.goToAyahPlaceholder': 'Nomor ayat (1–{n})',
   'detail.go': 'Pergi',
   'detail.toggleOptions': 'Tampilkan/sembunyikan status dan opsi',
+  'detail.hideOptions': 'Sembunyikan',
 
   'bookmark.add': 'Bookmark ayat ini',
   'bookmark.remove': 'Hapus bookmark',
@@ -465,9 +462,6 @@ const id = {
   'tafsir.toggle': 'Tampilkan tafsir',
   'tafsir.loading': 'Memuat tafsir…',
   'tafsir.unable': 'Tidak dapat memuat tafsir. Periksa koneksi Anda dan coba lagi.',
-
-  'options.reading': 'Bacaan',
-  'options.practice': 'Latihan',
 
   'test.mode.off': 'Uji diri: Mati',
   'test.mode.hide': 'Uji diri: Disembunyikan',
