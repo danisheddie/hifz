@@ -10,6 +10,7 @@ import SurahIndex from './components/SurahIndex'
 import SurahDetail from './components/SurahDetail'
 import RevisionScreen from './components/RevisionScreen'
 import Settings from './components/Settings'
+import Help from './components/Help'
 import { syncNow } from './utils/cloudSync'
 
 export default function App() {
@@ -32,6 +33,7 @@ export default function App() {
       <Route path="/surah/:number" element={<SurahDetail />} />
       <Route path="/revision" element={<RevisionScreen />} />
       <Route path="/settings" element={<Settings />} />
+      <Route path="/help" element={<Help />} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   )

@@ -121,6 +121,33 @@ const en = {
   'settings.theme.sepia': 'Sepia',
   'settings.yourName': 'Your name',
 
+  'help.title': 'Help & tips',
+  'help.intro': 'A quick guide to what you can do in Hifz.',
+  'help.section.gettingStarted.title': 'Getting started',
+  'help.section.gettingStarted.body':
+    'Browse all 114 surahs from the Surahs tab. Tap any surah to open it, read the Arabic and translation, and track your memorization as you go. Your dashboard shows an overview once you’ve started.',
+  'help.section.status.title': 'Marking your progress',
+  'help.section.status.body':
+    'Every surah has a status: New, Memorizing, Memorized, or Needs revision. Tap the buttons at the top of a surah to set it, or use Select on the Surahs list to mark several at once.',
+  'help.section.ayahRange.title': 'Marking specific ayat',
+  'help.section.ayahRange.body':
+    'Only memorized part of a surah? Tap “Mark ayat” inside a surah, then tap the first and last ayah of the range you want — a small menu lets you set its status. Each ayah shows a tiny colored dot for its own progress.',
+  'help.section.audio.title': 'Listening & repeating',
+  'help.section.audio.body':
+    'Tap the play button on any ayah to hear it recited. “Repeat ×n” controls how many times it repeats. “Loop range” lets you select several ayat to play and repeat together — handy for reviewing a passage.',
+  'help.section.testYourself.title': 'Test yourself',
+  'help.section.testYourself.body':
+    'The “Test yourself” chip hides the Arabic text (or shows just the first word) so you can recall it from memory, then reveal it by tapping. Audio still plays normally, so you can test by listening too.',
+  'help.section.notesTafsir.title': 'Notes & tafsir',
+  'help.section.notesTafsir.body':
+    'Add your own reflections (tadabbur) to any surah in the notes section — they save automatically. Tap “Tafsir” under any ayah for a short explanation of its meaning.',
+  'help.section.revision.title': 'Staying on top of revision',
+  'help.section.revision.body':
+    'Surahs (or ayat) flagged “Needs revision” appear on your dashboard and on the Revision page. Once you’ve reviewed them and feel confident, tap “Mark confident” to clear the flag.',
+  'help.section.sync.title': 'Backing up your progress',
+  'help.section.sync.body':
+    'Turn on Back up & sync in Settings to keep your progress safe and synced across devices, using a sync code or your Google account. Everything still works offline without it.',
+
   'sync.title': 'Back up & sync',
   'sync.intro':
     'Optional. Keep your progress backed up and in sync across devices — sign in with Google, or use a private sync code. The app works fully without this.',
@@ -263,6 +290,33 @@ const ms = {
   'settings.theme.sepia': 'Sepia',
   'settings.yourName': 'Nama anda',
 
+  'help.title': 'Bantuan & petua',
+  'help.intro': 'Panduan ringkas tentang apa yang boleh anda lakukan dalam Hifz.',
+  'help.section.gettingStarted.title': 'Bermula',
+  'help.section.gettingStarted.body':
+    'Layari kesemua 114 surah dari tab Surah. Ketik mana-mana surah untuk membukanya, baca teks Arab dan terjemahan, serta jejak hafazan anda semasa anda maju. Papan pemuka anda memaparkan gambaran keseluruhan sebaik sahaja anda bermula.',
+  'help.section.status.title': 'Menandakan kemajuan anda',
+  'help.section.status.body':
+    'Setiap surah mempunyai status: Baharu, Sedang dihafal, Sudah dihafal, atau Perlu diulang kaji. Ketik butang di bahagian atas sesuatu surah untuk menetapkannya, atau guna Pilih pada senarai Surah untuk menandakan beberapa surah sekali gus.',
+  'help.section.ayahRange.title': 'Menandakan ayat tertentu',
+  'help.section.ayahRange.body':
+    'Hanya menghafal sebahagian daripada surah? Ketik “Tandakan ayat” dalam surah, kemudian ketik ayat pertama dan terakhir bagi julat yang anda mahu — menu kecil membolehkan anda menetapkan statusnya. Setiap ayat memaparkan titik warna kecil untuk kemajuannya sendiri.',
+  'help.section.audio.title': 'Mendengar & mengulang',
+  'help.section.audio.body':
+    'Ketik butang main pada mana-mana ayat untuk mendengarnya dibacakan. “Ulang ×n” mengawal berapa kali ia diulang. “Gelung julat” membolehkan anda memilih beberapa ayat untuk dimainkan dan diulang bersama — berguna untuk mengkaji semula satu petikan.',
+  'help.section.testYourself.title': 'Uji diri anda',
+  'help.section.testYourself.body':
+    'Cip “Uji diri” menyembunyikan teks Arab (atau memaparkan hanya perkataan pertama) supaya anda boleh mengingatinya dari memori, kemudian dedahkannya dengan mengetik. Audio masih dimainkan seperti biasa, jadi anda boleh menguji dengan mendengar juga.',
+  'help.section.notesTafsir.title': 'Nota & tafsir',
+  'help.section.notesTafsir.body':
+    'Tambah renungan (tadabbur) anda sendiri pada mana-mana surah dalam bahagian nota — ia disimpan secara automatik. Ketik “Tafsir” di bawah mana-mana ayat untuk penjelasan ringkas tentang maksudnya.',
+  'help.section.revision.title': 'Kekal mengulang kaji',
+  'help.section.revision.body':
+    'Surah (atau ayat) yang ditandakan “Perlu diulang kaji” akan dipaparkan pada papan pemuka anda dan di halaman Ulang kaji. Setelah anda mengulang kajinya dan berasa yakin, ketik “Tandakan yakin” untuk mengosongkan tanda tersebut.',
+  'help.section.sync.title': 'Menyandarkan kemajuan anda',
+  'help.section.sync.body':
+    'Hidupkan Sandaran & penyegerakan dalam Tetapan untuk memastikan kemajuan anda selamat dan segerak merentas peranti, menggunakan kod penyegerakan atau akaun Google anda. Semuanya masih berfungsi luar talian tanpanya.',
+
   'sync.title': 'Sandaran & penyegerakan',
   'sync.intro':
     'Pilihan. Kekalkan kemajuan anda tersandar dan segerak merentas peranti — log masuk dengan Google, atau guna kod penyegerakan peribadi. Aplikasi berfungsi sepenuhnya tanpa ini.',
@@ -404,6 +458,33 @@ const id = {
   'settings.theme.dark': 'Gelap',
   'settings.theme.sepia': 'Sepia',
   'settings.yourName': 'Nama Anda',
+
+  'help.title': 'Bantuan & tips',
+  'help.intro': 'Panduan singkat tentang apa yang bisa Anda lakukan di Hifz.',
+  'help.section.gettingStarted.title': 'Memulai',
+  'help.section.gettingStarted.body':
+    'Jelajahi semua 114 surah dari tab Surah. Ketuk surah mana pun untuk membukanya, baca teks Arab dan terjemahan, serta lacak hafalan Anda seiring waktu. Dasbor Anda akan menampilkan ringkasan begitu Anda mulai.',
+  'help.section.status.title': 'Menandai kemajuan Anda',
+  'help.section.status.body':
+    'Setiap surah memiliki status: Baru, Sedang dihafal, Sudah dihafal, atau Perlu diulang. Ketuk tombol di bagian atas surah untuk menetapkannya, atau gunakan Pilih pada daftar Surah untuk menandai beberapa surah sekaligus.',
+  'help.section.ayahRange.title': 'Menandai ayat tertentu',
+  'help.section.ayahRange.body':
+    'Hanya menghafal sebagian dari surah? Ketuk “Tandai ayat” di dalam surah, lalu ketuk ayat pertama dan terakhir dari rentang yang Anda inginkan — menu kecil memungkinkan Anda menetapkan statusnya. Setiap ayat menampilkan titik warna kecil untuk kemajuannya sendiri.',
+  'help.section.audio.title': 'Mendengarkan & mengulang',
+  'help.section.audio.body':
+    'Ketuk tombol putar pada ayat mana pun untuk mendengarkannya dibacakan. “Ulang ×n” mengatur berapa kali diulang. “Putar ulang rentang” memungkinkan Anda memilih beberapa ayat untuk diputar dan diulang bersama — berguna untuk mengulas satu bagian.',
+  'help.section.testYourself.title': 'Uji diri Anda',
+  'help.section.testYourself.body':
+    'Chip “Uji diri” menyembunyikan teks Arab (atau hanya menampilkan kata pertama) sehingga Anda bisa mengingatnya dari hafalan, lalu tampilkan dengan mengetuk. Audio tetap diputar seperti biasa, jadi Anda juga bisa menguji dengan mendengarkan.',
+  'help.section.notesTafsir.title': 'Catatan & tafsir',
+  'help.section.notesTafsir.body':
+    'Tambahkan refleksi (tadabbur) Anda sendiri pada surah mana pun di bagian catatan — tersimpan otomatis. Ketuk “Tafsir” di bawah ayat mana pun untuk penjelasan singkat maknanya.',
+  'help.section.revision.title': 'Tetap mengulang',
+  'help.section.revision.body':
+    'Surah (atau ayat) yang ditandai “Perlu diulang” akan muncul di dasbor Anda dan di halaman Ulang. Setelah Anda mengulasnya dan merasa yakin, ketuk “Tandai yakin” untuk menghapus tandanya.',
+  'help.section.sync.title': 'Mencadangkan kemajuan Anda',
+  'help.section.sync.body':
+    'Aktifkan Cadangkan & sinkronkan di Pengaturan untuk menjaga kemajuan Anda tetap aman dan tersinkron di berbagai perangkat, menggunakan kode sinkronisasi atau akun Google Anda. Semuanya tetap berfungsi offline tanpa ini.',
 
   'sync.title': 'Cadangkan & sinkronkan',
   'sync.intro':

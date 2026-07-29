@@ -30,6 +30,22 @@ function SettingsLink({ t, className = '' }) {
   )
 }
 
+function HelpLink({ t, className = '' }) {
+  return (
+    <Link
+      to="/help"
+      aria-label={t('help.title')}
+      className={`rounded-full p-1.5 text-muted transition active:scale-90 ${className}`}
+    >
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+        <circle cx="12" cy="12" r="10" />
+        <path d="M9.5 9a2.5 2.5 0 0 1 4.9.75c0 1.65-2.4 2-2.4 3.5" />
+        <circle cx="12" cy="17" r="0.1" fill="currentColor" stroke="currentColor" strokeWidth="1.5" />
+      </svg>
+    </Link>
+  )
+}
+
 // A warm, unhurried message reflecting where things stand right now — never
 // a nudge about time elapsed or a count of what's "overdue".
 function greetingMessage(t, { hasProgress, revisionCount, memorizing }) {
@@ -68,7 +84,10 @@ export default function Home() {
   if (!hasProgress) {
     return (
       <div className="relative mx-auto flex h-screen max-w-2xl flex-col items-center justify-center px-6 text-center">
-        <SettingsLink t={t} className="absolute right-5 top-5" />
+        <div className="absolute right-5 top-5 flex items-center gap-1">
+          <HelpLink t={t} />
+          <SettingsLink t={t} />
+        </div>
         <p className="font-quran text-3xl leading-loose text-emerald sm:text-4xl" dir="rtl" lang="ar">
           حِفْظ
         </p>
@@ -87,7 +106,10 @@ export default function Home() {
         <p className="font-quran text-2xl leading-none text-emerald" dir="rtl" lang="ar">
           حِفْظ
         </p>
-        <SettingsLink t={t} />
+        <div className="flex items-center gap-1">
+          <HelpLink t={t} />
+          <SettingsLink t={t} />
+        </div>
       </div>
       <h1 className="mt-3 text-2xl font-semibold text-emerald">{greeting}</h1>
       <p className="mt-1 text-sm text-muted">{message}</p>
