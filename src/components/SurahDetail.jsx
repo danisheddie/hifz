@@ -61,6 +61,11 @@ export default function SurahDetail() {
   const [ayahRangeMode, setAyahRangeMode] = useState(false)
   const [ayahRange, setAyahRange] = useState({ start: null, end: null })
 
+  // --- options dropdown (status/reading/practice) -------------------------
+  // Sticky below the header so it stays reachable while scrolled deep into a
+  // long surah, and collapsible so it doesn't permanently eat reading space.
+  const [optionsOpen, setOptionsOpen] = useState(true)
+
   // --- bookmarks -----------------------------------------------------------
   const [bookmarkedSet, setBookmarkedSet] = useState(
     () => new Set(getBookmarks().filter((b) => b.surah === surahNumber).map((b) => b.ayah))
@@ -115,6 +120,7 @@ export default function SurahDetail() {
     setRange({ start: null, end: null })
     setAyahRangeMode(false)
     setAyahRange({ start: null, end: null })
+    setOptionsOpen(true)
     setBookmarkedSet(new Set(getBookmarks().filter((b) => b.surah === surahNumber).map((b) => b.ayah)))
     setAyahSearchOpen(false)
     setAyahSearchValue('')
@@ -389,16 +395,39 @@ export default function SurahDetail() {
             <path d="M15 18l-6-6 6-6" />
           </svg>
         </button>
-        <div className="text-center">
-          <p className="text-sm font-semibold text-emerald">
-            {surah?.englishName || `Surah ${surahNumber}`}
-          </p>
+        <button
+          type="button"
+          onClick={() => setOptionsOpen((o) => !o)}
+          disabled={!surah}
+          aria-expanded={optionsOpen}
+          aria-label={t('detail.toggleOptions')}
+          className="flex flex-col items-center rounded-lg px-2 py-1 text-center transition active:scale-95 disabled:active:scale-100"
+        >
+          <span className="flex items-center gap-1">
+            <span className="text-sm font-semibold text-emerald">
+              {surah?.englishName || `Surah ${surahNumber}`}
+            </span>
+            {surah && (
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.5"
+                className={`shrink-0 text-muted transition-transform ${optionsOpen ? 'rotate-180' : ''}`}
+                aria-hidden="true"
+              >
+                <path d="m6 9 6 6 6-6" />
+              </svg>
+            )}
+          </span>
           {surah && (
-            <p className="font-quran text-base text-emerald" dir="rtl" lang="ar">
+            <span className="font-quran text-base text-emerald" dir="rtl" lang="ar">
               {surah.name}
-            </p>
+            </span>
           )}
-        </div>
+        </button>
         <button
           type="button"
           onClick={toggleAyahSearch}
@@ -435,8 +464,8 @@ export default function SurahDetail() {
         </div>
       )}
 
-      {surah && (
-        <>
+      {surah && optionsOpen && (
+        <div className="sticky top-[85px] z-[5] bg-paper/95 backdrop-blur">
           <div className="border-b border-emerald/5 px-5 py-3">
             <StatusControl status={status} onChange={changeStatus} />
             {entry.ranges && entry.ranges.length > 0 && (
@@ -539,10 +568,10 @@ export default function SurahDetail() {
               <p className="mt-2 text-xs text-muted">{t('ayahRange.selectHint')}</p>
             )}
           </div>
-
-          <NotesEditor surahNumber={surahNumber} />
-        </>
+        </div>
       )}
+
+      {surah && <NotesEditor surahNumber={surahNumber} />}
 
       <main className={`px-5 pt-4 ${hasCommittedAyahRange ? 'pb-40' : 'pb-28'}`}>
         {loading && (

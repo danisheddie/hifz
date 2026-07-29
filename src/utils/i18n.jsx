@@ -69,6 +69,7 @@ const en = {
   'detail.goToAyah': 'Go to ayah',
   'detail.goToAyahPlaceholder': 'Ayah number (1–{n})',
   'detail.go': 'Go',
+  'detail.toggleOptions': 'Show/hide status and options',
 
   'bookmark.add': 'Bookmark this ayah',
   'bookmark.remove': 'Remove bookmark',
@@ -249,6 +250,7 @@ const ms = {
   'detail.goToAyah': 'Pergi ke ayat',
   'detail.goToAyahPlaceholder': 'Nombor ayat (1–{n})',
   'detail.go': 'Pergi',
+  'detail.toggleOptions': 'Tunjuk/sembunyi status dan pilihan',
 
   'bookmark.add': 'Tanda buku ayat ini',
   'bookmark.remove': 'Buang tanda buku',
@@ -429,6 +431,7 @@ const id = {
   'detail.goToAyah': 'Ke ayat',
   'detail.goToAyahPlaceholder': 'Nomor ayat (1–{n})',
   'detail.go': 'Pergi',
+  'detail.toggleOptions': 'Tampilkan/sembunyikan status dan opsi',
 
   'bookmark.add': 'Bookmark ayat ini',
   'bookmark.remove': 'Hapus bookmark',
