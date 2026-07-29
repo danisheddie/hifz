@@ -389,39 +389,16 @@ export default function SurahDetail() {
     <div className="mx-auto h-screen max-w-2xl overflow-y-auto">
       <header className="sticky top-0 z-10 flex items-center justify-between border-b border-emerald/5 bg-paper/90 px-5 py-4 backdrop-blur">
         <BackButton onClick={() => navigate('/surahs')} />
-        <button
-          type="button"
-          onClick={() => setOptionsOpen((o) => !o)}
-          disabled={!surah}
-          aria-expanded={optionsOpen}
-          aria-label={t('detail.toggleOptions')}
-          className="flex flex-col items-center rounded-lg px-2 py-1 text-center transition active:scale-95 disabled:active:scale-100"
-        >
-          <span className="flex items-center gap-1">
-            <span className="text-sm font-semibold text-emerald">
-              {surah?.englishName || `Surah ${surahNumber}`}
-            </span>
-            {surah && (
-              <svg
-                width="14"
-                height="14"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2.5"
-                className={`shrink-0 text-muted transition-transform ${optionsOpen ? 'rotate-180' : ''}`}
-                aria-hidden="true"
-              >
-                <path d="m6 9 6 6 6-6" />
-              </svg>
-            )}
-          </span>
+        <div className="text-center">
+          <p className="text-sm font-semibold text-emerald">
+            {surah?.englishName || `Surah ${surahNumber}`}
+          </p>
           {surah && (
-            <span className="font-quran text-base text-emerald" dir="rtl" lang="ar">
+            <p className="font-quran text-base text-emerald" dir="rtl" lang="ar">
               {surah.name}
-            </span>
+            </p>
           )}
-        </button>
+        </div>
         <button
           type="button"
           onClick={toggleAyahSearch}
@@ -436,6 +413,19 @@ export default function SurahDetail() {
           </svg>
         </button>
       </header>
+
+      {surah && !optionsOpen && (
+        <button
+          type="button"
+          onClick={() => setOptionsOpen(true)}
+          className="flex w-full items-center justify-center gap-1.5 border-b border-emerald/5 py-2 text-xs font-medium text-muted transition active:bg-emerald/5"
+        >
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" aria-hidden="true">
+            <path d="m6 9 6 6 6-6" />
+          </svg>
+          {t('detail.showOptions')}
+        </button>
+      )}
 
       {surah && ayahSearchOpen && (
         <div className="border-b border-emerald/5 px-5 py-3">
