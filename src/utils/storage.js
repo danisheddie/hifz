@@ -6,10 +6,10 @@ const KEYS = {
   surahStatus: 'hifz:surahStatus',
   onboarded: 'hifz:onboarded',
   name: 'hifz:userName',
+  bookmarks: 'hifz:bookmarks',
 }
 
-// The four memorization states a surah can be in (MVP is per-surah; a
-// per-ayah model is a heavier future extension — confirm before building it).
+// The four memorization states a surah (or an ayah range within it) can be in.
 export const STATUSES = ['new', 'memorizing', 'memorized', 'revision']
 
 // 'revision' surahs are still memorized (just flagged as needing review), so
@@ -267,6 +267,30 @@ export function getStatusCounts() {
     counts[status] = (counts[status] || 0) + 1
   }
   return counts
+}
+
+// --- bookmarks -------------------------------------------------------------
+// A flat list of { surah, ayah, createdAt } — one entry per bookmarked ayah
+// (surah/ayah numbers, not a global ayah id), keyed by surah+ayah so
+// toggling is idempotent regardless of how it's called.
+
+export function getBookmarks() {
+  return read(KEYS.bookmarks, [])
+}
+
+export function isBookmarked(surah, ayah) {
+  return getBookmarks().some((b) => b.surah === surah && b.ayah === ayah)
+}
+
+export function toggleBookmark(surah, ayah) {
+  const list = getBookmarks()
+  const idx = list.findIndex((b) => b.surah === surah && b.ayah === ayah)
+  const next =
+    idx >= 0
+      ? list.filter((_, i) => i !== idx)
+      : [...list, { surah, ayah, createdAt: new Date().toISOString() }]
+  write(KEYS.bookmarks, next)
+  return next
 }
 
 // --- onboarding + name ---------------------------------------------------

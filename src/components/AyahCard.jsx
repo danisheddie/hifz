@@ -39,6 +39,10 @@ export default function AyahCard({
   rangeEndpoint, // 'start' | 'end' | null — which end of the range this ayah is
   onSelectRange,
   ayahStatus = 'new',
+  bookmarked = false,
+  onToggleBookmark,
+  highlighted = false,
+  cardRef,
 }) {
   const { t } = useLang()
   const arabicSize = ARABIC_SIZE[size] || ARABIC_SIZE.m
@@ -75,8 +79,9 @@ export default function AyahCard({
 
   return (
     <article
+      ref={cardRef}
       className={`border-b border-emerald/5 py-6 last:border-b-0 transition-colors ${
-        isPlaying ? 'bg-amber/5' : inRange ? 'bg-emerald/5' : ''
+        isPlaying || highlighted ? 'bg-amber/5' : inRange ? 'bg-emerald/5' : ''
       }`}
     >
       <div className="flex items-start gap-3">
@@ -93,6 +98,29 @@ export default function AyahCard({
               title={ayahStatus}
               className={`h-1.5 w-1.5 shrink-0 rounded-full ${STATUS_STYLE[ayahStatus].dot}`}
             />
+          )}
+          {onToggleBookmark && (
+            <button
+              type="button"
+              onClick={onToggleBookmark}
+              aria-pressed={bookmarked}
+              aria-label={bookmarked ? t('bookmark.remove') : t('bookmark.add')}
+              className={`rounded-full p-1 transition active:scale-90 ${
+                bookmarked ? 'text-amber' : 'text-muted'
+              }`}
+            >
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill={bookmarked ? 'currentColor' : 'none'}
+                stroke="currentColor"
+                strokeWidth="2"
+                aria-hidden="true"
+              >
+                <path d="M6 3a1 1 0 0 0-1 1v17l7-4 7 4V4a1 1 0 0 0-1-1H6Z" />
+              </svg>
+            </button>
           )}
         </div>
 

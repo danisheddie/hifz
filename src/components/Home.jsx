@@ -5,15 +5,17 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { listSurahs } from '../utils/api'
-import { getSurahStatusMap, getName, hasRevisionRanges } from '../utils/storage'
+import { getSurahStatusMap, getName, hasRevisionRanges, getBookmarks } from '../utils/storage'
 import { computeProgress } from '../utils/progress'
 import { daysAgo, formatLastRevised } from '../utils/dateUtils'
 import { useLang } from '../utils/i18n.jsx'
 import StatusBadge from './StatusBadge'
 
 // Keep the dashboard preview short — the full, sortable list lives at
-// /revision so this section never grows to dominate the home screen.
+// /revision (or /bookmarks) so these sections never grow to dominate the
+// home screen.
 const REVISION_PREVIEW_LIMIT = 3
+const BOOKMARK_PREVIEW_LIMIT = 3
 
 function SettingsLink({ t, className = '' }) {
   return (
@@ -62,6 +64,7 @@ export default function Home() {
   const [progress, setProgress] = useState(null)
   const [memorizing, setMemorizing] = useState([])
   const [revision, setRevision] = useState([])
+  const [bookmarks, setBookmarks] = useState([])
 
   useEffect(() => {
     const statusMap = getSurahStatusMap()
@@ -74,10 +77,18 @@ export default function Home() {
           .filter((s) => hasRevisionRanges(s.entry))
           .sort((a, b) => daysAgo(b.entry?.lastRevised) - daysAgo(a.entry?.lastRevised))
       )
+      const bySurah = new Map(surahs.map((s) => [s.number, s]))
+      setBookmarks(
+        getBookmarks()
+          .map((b) => ({ ...b, surahInfo: bySurah.get(b.surah) }))
+          .filter((b) => b.surahInfo)
+          .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+      )
     })
   }, [])
 
-  const hasProgress = progress && (progress.surahsMemorized > 0 || memorizing.length > 0)
+  const hasProgress =
+    progress && (progress.surahsMemorized > 0 || memorizing.length > 0 || bookmarks.length > 0)
   const greeting = name ? t('home.greetingName', { name }) : t('home.greeting')
   const message = greetingMessage(t, { hasProgress, revisionCount: revision.length, memorizing })
 
@@ -186,6 +197,43 @@ export default function Home() {
                         </span>
                       </span>
                       <StatusBadge status="revision" />
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
+
+          {bookmarks.length > 0 && (
+            <section className="mt-8">
+              <Link to="/bookmarks" className="flex items-center justify-between">
+                <h2 className="text-sm font-semibold text-emerald">
+                  {t('dashboard.bookmarkedAyat')}
+                </h2>
+                {bookmarks.length > BOOKMARK_PREVIEW_LIMIT && (
+                  <span className="text-xs font-medium text-muted">
+                    {t('dashboard.seeAll', { n: bookmarks.length })}
+                  </span>
+                )}
+              </Link>
+              <ul className="mt-3 flex flex-col gap-2">
+                {bookmarks.slice(0, BOOKMARK_PREVIEW_LIMIT).map((b) => (
+                  <li key={`${b.surah}-${b.ayah}`}>
+                    <Link
+                      to={`/surah/${b.surah}?ayah=${b.ayah}`}
+                      className="flex items-center justify-between gap-3 rounded-xl border border-amber/20 bg-amber/5 px-4 py-3 transition active:scale-[0.99]"
+                    >
+                      <span>
+                        <span className="block text-[15px] font-medium text-emerald">
+                          {b.surahInfo.englishName}
+                        </span>
+                        <span className="block text-xs text-muted">
+                          {t('ayahRange.labelSingle', { n: b.ayah })}
+                        </span>
+                      </span>
+                      <span className="font-quran shrink-0 text-lg text-emerald" dir="rtl" lang="ar">
+                        {b.surahInfo.name}
+                      </span>
                     </Link>
                   </li>
                 ))}

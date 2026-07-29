@@ -66,6 +66,13 @@ const en = {
   'detail.unable': 'Unable to load. Please check your connection.',
   'detail.tryAgain': 'Try again',
   'detail.ayahProgress': '{done} of {total} ayat memorized',
+  'detail.goToAyah': 'Go to ayah',
+  'detail.goToAyahPlaceholder': 'Ayah number (1–{n})',
+  'detail.go': 'Go',
+
+  'bookmark.add': 'Bookmark this ayah',
+  'bookmark.remove': 'Remove bookmark',
+  'bookmarks.empty': 'No bookmarked ayat yet.',
 
   'ayahRange.mark': 'Mark ayat',
   'ayahRange.selectHint': 'Tap two ayat to set the range.',
@@ -83,6 +90,7 @@ const en = {
   'dashboard.lastRevisedYesterday': 'Revised yesterday',
   'dashboard.lastRevisedDaysAgo': 'Revised {n} days ago',
   'dashboard.seeAll': 'See all {n}',
+  'dashboard.bookmarkedAyat': 'Bookmarked ayat',
 
   'revision.empty': 'Nothing needs revision right now.',
   'revision.markConfident': 'Mark confident',
@@ -132,6 +140,9 @@ const en = {
   'help.section.ayahRange.title': 'Marking specific ayat',
   'help.section.ayahRange.body':
     'Only memorized part of a surah? Tap “Mark ayat” inside a surah, then tap the first and last ayah of the range you want — a small menu lets you set its status. Each ayah shows a tiny colored dot for its own progress.',
+  'help.section.bookmarks.title': 'Bookmarks & jumping to an ayah',
+  'help.section.bookmarks.body':
+    'Tap the bookmark icon next to any ayah’s play button to save it — bookmarked ayat show up on your dashboard and the Bookmarks page, one tap away. Inside a surah, tap the search icon in the header to jump straight to an ayah by number.',
   'help.section.audio.title': 'Listening & repeating',
   'help.section.audio.body':
     'Tap the play button on any ayah to hear it recited. “Repeat ×n” controls how many times it repeats. “Loop range” lets you select several ayat to play and repeat together — handy for reviewing a passage.',
@@ -235,6 +246,13 @@ const ms = {
   'detail.unable': 'Tidak dapat dimuatkan. Sila semak sambungan anda.',
   'detail.tryAgain': 'Cuba lagi',
   'detail.ayahProgress': '{done} daripada {total} ayat dihafal',
+  'detail.goToAyah': 'Pergi ke ayat',
+  'detail.goToAyahPlaceholder': 'Nombor ayat (1–{n})',
+  'detail.go': 'Pergi',
+
+  'bookmark.add': 'Tanda buku ayat ini',
+  'bookmark.remove': 'Buang tanda buku',
+  'bookmarks.empty': 'Belum ada ayat ditanda buku.',
 
   'ayahRange.mark': 'Tandakan ayat',
   'ayahRange.selectHint': 'Ketik dua ayat untuk menetapkan julat.',
@@ -252,6 +270,7 @@ const ms = {
   'dashboard.lastRevisedYesterday': 'Diulang kaji semalam',
   'dashboard.lastRevisedDaysAgo': 'Diulang kaji {n} hari lalu',
   'dashboard.seeAll': 'Lihat semua {n}',
+  'dashboard.bookmarkedAyat': 'Ayat ditanda buku',
 
   'revision.empty': 'Tiada apa yang perlu diulang kaji sekarang.',
   'revision.markConfident': 'Tandakan yakin',
@@ -301,6 +320,9 @@ const ms = {
   'help.section.ayahRange.title': 'Menandakan ayat tertentu',
   'help.section.ayahRange.body':
     'Hanya menghafal sebahagian daripada surah? Ketik “Tandakan ayat” dalam surah, kemudian ketik ayat pertama dan terakhir bagi julat yang anda mahu — menu kecil membolehkan anda menetapkan statusnya. Setiap ayat memaparkan titik warna kecil untuk kemajuannya sendiri.',
+  'help.section.bookmarks.title': 'Tanda buku & melompat ke ayat',
+  'help.section.bookmarks.body':
+    'Ketik ikon tanda buku di sebelah butang main mana-mana ayat untuk menyimpannya — ayat yang ditanda buku dipaparkan pada papan pemuka anda dan halaman Tanda Buku, sejauh satu ketikan. Di dalam surah, ketik ikon carian pada pengepala untuk terus melompat ke sesuatu ayat mengikut nombor.',
   'help.section.audio.title': 'Mendengar & mengulang',
   'help.section.audio.body':
     'Ketik butang main pada mana-mana ayat untuk mendengarnya dibacakan. “Ulang ×n” mengawal berapa kali ia diulang. “Gelung julat” membolehkan anda memilih beberapa ayat untuk dimainkan dan diulang bersama — berguna untuk mengkaji semula satu petikan.',
@@ -404,6 +426,13 @@ const id = {
   'detail.unable': 'Tidak dapat memuat. Silakan periksa koneksi Anda.',
   'detail.tryAgain': 'Coba lagi',
   'detail.ayahProgress': '{done} dari {total} ayat dihafal',
+  'detail.goToAyah': 'Ke ayat',
+  'detail.goToAyahPlaceholder': 'Nomor ayat (1–{n})',
+  'detail.go': 'Pergi',
+
+  'bookmark.add': 'Bookmark ayat ini',
+  'bookmark.remove': 'Hapus bookmark',
+  'bookmarks.empty': 'Belum ada ayat yang di-bookmark.',
 
   'ayahRange.mark': 'Tandai ayat',
   'ayahRange.selectHint': 'Ketuk dua ayat untuk menetapkan rentang.',
@@ -421,6 +450,7 @@ const id = {
   'dashboard.lastRevisedYesterday': 'Diulang kemarin',
   'dashboard.lastRevisedDaysAgo': 'Diulang {n} hari lalu',
   'dashboard.seeAll': 'Lihat semua {n}',
+  'dashboard.bookmarkedAyat': 'Ayat yang di-bookmark',
 
   'revision.empty': 'Tidak ada yang perlu diulang saat ini.',
   'revision.markConfident': 'Tandai yakin',
@@ -470,6 +500,9 @@ const id = {
   'help.section.ayahRange.title': 'Menandai ayat tertentu',
   'help.section.ayahRange.body':
     'Hanya menghafal sebagian dari surah? Ketuk “Tandai ayat” di dalam surah, lalu ketuk ayat pertama dan terakhir dari rentang yang Anda inginkan — menu kecil memungkinkan Anda menetapkan statusnya. Setiap ayat menampilkan titik warna kecil untuk kemajuannya sendiri.',
+  'help.section.bookmarks.title': 'Bookmark & lompat ke ayat',
+  'help.section.bookmarks.body':
+    'Ketuk ikon bookmark di sebelah tombol putar ayat mana pun untuk menyimpannya — ayat yang di-bookmark muncul di dasbor Anda dan halaman Bookmark, hanya satu ketukan. Di dalam surah, ketuk ikon pencarian di header untuk langsung melompat ke ayat tertentu berdasarkan nomornya.',
   'help.section.audio.title': 'Mendengarkan & mengulang',
   'help.section.audio.body':
     'Ketuk tombol putar pada ayat mana pun untuk mendengarkannya dibacakan. “Ulang ×n” mengatur berapa kali diulang. “Putar ulang rentang” memungkinkan Anda memilih beberapa ayat untuk diputar dan diulang bersama — berguna untuk mengulas satu bagian.',

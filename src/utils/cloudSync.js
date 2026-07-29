@@ -10,7 +10,7 @@ import { WORKER_URL, googleAuthConfigured } from '../config'
 
 // localStorage keys that make up a syncable snapshot. Device-specific keys
 // (the sync code/session themselves) are deliberately excluded.
-export const SYNC_KEYS = ['hifz:settings', 'hifz:surahStatus', 'hifz:userName']
+export const SYNC_KEYS = ['hifz:settings', 'hifz:surahStatus', 'hifz:userName', 'hifz:bookmarks']
 
 const CODE_KEY = 'hifz:syncCode'
 const GTOKEN_KEY = 'hifz:gToken'
@@ -156,6 +156,18 @@ function mergeSurahStatus(a = {}, b = {}) {
   return out
 }
 
+// Union of both devices' bookmarks, deduped by surah+ayah (keep whichever
+// side saw it first) — a bookmark isn't the kind of thing that needs
+// last-write-wins, unlike a status that can genuinely change.
+function mergeBookmarks(a = [], b = []) {
+  const map = new Map()
+  for (const item of [...a, ...b]) {
+    const key = `${item.surah}:${item.ayah}`
+    if (!map.has(key)) map.set(key, item)
+  }
+  return [...map.values()]
+}
+
 export function mergeSnapshots(a = {}, b = {}) {
   const aT = a._updatedAt || 0
   const bT = b._updatedAt || 0
@@ -170,6 +182,7 @@ export function mergeSnapshots(a = {}, b = {}) {
     'hifz:settings': newer['hifz:settings'] ?? a['hifz:settings'] ?? b['hifz:settings'],
     'hifz:surahStatus': mergeSurahStatus(a['hifz:surahStatus'], b['hifz:surahStatus']),
     'hifz:userName': name,
+    'hifz:bookmarks': mergeBookmarks(a['hifz:bookmarks'], b['hifz:bookmarks']),
     _updatedAt: Math.max(aT, bT),
   }
 }

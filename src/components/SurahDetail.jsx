@@ -4,7 +4,7 @@
 // mode.
 
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { getSurah, audioUrlAt, AUDIO_BITRATES } from '../utils/api'
 import {
   getSettings,
@@ -14,6 +14,8 @@ import {
   setAyahRangeStatus,
   getAyahStatus,
   getMemorizedAyahCount,
+  getBookmarks,
+  toggleBookmark,
   STATUSES,
   REPEAT_OPTIONS,
 } from '../utils/storage'
@@ -31,6 +33,7 @@ export default function SurahDetail() {
   const { number } = useParams()
   const surahNumber = Number(number)
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
   const { t } = useLang()
 
   const [settings, setSettings] = useState(() => getSettings())
@@ -57,6 +60,19 @@ export default function SurahDetail() {
   // --- ayah-range status marking ------------------------------------------
   const [ayahRangeMode, setAyahRangeMode] = useState(false)
   const [ayahRange, setAyahRange] = useState({ start: null, end: null })
+
+  // --- bookmarks -----------------------------------------------------------
+  const [bookmarkedSet, setBookmarkedSet] = useState(
+    () => new Set(getBookmarks().filter((b) => b.surah === surahNumber).map((b) => b.ayah))
+  )
+
+  // --- jump to ayah ----------------------------------------------------
+  const ayahRefs = useRef({})
+  const jumpedFromLinkRef = useRef(false)
+  const [ayahSearchOpen, setAyahSearchOpen] = useState(false)
+  const [ayahSearchValue, setAyahSearchValue] = useState('')
+  const [highlightedAyah, setHighlightedAyah] = useState(null)
+  const highlightTimerRef = useRef(null)
 
   const load = useCallback(async () => {
     setLoading(true)
@@ -99,11 +115,29 @@ export default function SurahDetail() {
     setRange({ start: null, end: null })
     setAyahRangeMode(false)
     setAyahRange({ start: null, end: null })
+    setBookmarkedSet(new Set(getBookmarks().filter((b) => b.surah === surahNumber).map((b) => b.ayah)))
+    setAyahSearchOpen(false)
+    setAyahSearchValue('')
+    jumpedFromLinkRef.current = false
+    ayahRefs.current = {}
     stopAudio()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [surahNumber])
 
   useEffect(() => () => stopAudio(), [])
+  useEffect(() => () => clearTimeout(highlightTimerRef.current), [])
+
+  // Deep-link support for bookmarks: /surah/N?ayah=X jumps straight there
+  // once the surah has loaded.
+  useEffect(() => {
+    if (!surah || jumpedFromLinkRef.current) return
+    const ayahParam = Number(searchParams.get('ayah'))
+    if (ayahParam) {
+      jumpedFromLinkRef.current = true
+      requestAnimationFrame(() => jumpToAyah(ayahParam))
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [surah])
 
   function changeStatus(next) {
     const updated = setSurahStatus(surahNumber, next)
@@ -305,6 +339,44 @@ export default function SurahDetail() {
   const ayahRangeLo = hasCommittedAyahRange ? Math.min(ayahRange.start, ayahRange.end) : null
   const ayahRangeHi = hasCommittedAyahRange ? Math.max(ayahRange.start, ayahRange.end) : null
 
+  // --- bookmarks -----------------------------------------------------------
+
+  function toggleBookmarkAt(numberInSurah) {
+    toggleBookmark(surahNumber, numberInSurah)
+    setBookmarkedSet((prev) => {
+      const next = new Set(prev)
+      if (next.has(numberInSurah)) next.delete(numberInSurah)
+      else next.add(numberInSurah)
+      return next
+    })
+    schedulePush()
+  }
+
+  // --- jump to ayah ----------------------------------------------------
+
+  function jumpToAyah(numberInSurah) {
+    const el = ayahRefs.current[numberInSurah]
+    if (!el) return
+    el.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    setHighlightedAyah(numberInSurah)
+    clearTimeout(highlightTimerRef.current)
+    highlightTimerRef.current = setTimeout(() => setHighlightedAyah(null), 1800)
+  }
+
+  function toggleAyahSearch() {
+    setAyahSearchOpen((open) => !open)
+    setAyahSearchValue('')
+  }
+
+  function submitAyahSearch(e) {
+    e.preventDefault()
+    const n = Number(ayahSearchValue)
+    if (!surah || !Number.isInteger(n) || n < 1 || n > surah.ayahs.length) return
+    jumpToAyah(n)
+    setAyahSearchOpen(false)
+    setAyahSearchValue('')
+  }
+
   return (
     <div className="mx-auto h-screen max-w-2xl overflow-y-auto">
       <header className="sticky top-0 z-10 flex items-center justify-between border-b border-emerald/5 bg-paper/90 px-5 py-4 backdrop-blur">
@@ -327,8 +399,41 @@ export default function SurahDetail() {
             </p>
           )}
         </div>
-        <span className="w-[34px]" aria-hidden="true" />
+        <button
+          type="button"
+          onClick={toggleAyahSearch}
+          aria-pressed={ayahSearchOpen}
+          aria-label={t('detail.goToAyah')}
+          disabled={!surah}
+          className="rounded-full p-1.5 text-muted transition active:scale-90 disabled:opacity-40"
+        >
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+            <circle cx="11" cy="11" r="7" />
+            <path d="m21 21-4.3-4.3" />
+          </svg>
+        </button>
       </header>
+
+      {surah && ayahSearchOpen && (
+        <div className="border-b border-emerald/5 px-5 py-3">
+          <form onSubmit={submitAyahSearch} className="flex gap-2">
+            <input
+              type="number"
+              inputMode="numeric"
+              min={1}
+              max={surah.ayahs.length}
+              value={ayahSearchValue}
+              onChange={(e) => setAyahSearchValue(e.target.value)}
+              placeholder={t('detail.goToAyahPlaceholder', { n: surah.ayahs.length })}
+              autoFocus
+              className="w-full rounded-xl border border-emerald/15 bg-transparent px-4 py-2.5 text-sm text-emerald placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-emerald/20"
+            />
+            <button type="submit" className="btn-primary shrink-0 px-4 py-2 text-sm">
+              {t('detail.go')}
+            </button>
+          </form>
+        </div>
+      )}
 
       {surah && (
         <>
@@ -485,6 +590,12 @@ export default function SurahDetail() {
                 isLoadingAudio={loadingAudio && playing?.index === index}
                 onTogglePlay={() => toggleAyahPlay(index)}
                 ayahStatus={getAyahStatus(entry, ayah.numberInSurah)}
+                bookmarked={bookmarkedSet.has(ayah.numberInSurah)}
+                onToggleBookmark={() => toggleBookmarkAt(ayah.numberInSurah)}
+                highlighted={highlightedAyah === ayah.numberInSurah}
+                cardRef={(el) => {
+                  ayahRefs.current[ayah.numberInSurah] = el
+                }}
                 rangeSelectable={rangeMode || ayahRangeMode}
                 inRange={
                   rangeMode

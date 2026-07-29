@@ -9,6 +9,7 @@ const SECTIONS = [
   'gettingStarted',
   'status',
   'ayahRange',
+  'bookmarks',
   'audio',
   'testYourself',
   'notesTafsir',
