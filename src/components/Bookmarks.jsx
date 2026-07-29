@@ -7,6 +7,8 @@ import { listSurahs } from '../utils/api'
 import { getBookmarks, toggleBookmark } from '../utils/storage'
 import { schedulePush } from '../utils/cloudSync'
 import { useLang } from '../utils/i18n.jsx'
+import BackButton from './BackButton'
+import LoadingSpinner from './LoadingSpinner'
 
 export default function Bookmarks() {
   const { t } = useLang()
@@ -38,24 +40,12 @@ export default function Bookmarks() {
   return (
     <div className="mx-auto h-screen max-w-2xl overflow-y-auto">
       <header className="sticky top-0 z-10 flex items-center gap-2 border-b border-emerald/5 bg-paper/90 px-5 py-4 backdrop-blur">
-        <button
-          onClick={() => navigate('/')}
-          aria-label={t('common.back')}
-          className="rounded-full p-1.5 text-muted transition active:scale-90"
-        >
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-            <path d="M15 18l-6-6 6-6" />
-          </svg>
-        </button>
+        <BackButton onClick={() => navigate('/')} />
         <h1 className="text-lg font-semibold text-emerald">{t('dashboard.bookmarkedAyat')}</h1>
       </header>
 
       <main className="px-3 pb-10 pt-2">
-        {items === null && (
-          <div className="flex flex-col items-center gap-4 py-24 text-muted">
-            <div className="h-8 w-8 animate-spin rounded-full border-2 border-emerald/20 border-t-emerald" />
-          </div>
-        )}
+        {items === null && <LoadingSpinner />}
 
         {items !== null && items.length === 0 && (
           <p className="py-16 text-center text-sm text-muted">{t('bookmarks.empty')}</p>

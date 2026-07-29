@@ -8,6 +8,7 @@ import { listSurahs } from '../utils/api'
 import { completeOnboarding, setSurahStatus } from '../utils/storage'
 import { schedulePush } from '../utils/cloudSync'
 import { useLang } from '../utils/i18n.jsx'
+import BackButton from './BackButton'
 
 // Juz 30 (surahs 78–114) — the shortest surahs, and in practice where most
 // people's hifz journey actually starts.
@@ -49,15 +50,7 @@ export default function Onboarding({ onDone }) {
     <div className="relative mx-auto flex min-h-screen max-w-md flex-col items-center justify-center px-6 py-12 text-center">
       {step >= 1 && (
         <div className="absolute inset-x-0 top-0 mx-auto flex max-w-md items-center justify-between px-6 pt-6">
-          <button
-            onClick={() => setStep(step - 1)}
-            aria-label={t('common.back')}
-            className="rounded-full p-1.5 text-muted transition active:scale-90"
-          >
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-              <path d="M15 18l-6-6 6-6" />
-            </svg>
-          </button>
+          <BackButton onClick={() => setStep(step - 1)} />
           <div className="flex items-center gap-1.5">
             {Array.from({ length: TOTAL_STEPS }, (_, i) => (
               <span

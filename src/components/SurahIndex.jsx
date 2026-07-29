@@ -8,6 +8,8 @@ import { STATUSES, getSurahStatusMap, setSurahStatus } from '../utils/storage'
 import { schedulePush } from '../utils/cloudSync'
 import { STATUS_RING } from '../utils/statusStyle'
 import { useLang } from '../utils/i18n.jsx'
+import BackButton from './BackButton'
+import LoadingSpinner from './LoadingSpinner'
 import StatusBadge from './StatusBadge'
 
 const FILTERS = ['all', ...STATUSES]
@@ -70,15 +72,7 @@ export default function SurahIndex() {
     <div className="mx-auto h-screen max-w-2xl overflow-y-auto">
       <header className="sticky top-0 z-10 border-b border-emerald/5 bg-paper/90 px-5 py-4 backdrop-blur">
         <div className="flex items-center gap-2">
-          <button
-            onClick={() => navigate('/')}
-            aria-label={t('common.back')}
-            className="rounded-full p-1.5 text-muted transition active:scale-90"
-          >
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-              <path d="M15 18l-6-6 6-6" />
-            </svg>
-          </button>
+          <BackButton onClick={() => navigate('/')} />
           <h1 className="grow text-lg font-semibold text-emerald">{t('index.title')}</h1>
           <button
             type="button"
@@ -115,11 +109,7 @@ export default function SurahIndex() {
       </header>
 
       <main className={`px-3 pt-2 ${selected.size > 0 ? 'pb-24' : 'pb-10'}`}>
-        {surahs === null && (
-          <div className="flex flex-col items-center gap-4 py-24 text-muted">
-            <div className="h-8 w-8 animate-spin rounded-full border-2 border-emerald/20 border-t-emerald" />
-          </div>
-        )}
+        {surahs === null && <LoadingSpinner />}
 
         {surahs !== null && filtered.length === 0 && (
           <p className="py-16 text-center text-sm text-muted">{t('index.noMatch')}</p>

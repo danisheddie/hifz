@@ -4,6 +4,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useLang } from '../utils/i18n.jsx'
+import BackButton from './BackButton'
 
 const SECTIONS = [
   'gettingStarted',
@@ -57,15 +58,7 @@ export default function Help() {
   return (
     <div className="mx-auto h-screen max-w-2xl overflow-y-auto">
       <header className="sticky top-0 z-10 flex items-center gap-2 border-b border-emerald/5 bg-paper/90 px-5 py-4 backdrop-blur">
-        <button
-          onClick={() => navigate(-1)}
-          aria-label={t('common.back')}
-          className="rounded-full p-1.5 text-muted transition active:scale-90"
-        >
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-            <path d="M15 18l-6-6 6-6" />
-          </svg>
-        </button>
+        <BackButton onClick={() => navigate(-1)} />
         <h1 className="text-lg font-semibold text-emerald">{t('help.title')}</h1>
       </header>
 

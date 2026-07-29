@@ -8,6 +8,7 @@ import { getSettings, setSetting, getName, setName as saveName } from '../utils/
 import { applyTheme } from '../utils/theme'
 import { LANGUAGES, useLang } from '../utils/i18n.jsx'
 import { schedulePush } from '../utils/cloudSync'
+import BackButton from './BackButton'
 import SyncSettings from './SyncSettings'
 
 const THEMES = ['light', 'dark', 'sepia']
@@ -32,15 +33,7 @@ export default function Settings() {
   return (
     <div className="mx-auto h-screen max-w-2xl overflow-y-auto">
       <header className="sticky top-0 z-10 flex items-center gap-2 border-b border-emerald/5 bg-paper/90 px-5 py-4 backdrop-blur">
-        <button
-          onClick={() => navigate('/')}
-          aria-label={t('common.back')}
-          className="rounded-full p-1.5 text-muted transition active:scale-90"
-        >
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-            <path d="M15 18l-6-6 6-6" />
-          </svg>
-        </button>
+        <BackButton onClick={() => navigate('/')} />
         <h1 className="text-lg font-semibold text-emerald">{t('settings.title')}</h1>
       </header>
 
