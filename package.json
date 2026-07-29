@@ -2,6 +2,13 @@
   "name": "hifz",
   "private": true,
   "version": "0.1.0",
+  "description": "A calm Qur'an memorization (hifz) companion PWA — track what's memorized, what's in progress, and what needs revision.",
+  "license": "UNLICENSED",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/danisheddie/hifz"
+  },
+  "homepage": "https://danisheddie.github.io/hifz/",
   "type": "module",
   "scripts": {
     "dev": "vite",
