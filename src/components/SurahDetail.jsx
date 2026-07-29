@@ -418,7 +418,7 @@ export default function SurahDetail() {
         <button
           type="button"
           onClick={() => setOptionsOpen(true)}
-          className="flex w-full items-center justify-center gap-1.5 border-b border-emerald/5 py-2 text-xs font-medium text-muted transition active:bg-emerald/5"
+          className="sticky top-[77px] z-[5] flex w-full items-center justify-center gap-1.5 border-b border-emerald/5 bg-paper/95 py-2 text-xs font-medium text-muted backdrop-blur transition active:bg-emerald/5"
         >
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" aria-hidden="true">
             <path d="m6 9 6 6 6-6" />
@@ -449,7 +449,7 @@ export default function SurahDetail() {
       )}
 
       {surah && optionsOpen && (
-        <div className="sticky top-[85px] z-[5] bg-paper/95 backdrop-blur">
+        <div className="sticky top-[77px] z-[5] bg-paper/95 backdrop-blur">
           <div className="border-b border-emerald/5 px-5 py-2.5">
             <StatusControl status={status} onChange={changeStatus} />
             {entry.ranges && entry.ranges.length > 0 && (
