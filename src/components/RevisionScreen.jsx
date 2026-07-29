@@ -5,7 +5,7 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { listSurahs } from '../utils/api'
-import { getSurahStatusMap, setSurahStatus } from '../utils/storage'
+import { getSurahStatusMap, markRevisionConfident, hasRevisionRanges } from '../utils/storage'
 import { schedulePush } from '../utils/cloudSync'
 import { daysAgo, formatLastRevised } from '../utils/dateUtils'
 import { useLang } from '../utils/i18n.jsx'
@@ -24,15 +24,17 @@ export default function RevisionScreen() {
     listSurahs().then((list) => {
       const due = list
         .map((s) => ({ ...s, entry: statusMap[s.number] }))
-        .filter((s) => s.entry?.status === 'revision')
+        .filter((s) => hasRevisionRanges(s.entry))
         .sort((a, b) => daysAgo(b.entry?.lastRevised) - daysAgo(a.entry?.lastRevised))
       setSurahs(due)
     })
   }
 
-  function markConfident(number) {
-    setSurahStatus(number, 'memorized')
-    setSurahs((list) => list.filter((s) => s.number !== number))
+  // Promotes only the ayahs actually flagged for revision — a surah that's
+  // still partly `memorizing` elsewhere doesn't get silently marked done.
+  function markConfident(s) {
+    markRevisionConfident(s.number, s.ayahCount)
+    setSurahs((list) => list.filter((x) => x.number !== s.number))
     schedulePush()
   }
 
@@ -79,7 +81,7 @@ export default function RevisionScreen() {
                 </span>
                 <button
                   type="button"
-                  onClick={() => markConfident(s.number)}
+                  onClick={() => markConfident(s)}
                   className="shrink-0 rounded-full bg-emerald/10 px-3 py-1.5 text-xs font-medium text-emerald transition active:scale-95"
                 >
                   {t('revision.markConfident')}

@@ -9,36 +9,37 @@ import {
   getAyahPagesIndex,
   juzForPage,
 } from './api'
-import { getSurahStatusMap, isMemorizedStatus } from './storage'
+import { getSurahStatusMap, isMemorizedStatus, getAyahStatus, getMemorizedAyahCount } from './storage'
 
 const TOTAL_AYAHS = SURAH_AYAHS.reduce((a, b) => a + b, 0)
 const TOTAL_JUZ = 30
+const EMPTY_ENTRY = { status: 'new' }
 
 export async function computeProgress() {
   const statusMap = getSurahStatusMap()
-  const memorizedSurahs = new Set()
   let ayahsMemorized = 0
   let surahsMemorized = 0
 
   for (let i = 0; i < TOTAL_SURAHS; i++) {
     const number = i + 1
-    if (isMemorizedStatus(statusMap[number]?.status)) {
-      memorizedSurahs.add(number)
-      surahsMemorized++
-      ayahsMemorized += SURAH_AYAHS[i]
-    }
+    const entry = statusMap[number] || EMPTY_ENTRY
+    ayahsMemorized += getMemorizedAyahCount(entry, SURAH_AYAHS[i])
+    if (isMemorizedStatus(entry.status)) surahsMemorized++
   }
 
-  // Tally every ayah's Juz membership once, so a surah that only partly
-  // overlaps a Juz doesn't falsely mark that Juz complete.
+  // Tally every ayah's Juz membership once, checking each ayah's own status
+  // (not just its surah's), so a surah that's only partly memorized — or
+  // straddles a Juz boundary — doesn't falsely mark that Juz complete.
   const index = await getAyahPagesIndex()
   const juzTotal = Array(TOTAL_JUZ + 1).fill(0)
   const juzMemorized = Array(TOTAL_JUZ + 1).fill(0)
   if (index) {
     for (const key of Object.keys(index)) {
       const juz = juzForPage(index[key])
+      const [surahNumber, ayahInSurah] = key.split(':').map(Number)
       juzTotal[juz]++
-      if (memorizedSurahs.has(Number(key.split(':')[0]))) juzMemorized[juz]++
+      const entry = statusMap[surahNumber] || EMPTY_ENTRY
+      if (isMemorizedStatus(getAyahStatus(entry, ayahInSurah))) juzMemorized[juz]++
     }
   }
   let juzCompleted = 0

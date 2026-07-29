@@ -5,7 +5,7 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { listSurahs } from '../utils/api'
-import { getSurahStatusMap, getName } from '../utils/storage'
+import { getSurahStatusMap, getName, hasRevisionRanges } from '../utils/storage'
 import { computeProgress } from '../utils/progress'
 import { daysAgo, formatLastRevised } from '../utils/dateUtils'
 import { useLang } from '../utils/i18n.jsx'
@@ -55,7 +55,7 @@ export default function Home() {
       setMemorizing(withEntry.filter((s) => s.entry?.status === 'memorizing'))
       setRevision(
         withEntry
-          .filter((s) => s.entry?.status === 'revision')
+          .filter((s) => hasRevisionRanges(s.entry))
           .sort((a, b) => daysAgo(b.entry?.lastRevised) - daysAgo(a.entry?.lastRevised))
       )
     })

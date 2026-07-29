@@ -9,10 +9,15 @@ import { getSurah, audioUrlAt, AUDIO_BITRATES } from '../utils/api'
 import {
   getSettings,
   setSetting,
-  getSurahStatus,
+  getSurahEntry,
   setSurahStatus,
+  setAyahRangeStatus,
+  getAyahStatus,
+  getMemorizedAyahCount,
+  STATUSES,
   REPEAT_OPTIONS,
 } from '../utils/storage'
+import { STATUS_STYLE } from '../utils/statusStyle'
 import { ensurePageFont } from '../utils/fonts'
 import { schedulePush } from '../utils/cloudSync'
 import { useLang } from '../utils/i18n.jsx'
@@ -29,7 +34,8 @@ export default function SurahDetail() {
   const { t } = useLang()
 
   const [settings, setSettings] = useState(() => getSettings())
-  const [status, setStatus] = useState(() => getSurahStatus(surahNumber))
+  const [entry, setEntry] = useState(() => getSurahEntry(surahNumber))
+  const status = entry.status
   const [surah, setSurah] = useState(null)
   const [glyphPages, setGlyphPages] = useState(() => new Set())
   const [loading, setLoading] = useState(true)
@@ -47,6 +53,10 @@ export default function SurahDetail() {
   // --- loop-range selection ----------------------------------------------
   const [rangeMode, setRangeMode] = useState(false)
   const [range, setRange] = useState({ start: null, end: null })
+
+  // --- ayah-range status marking ------------------------------------------
+  const [ayahRangeMode, setAyahRangeMode] = useState(false)
+  const [ayahRange, setAyahRange] = useState({ start: null, end: null })
 
   const load = useCallback(async () => {
     setLoading(true)
@@ -83,10 +93,12 @@ export default function SurahDetail() {
   }, [load])
 
   useEffect(() => {
-    setStatus(getSurahStatus(surahNumber))
+    setEntry(getSurahEntry(surahNumber))
     setTestMode('off')
     setRangeMode(false)
     setRange({ start: null, end: null })
+    setAyahRangeMode(false)
+    setAyahRange({ start: null, end: null })
     stopAudio()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [surahNumber])
@@ -94,8 +106,8 @@ export default function SurahDetail() {
   useEffect(() => () => stopAudio(), [])
 
   function changeStatus(next) {
-    setSurahStatus(surahNumber, next)
-    setStatus(next)
+    const updated = setSurahStatus(surahNumber, next)
+    setEntry(updated)
     schedulePush()
   }
 
@@ -223,6 +235,7 @@ export default function SurahDetail() {
     if (rangeMode) {
       setRangeMode(false)
     } else {
+      clearAyahRange()
       setRangeMode(true)
       setRange({ start: null, end: null })
     }
@@ -246,6 +259,51 @@ export default function SurahDetail() {
   const hasCommittedRange = range.start != null && range.end != null
   const rangeLo = hasCommittedRange ? Math.min(range.start, range.end) : null
   const rangeHi = hasCommittedRange ? Math.max(range.start, range.end) : null
+
+  // --- ayah-range status marking ------------------------------------------
+  // Same tap-start/tap-end interaction as loop-range above, but sets a
+  // memorization status on the selected span instead of playing it. Only
+  // one range-select mode can be active at a time.
+
+  function toggleAyahRangeMode() {
+    if (ayahRangeMode) {
+      setAyahRangeMode(false)
+    } else {
+      clearRange()
+      setAyahRangeMode(true)
+      setAyahRange({ start: null, end: null })
+    }
+  }
+
+  function selectAyahStatusRange(index) {
+    setAyahRange((r) => {
+      if (r.start == null || r.end != null) return { start: index, end: null }
+      // Tapping the same ayah again marks just that one ayah, unlike the
+      // audio loop-range picker — a single ayah is a common target here
+      // (e.g. one verse someone wants to flag), not just a range endpoint.
+      setAyahRangeMode(false)
+      return { start: r.start, end: index }
+    })
+  }
+
+  function clearAyahRange() {
+    setAyahRange({ start: null, end: null })
+    setAyahRangeMode(false)
+  }
+
+  function applyAyahRangeStatus(newStatus) {
+    if (!hasCommittedAyahRange || !surah) return
+    const fromAyah = surah.ayahs[ayahRangeLo].numberInSurah
+    const toAyah = surah.ayahs[ayahRangeHi].numberInSurah
+    const updated = setAyahRangeStatus(surahNumber, fromAyah, toAyah, newStatus, surah.ayahs.length)
+    setEntry(updated)
+    schedulePush()
+    clearAyahRange()
+  }
+
+  const hasCommittedAyahRange = ayahRange.start != null && ayahRange.end != null
+  const ayahRangeLo = hasCommittedAyahRange ? Math.min(ayahRange.start, ayahRange.end) : null
+  const ayahRangeHi = hasCommittedAyahRange ? Math.max(ayahRange.start, ayahRange.end) : null
 
   return (
     <div className="mx-auto h-screen max-w-2xl overflow-y-auto">
@@ -276,6 +334,14 @@ export default function SurahDetail() {
         <>
           <div className="border-b border-emerald/5 px-5 py-3">
             <StatusControl status={status} onChange={changeStatus} />
+            {entry.ranges && entry.ranges.length > 0 && (
+              <p className="mt-2 text-xs text-muted">
+                {t('detail.ayahProgress', {
+                  done: getMemorizedAyahCount(entry, surah.ayahs.length),
+                  total: surah.ayahs.length,
+                })}
+              </p>
+            )}
           </div>
 
           <div className="border-b border-emerald/5 px-5 py-3">
@@ -348,9 +414,24 @@ export default function SurahDetail() {
               >
                 {t('audio.loopRange')}
               </button>
+              <button
+                type="button"
+                onClick={toggleAyahRangeMode}
+                aria-pressed={ayahRangeMode || hasCommittedAyahRange}
+                className={`rounded-full px-3.5 py-1.5 text-xs font-medium transition active:scale-95 ${
+                  ayahRangeMode || hasCommittedAyahRange
+                    ? 'bg-amber/15 text-amber ring-1 ring-amber/40'
+                    : 'text-muted ring-1 ring-emerald/10'
+                }`}
+              >
+                {t('ayahRange.mark')}
+              </button>
             </div>
             {rangeMode && (
               <p className="mt-2 text-xs text-muted">{t('audio.selectRangeHint')}</p>
+            )}
+            {ayahRangeMode && (
+              <p className="mt-2 text-xs text-muted">{t('ayahRange.selectHint')}</p>
             )}
           </div>
 
@@ -358,7 +439,7 @@ export default function SurahDetail() {
         </>
       )}
 
-      <main className="px-5 pb-28 pt-4">
+      <main className={`px-5 pt-4 ${hasCommittedAyahRange ? 'pb-40' : 'pb-28'}`}>
         {loading && (
           <div className="flex flex-col items-center gap-4 py-24 text-muted">
             <div className="h-8 w-8 animate-spin rounded-full border-2 border-emerald/20 border-t-emerald" />
@@ -403,24 +484,46 @@ export default function SurahDetail() {
                 }
                 isLoadingAudio={loadingAudio && playing?.index === index}
                 onTogglePlay={() => toggleAyahPlay(index)}
-                rangeSelectable={rangeMode}
+                ayahStatus={getAyahStatus(entry, ayah.numberInSurah)}
+                rangeSelectable={rangeMode || ayahRangeMode}
                 inRange={
                   rangeMode
                     ? range.start === index
-                    : hasCommittedRange && index >= rangeLo && index <= rangeHi
+                    : ayahRangeMode
+                    ? ayahRange.start === index
+                    : hasCommittedRange
+                    ? index >= rangeLo && index <= rangeHi
+                    : hasCommittedAyahRange
+                    ? index >= ayahRangeLo && index <= ayahRangeHi
+                    : false
                 }
                 rangeEndpoint={
                   rangeMode
                     ? range.start === index
                       ? 'start'
                       : null
-                    : hasCommittedRange && index === rangeLo
-                    ? 'start'
-                    : hasCommittedRange && index === rangeHi
-                    ? 'end'
+                    : ayahRangeMode
+                    ? ayahRange.start === index
+                      ? 'start'
+                      : null
+                    : hasCommittedRange
+                    ? index === rangeLo
+                      ? 'start'
+                      : index === rangeHi
+                      ? 'end'
+                      : null
+                    : hasCommittedAyahRange
+                    ? index === ayahRangeLo
+                      ? 'start'
+                      : index === ayahRangeHi
+                      ? 'end'
+                      : null
                     : null
                 }
-                onSelectRange={() => selectRangeAyah(index)}
+                onSelectRange={() => {
+                  if (rangeMode) selectRangeAyah(index)
+                  else if (ayahRangeMode) selectAyahStatusRange(index)
+                }}
               />
             ))}
           </>
@@ -465,6 +568,43 @@ export default function SurahDetail() {
                 <path d="M18 6 6 18M6 6l12 12" />
               </svg>
             </button>
+          </div>
+        </div>
+      )}
+
+      {hasCommittedAyahRange && surah && (
+        <div className="fixed inset-x-0 bottom-0 mx-auto max-w-2xl border-t border-emerald/10 bg-paper/95 px-5 py-3 backdrop-blur">
+          <div className="flex items-center gap-3">
+            <p className="grow text-sm font-medium text-emerald">
+              {ayahRangeLo === ayahRangeHi
+                ? t('ayahRange.labelSingle', { n: surah.ayahs[ayahRangeLo].numberInSurah })
+                : t('ayahRange.label', {
+                    start: surah.ayahs[ayahRangeLo].numberInSurah,
+                    end: surah.ayahs[ayahRangeHi].numberInSurah,
+                  })}
+            </p>
+            <button
+              type="button"
+              onClick={clearAyahRange}
+              aria-label={t('audio.clearRange')}
+              className="rounded-full p-1.5 text-muted transition active:scale-90"
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+                <path d="M18 6 6 18M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+          <div className="mt-2.5 flex flex-wrap gap-2">
+            {STATUSES.map((s) => (
+              <button
+                key={s}
+                type="button"
+                onClick={() => applyAyahRangeStatus(s)}
+                className={`rounded-full px-3.5 py-1.5 text-xs font-medium transition active:scale-95 ${STATUS_STYLE[s].active}`}
+              >
+                {t(`status.${s}`)}
+              </button>
+            ))}
           </div>
         </div>
       )}

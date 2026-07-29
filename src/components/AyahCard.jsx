@@ -6,6 +6,7 @@
 import { useState } from 'react'
 import { getTafsir } from '../utils/tafsir'
 import { useLang } from '../utils/i18n.jsx'
+import { STATUS_STYLE } from '../utils/statusStyle'
 import AudioPlayer from './AudioPlayer'
 
 // Arabic-Indic numerals for the in-text ayah marker.
@@ -37,6 +38,7 @@ export default function AyahCard({
   inRange,
   rangeEndpoint, // 'start' | 'end' | null — which end of the range this ayah is
   onSelectRange,
+  ayahStatus = 'new',
 }) {
   const { t } = useLang()
   const arabicSize = ARABIC_SIZE[size] || ARABIC_SIZE.m
@@ -78,12 +80,21 @@ export default function AyahCard({
       }`}
     >
       <div className="flex items-start gap-3">
-        <AudioPlayer
-          isPlaying={!!isPlaying}
-          isLoading={!!isLoadingAudio}
-          disabled={!onTogglePlay}
-          onToggle={onTogglePlay}
-        />
+        <div className="flex flex-col items-center gap-1.5 pt-0.5">
+          <AudioPlayer
+            isPlaying={!!isPlaying}
+            isLoading={!!isLoadingAudio}
+            disabled={!onTogglePlay}
+            onToggle={onTogglePlay}
+          />
+          {ayahStatus !== 'new' && (
+            <span
+              aria-hidden="true"
+              title={ayahStatus}
+              className={`h-1.5 w-1.5 shrink-0 rounded-full ${STATUS_STYLE[ayahStatus].dot}`}
+            />
+          )}
+        </div>
 
         <div
           className={`min-w-0 grow ${tappable ? 'cursor-pointer' : ''}`}

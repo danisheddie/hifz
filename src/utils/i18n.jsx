@@ -65,6 +65,12 @@ const en = {
   'detail.loading': 'Loading…',
   'detail.unable': 'Unable to load. Please check your connection.',
   'detail.tryAgain': 'Try again',
+  'detail.ayahProgress': '{done} of {total} ayat memorized',
+
+  'ayahRange.mark': 'Mark ayat',
+  'ayahRange.selectHint': 'Tap two ayat to set the range.',
+  'ayahRange.label': 'Ayah {start}–{end}',
+  'ayahRange.labelSingle': 'Ayah {n}',
 
   'dashboard.memorized': 'of the Qur’an memorized',
   'dashboard.juz': '{n} of 30 Juz',
@@ -201,6 +207,12 @@ const ms = {
   'detail.loading': 'Memuatkan…',
   'detail.unable': 'Tidak dapat dimuatkan. Sila semak sambungan anda.',
   'detail.tryAgain': 'Cuba lagi',
+  'detail.ayahProgress': '{done} daripada {total} ayat dihafal',
+
+  'ayahRange.mark': 'Tandakan ayat',
+  'ayahRange.selectHint': 'Ketik dua ayat untuk menetapkan julat.',
+  'ayahRange.label': 'Ayat {start}–{end}',
+  'ayahRange.labelSingle': 'Ayat {n}',
 
   'dashboard.memorized': 'daripada al-Qur’an dihafal',
   'dashboard.juz': '{n} daripada 30 Juzuk',
@@ -337,6 +349,12 @@ const id = {
   'detail.loading': 'Memuat…',
   'detail.unable': 'Tidak dapat memuat. Silakan periksa koneksi Anda.',
   'detail.tryAgain': 'Coba lagi',
+  'detail.ayahProgress': '{done} dari {total} ayat dihafal',
+
+  'ayahRange.mark': 'Tandai ayat',
+  'ayahRange.selectHint': 'Ketuk dua ayat untuk menetapkan rentang.',
+  'ayahRange.label': 'Ayat {start}–{end}',
+  'ayahRange.labelSingle': 'Ayat {n}',
 
   'dashboard.memorized': 'dari Al-Qur’an dihafal',
   'dashboard.juz': '{n} dari 30 Juz',
