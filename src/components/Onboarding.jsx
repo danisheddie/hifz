@@ -9,7 +9,6 @@ import { completeOnboarding, setSurahStatus } from '../utils/storage'
 import { schedulePush } from '../utils/cloudSync'
 import { useLang } from '../utils/i18n.jsx'
 import BackButton from './BackButton'
-import Ornament from './Ornament'
 
 // Juz 30 (surahs 78–114) — the shortest surahs, and in practice where most
 // people's hifz journey actually starts.
@@ -48,7 +47,7 @@ export default function Onboarding({ onDone }) {
   const TOTAL_STEPS = 3
 
   return (
-    <div className="islamic-pattern relative mx-auto flex min-h-screen max-w-md flex-col items-center justify-center px-6 py-12 text-center">
+    <div className="relative mx-auto flex min-h-screen max-w-md flex-col items-center justify-center px-6 py-12 text-center">
       {step >= 1 && (
         <div className="absolute inset-x-0 top-0 mx-auto flex max-w-md items-center justify-between px-6 pt-6">
           <BackButton onClick={() => setStep(step - 1)} />
@@ -71,12 +70,11 @@ export default function Onboarding({ onDone }) {
           <p className="font-quran text-4xl leading-loose text-emerald sm:text-5xl" dir="rtl" lang="ar">
             حِفْظ
           </p>
-          <h1 className="font-arabic mt-3 text-4xl font-bold tracking-tight text-emerald">
+          <h1 className="mt-3 text-4xl font-bold tracking-tight text-emerald">
             {t('common.appName')}
           </h1>
           <p className="mt-4 text-lg text-muted">{t('common.appTagline')}</p>
-          <Ornament className="mx-auto mt-6 text-amber/70" />
-          <p className="mx-auto mt-6 max-w-xs text-sm leading-relaxed text-muted">
+          <p className="mx-auto mt-8 max-w-xs text-sm leading-relaxed text-muted">
             {t('onboarding.welcomeBody')}
           </p>
           <button className="btn-primary mt-10 w-full" onClick={() => setStep(1)}>
@@ -148,8 +146,7 @@ export default function Onboarding({ onDone }) {
             بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ
           </p>
           <p className="mt-4 text-sm text-muted">{t('onboarding.bismillahMeaning')}</p>
-          <Ornament className="mx-auto mt-8 text-amber/70" />
-          <button className="btn-primary mt-8 w-full" onClick={finish}>
+          <button className="btn-primary mt-12 w-full" onClick={finish}>
             {t('onboarding.enter')}
           </button>
         </div>
