@@ -10,6 +10,7 @@ import { computeProgress } from '../utils/progress'
 import { daysAgo, formatLastRevised } from '../utils/dateUtils'
 import { useLang } from '../utils/i18n.jsx'
 import StatusBadge from './StatusBadge'
+import Ornament from './Ornament'
 
 // Keep the dashboard preview short — the full, sortable list lives at
 // /revision (or /bookmarks) so these sections never grow to dominate the
@@ -94,7 +95,7 @@ export default function Home() {
 
   if (!hasProgress) {
     return (
-      <div className="relative mx-auto flex h-screen max-w-2xl flex-col items-center justify-center px-6 text-center">
+      <div className="islamic-pattern relative mx-auto flex h-screen max-w-2xl flex-col items-center justify-center px-6 text-center">
         <div className="absolute right-5 top-5 flex items-center gap-1">
           <HelpLink t={t} />
           <SettingsLink t={t} />
@@ -102,8 +103,9 @@ export default function Home() {
         <p className="font-quran text-3xl leading-loose text-emerald sm:text-4xl" dir="rtl" lang="ar">
           حِفْظ
         </p>
-        <h1 className="mt-4 text-2xl font-semibold text-emerald">{greeting}</h1>
-        <p className="mt-2 max-w-xs text-sm text-muted">{message}</p>
+        <h1 className="font-arabic mt-4 text-2xl font-semibold text-emerald">{greeting}</h1>
+        <Ornament className="mx-auto mt-3 text-amber/70" size={16} />
+        <p className="mt-3 max-w-xs text-sm text-muted">{message}</p>
         <Link to="/surahs" className="btn-primary mt-10">
           {t('home.browseSurahs')}
         </Link>
@@ -113,17 +115,19 @@ export default function Home() {
 
   return (
     <div className="mx-auto h-screen max-w-2xl overflow-y-auto px-6 pb-16 pt-10">
-      <div className="flex items-start justify-between">
-        <p className="font-quran text-2xl leading-none text-emerald" dir="rtl" lang="ar">
-          حِفْظ
-        </p>
-        <div className="flex items-center gap-1">
-          <HelpLink t={t} />
-          <SettingsLink t={t} />
+      <div className="islamic-pattern -mx-6 -mt-10 px-6 pb-3 pt-10">
+        <div className="flex items-start justify-between">
+          <p className="font-quran text-2xl leading-none text-emerald" dir="rtl" lang="ar">
+            حِفْظ
+          </p>
+          <div className="flex items-center gap-1">
+            <HelpLink t={t} />
+            <SettingsLink t={t} />
+          </div>
         </div>
+        <h1 className="font-arabic mt-3 text-2xl font-semibold text-emerald">{greeting}</h1>
+        <p className="mt-1 text-sm text-muted">{message}</p>
       </div>
-      <h1 className="mt-3 text-2xl font-semibold text-emerald">{greeting}</h1>
-      <p className="mt-1 text-sm text-muted">{message}</p>
 
       {progress && (
         <>
