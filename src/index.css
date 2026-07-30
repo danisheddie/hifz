@@ -1,0 +1,89 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* KFGQPC Uthmanic Script HAFS (Ver 18) — the official King Fahd Complex face.
+   Paired with quran.com's `text_uthmani` so every tajwīd mark renders exactly
+   as the printed Madani mushaf (e.g. iqlāb meem only before bāʾ). Self-hosted
+   for offline use. */
+@font-face {
+  font-family: 'KFGQPC Uthmanic Script HAFS';
+  src: url('/fonts/UthmanicHafs1Ver18.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Theme palettes. `paper` = base surface (and text on accents); `emerald` =
+   primary/foreground (and accent fills); they invert between light and dark so
+   bg-emerald/text-paper combos stay legible everywhere. Emerald + amber give
+   Hifz its own identity — a sister palette to Tilawah's navy + gold, not a
+   clone of it. */
+:root {
+  color-scheme: light;
+  --c-paper: 250 249 246;
+  --c-emerald: 13 74 58;
+  --c-amber: 180 126 45;
+  --c-clay: 176 88 63;
+  --c-muted: 107 116 112;
+  --read-scale: 1;
+}
+
+[data-theme='dark'] {
+  color-scheme: dark;
+  --c-paper: 12 18 16; /* dark surface (and dark text on light accents) */
+  --c-emerald: 205 232 219; /* light foreground (and light accent fills) */
+  --c-amber: 214 165 96;
+  --c-clay: 224 148 122;
+  --c-muted: 148 163 156;
+}
+
+[data-theme='sepia'] {
+  color-scheme: light;
+  --c-paper: 243 236 220; /* warm cream */
+  --c-emerald: 42 67 52; /* dark warm green */
+  --c-amber: 150 108 46;
+  --c-clay: 163 82 58;
+  --c-muted: 116 106 88;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background-color: rgb(var(--c-paper));
+  color: rgb(var(--c-emerald));
+  font-family: 'Inter', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Calm, minimal scrollbars */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgb(var(--c-muted) / 0.4) transparent;
+}
+*::-webkit-scrollbar {
+  width: 6px;
+}
+*::-webkit-scrollbar-thumb {
+  background-color: rgb(var(--c-muted) / 0.4);
+  border-radius: 9999px;
+}
+
+@layer components {
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-2xl bg-emerald px-6 py-3.5
+      text-base font-semibold text-paper shadow-sm transition
+      active:scale-[0.98] disabled:opacity-50;
+  }
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 rounded-2xl border border-emerald/15
+      bg-transparent px-5 py-3 text-sm font-medium text-emerald transition
+      active:scale-[0.98];
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "name": "hifz",
+  "private": true,
+  "version": "0.1.0",
+  "description": "A calm Qur'an memorization (hifz) companion PWA — track what's memorized, what's in progress, and what needs revision.",
+  "license": "UNLICENSED",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/danisheddie/hifz"
+  },
+  "homepage": "https://danisheddie.github.io/hifz/",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "icons": "node scripts/gen-icons.mjs",
+    "build-data": "node scripts/build-quran-data.mjs"
+  },
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.26.2"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.1",
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.47",
+    "sharp": "^0.35.1",
+    "tailwindcss": "^3.4.13",
+    "vite": "^5.4.8"
+  }
+}
