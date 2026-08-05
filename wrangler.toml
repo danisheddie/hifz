@@ -1,0 +1,9 @@
+# Deploys the built app (dist/) as Cloudflare Workers static assets — the
+# app itself, distinct from worker/wrangler.toml which deploys the optional
+# sync backend. No Worker script needed; this is assets-only.
+name = "hifz"
+compatibility_date = "2024-09-23"
+
+[assets]
+directory = "./dist"
+not_found_handling = "single-page-application"
