@@ -15,9 +15,9 @@ make it feel heavy or cluttered.
 - No test suite. Verify with `npm run build`. There is **no lint script**.
 
 ## Hosting
-- **Cloudflare Pages** (planned): build `npm run build`, output `dist`.
+- **Cloudflare Workers (static assets)**: root `wrangler.toml` (`[assets] directory = "./dist"`), build command `npm run build`, deploy command `npx wrangler deploy` — set up via the dashboard's git-connected "Create a Worker" flow, not classic Pages (Cloudflare's newer unified flow puts git-connected static sites under Workers too).
 - Vite `base` auto-detects (`vite.config.js`): GitHub Actions build → `/hifz/`; everything else (Cloudflare, local) → `/`. No env var needed.
-- SPA routing on Cloudflare via `public/_redirects` (`/* /index.html 200`). (Do NOT re-add a GitHub `404.html` — it mangles URLs on Cloudflare.)
+- SPA routing via `wrangler.toml`'s `not_found_handling = "single-page-application"`. Do NOT add a `public/_redirects` file (that's the classic-Pages mechanism) — it's rejected at deploy time as a redirect loop ("Line 1: Infinite loop detected... strip `.html` or `/index`") when Workers static-assets also has `not_found_handling` set, since the two now do the same job and conflict. Do NOT re-add a GitHub `404.html` either — it mangles URLs on Cloudflare.
 - **GitHub Pages preview** (`.github/workflows/deploy.yml`, temporary): builds and pushes `dist/` to a `gh-pages` branch on every push to `main` or the active work branch, served at `danisheddie.github.io/hifz/`. Uses classic branch-based publishing (`peaceiris/actions-gh-pages`, needs only `contents: write`) rather than the newer OIDC/environment method (`actions/deploy-pages`) — the latter gates deploys on the auto-created `github-pages` environment's branch-protection rule, which defaults to the repo's default branch only and wasn't editable from this account's Environments settings UI. Remove this workflow once Cloudflare Pages is wired up.
 
 ## Cloud sync (`worker/`, optional — off until deployed)
