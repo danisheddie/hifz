@@ -12,8 +12,9 @@ import { useLang } from '../utils/i18n.jsx'
 import StatusBadge from './StatusBadge'
 
 // Keep the dashboard preview short — the full, sortable list lives at
-// /revision (or /bookmarks) so these sections never grow to dominate the
-// home screen.
+// /revision (or /bookmarks, or the filtered Surah Index) so these sections
+// never grow to dominate the home screen.
+const MEMORIZING_PREVIEW_LIMIT = 3
 const REVISION_PREVIEW_LIMIT = 3
 const BOOKMARK_PREVIEW_LIMIT = 3
 
@@ -94,7 +95,7 @@ export default function Home() {
 
   if (!hasProgress) {
     return (
-      <div className="relative mx-auto flex h-screen max-w-2xl flex-col items-center justify-center px-6 text-center">
+      <div className="relative mx-auto flex h-screen max-w-2xl flex-col items-center px-6 pt-28 text-center">
         <div className="absolute right-5 top-5 flex items-center gap-1">
           <HelpLink t={t} />
           <SettingsLink t={t} />
@@ -143,14 +144,21 @@ export default function Home() {
           </section>
 
           <section className="mt-8">
-            <h2 className="text-sm font-semibold text-emerald">
-              {t('dashboard.currentlyMemorizing')}
-            </h2>
+            <div className="flex items-center justify-between">
+              <h2 className="text-sm font-semibold text-emerald">
+                {t('dashboard.currentlyMemorizing')}
+              </h2>
+              {memorizing.length > MEMORIZING_PREVIEW_LIMIT && (
+                <Link to="/surahs?status=memorizing" className="text-xs font-medium text-muted">
+                  {t('dashboard.seeAll', { n: memorizing.length })}
+                </Link>
+              )}
+            </div>
             {memorizing.length === 0 ? (
               <p className="mt-2 text-sm text-muted">{t('dashboard.emptyMemorizing')}</p>
             ) : (
               <ul className="mt-3 flex flex-col gap-2">
-                {memorizing.map((s) => (
+                {memorizing.slice(0, MEMORIZING_PREVIEW_LIMIT).map((s) => (
                   <li key={s.number}>
                     <Link
                       to={`/surah/${s.number}`}

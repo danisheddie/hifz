@@ -5,7 +5,7 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
-import { getSurah, audioUrlAt, AUDIO_BITRATES } from '../utils/api'
+import { getSurah, audioUrlAt, AUDIO_BITRATES, SURAH_NAMES, TOTAL_SURAHS } from '../utils/api'
 import {
   getSettings,
   setSetting,
@@ -81,6 +81,11 @@ export default function SurahDetail() {
   const [highlightedAyah, setHighlightedAyah] = useState(null)
   const highlightTimerRef = useRef(null)
 
+  // --- scroll position (for the "Ayah N of Total" indicator) -----------
+  const scrollRef = useRef(null)
+  const scrollRafRef = useRef(null)
+  const [visibleAyahNum, setVisibleAyahNum] = useState(1)
+
   const load = useCallback(async () => {
     setLoading(true)
     setError(false)
@@ -126,6 +131,7 @@ export default function SurahDetail() {
     setBookmarkedSet(new Set(getBookmarks().filter((b) => b.surah === surahNumber).map((b) => b.ayah)))
     setAyahSearchOpen(false)
     setAyahSearchValue('')
+    setVisibleAyahNum(1)
     jumpedFromLinkRef.current = false
     ayahRefs.current = {}
     stopAudio()
@@ -145,6 +151,45 @@ export default function SurahDetail() {
       requestAnimationFrame(() => jumpToAyah(ayahParam))
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [surah])
+
+  // Tracks which ayah is currently at the top of the viewport, for the
+  // sticky bar's "Ayah N of Total" indicator — mainly useful on long surahs
+  // (Al-Baqarah's 286 ayat) where there's otherwise no sense of how far in
+  // you are. Binary search over ayahRefs (positions are monotonic in scroll
+  // order) keeps this cheap even during fast scrolling.
+  useEffect(() => {
+    const container = scrollRef.current
+    if (!container || !surah) return
+    const THRESHOLD = 140 // roughly the header + sticky bar's combined height
+    function computeVisible() {
+      scrollRafRef.current = null
+      const ayahs = surah.ayahs
+      let lo = 0
+      let hi = ayahs.length - 1
+      let result = ayahs[0]?.numberInSurah ?? 1
+      while (lo <= hi) {
+        const mid = (lo + hi) >> 1
+        const el = ayahRefs.current[ayahs[mid].numberInSurah]
+        if (!el) break
+        if (el.getBoundingClientRect().top <= THRESHOLD) {
+          result = ayahs[mid].numberInSurah
+          lo = mid + 1
+        } else {
+          hi = mid - 1
+        }
+      }
+      setVisibleAyahNum(result)
+    }
+    function onScroll() {
+      if (scrollRafRef.current == null) scrollRafRef.current = requestAnimationFrame(computeVisible)
+    }
+    computeVisible()
+    container.addEventListener('scroll', onScroll, { passive: true })
+    return () => {
+      container.removeEventListener('scroll', onScroll)
+      if (scrollRafRef.current != null) cancelAnimationFrame(scrollRafRef.current)
+    }
   }, [surah])
 
   function changeStatus(next) {
@@ -386,7 +431,7 @@ export default function SurahDetail() {
   }
 
   return (
-    <div className="mx-auto h-screen max-w-2xl overflow-y-auto">
+    <div ref={scrollRef} className="mx-auto h-screen max-w-2xl overflow-y-auto">
       <header className="sticky top-0 z-10 flex items-center justify-between border-b border-emerald/5 bg-paper/90 px-5 py-4 backdrop-blur">
         <BackButton onClick={() => navigate('/surahs')} />
         <div className="text-center">
@@ -424,6 +469,10 @@ export default function SurahDetail() {
             <path d="m6 9 6 6 6-6" />
           </svg>
           {t('detail.showOptions')}
+          <span className="text-muted/50" aria-hidden="true">·</span>
+          <span className="font-normal text-muted/80">
+            {t('detail.ayahPosition', { n: visibleAyahNum, total: surah.ayahs.length })}
+          </span>
         </button>
       )}
 
@@ -551,6 +600,10 @@ export default function SurahDetail() {
               <path d="m6 15 6-6 6 6" />
             </svg>
             {t('detail.hideOptions')}
+            <span className="text-muted/50" aria-hidden="true">·</span>
+            <span className="font-normal text-muted/80">
+              {t('detail.ayahPosition', { n: visibleAyahNum, total: surah.ayahs.length })}
+            </span>
           </button>
         </div>
       )}
@@ -645,6 +698,50 @@ export default function SurahDetail() {
                 }}
               />
             ))}
+
+            {/* Onboarding nudges people toward memorizing sequentially
+                (Juz 30 forward), so continuing to the next surah shouldn't
+                mean backing out to the index each time. */}
+            <div className="mt-8 flex gap-3 border-t border-emerald/10 pt-6">
+              {surahNumber > 1 ? (
+                <button
+                  type="button"
+                  onClick={() => navigate(`/surah/${surahNumber - 1}`)}
+                  className="flex flex-1 items-center gap-2 rounded-xl border border-emerald/10 px-3 py-3 text-left transition active:scale-[0.99]"
+                >
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="shrink-0 text-muted" aria-hidden="true">
+                    <path d="m15 18-6-6 6-6" />
+                  </svg>
+                  <span className="min-w-0">
+                    <span className="block text-[11px] text-muted">{t('detail.previousSurah')}</span>
+                    <span className="block truncate text-sm font-medium text-emerald">
+                      {SURAH_NAMES[surahNumber - 2]}
+                    </span>
+                  </span>
+                </button>
+              ) : (
+                <div className="flex-1" />
+              )}
+              {surahNumber < TOTAL_SURAHS ? (
+                <button
+                  type="button"
+                  onClick={() => navigate(`/surah/${surahNumber + 1}`)}
+                  className="flex flex-1 items-center justify-end gap-2 rounded-xl border border-emerald/10 px-3 py-3 text-right transition active:scale-[0.99]"
+                >
+                  <span className="min-w-0">
+                    <span className="block text-[11px] text-muted">{t('detail.nextSurah')}</span>
+                    <span className="block truncate text-sm font-medium text-emerald">
+                      {SURAH_NAMES[surahNumber]}
+                    </span>
+                  </span>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="shrink-0 text-muted" aria-hidden="true">
+                    <path d="m9 18 6-6-6-6" />
+                  </svg>
+                </button>
+              ) : (
+                <div className="flex-1" />
+              )}
+            </div>
           </>
         )}
       </main>

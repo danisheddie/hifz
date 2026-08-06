@@ -455,6 +455,28 @@ export function juzForPage(page) {
   return juz
 }
 
+// The surah:ayah each Juz actually begins at — derived from the ayah→page
+// index in one pass (the entry with the lowest surah/ayah on that Juz's
+// starting page, which is always the first ayah read there since the
+// Qur'an has no interleaving) rather than a separately maintained table.
+// Returns a sparse array, index 1–30; index 0 is unused.
+export async function getJuzStarts() {
+  const index = await getAyahPagesIndex()
+  const starts = Array(JUZ_START_PAGES.length + 1).fill(null)
+  if (!index) return starts
+  const juzByPage = new Map(JUZ_START_PAGES.map((page, i) => [page, i + 1]))
+  for (const key of Object.keys(index)) {
+    const juz = juzByPage.get(index[key])
+    if (!juz) continue
+    const [surah, ayah] = key.split(':').map(Number)
+    const current = starts[juz]
+    if (!current || surah < current.surah || (surah === current.surah && ayah < current.ayah)) {
+      starts[juz] = { surah, ayah }
+    }
+  }
+  return starts
+}
+
 // Mushaf page where each surah begins, indexed 0 → Surah 1 (Madani 604-page).
 export const SURAH_PAGES = [
   1, 2, 50, 77, 106, 128, 151, 177, 187, 208, 221, 235, 249, 255, 262, 267,

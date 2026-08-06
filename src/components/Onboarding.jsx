@@ -66,7 +66,10 @@ export default function Onboarding({ onDone }) {
       )}
 
       {step === 0 && (
-        <div className="animate-fade-in">
+        // mb pulls the centered block upward within the screen rather than
+        // sitting dead-center with a large, seemingly-accidental empty gap
+        // below the button on tall viewports.
+        <div className="mb-28 animate-fade-in">
           <p className="font-quran text-4xl leading-loose text-emerald sm:text-5xl" dir="rtl" lang="ar">
             حِفْظ
           </p>

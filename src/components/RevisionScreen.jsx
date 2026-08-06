@@ -11,6 +11,7 @@ import { daysAgo, formatLastRevised } from '../utils/dateUtils'
 import { useLang } from '../utils/i18n.jsx'
 import BackButton from './BackButton'
 import LoadingSpinner from './LoadingSpinner'
+import EmptyState from './EmptyState'
 
 export default function RevisionScreen() {
   const { t } = useLang()
@@ -51,7 +52,17 @@ export default function RevisionScreen() {
         {surahs === null && <LoadingSpinner />}
 
         {surahs !== null && surahs.length === 0 && (
-          <p className="py-16 text-center text-sm text-muted">{t('revision.empty')}</p>
+          <EmptyState
+            icon={
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+                <circle cx="12" cy="12" r="10" />
+                <path d="m8 12 3 3 5-6" />
+              </svg>
+            }
+            message={t('revision.empty')}
+            actionLabel={t('home.browseSurahs')}
+            actionTo="/surahs"
+          />
         )}
 
         <ul className="flex flex-col gap-2 px-2 py-2">
