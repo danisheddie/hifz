@@ -7,6 +7,7 @@ const KEYS = {
   onboarded: 'hifz:onboarded',
   name: 'hifz:userName',
   bookmarks: 'hifz:bookmarks',
+  installDismissed: 'hifz:installDismissed',
 }
 
 // The four memorization states a surah (or an ayah range within it) can be in.
@@ -312,4 +313,14 @@ export function setName(name) {
 export function completeOnboarding(name) {
   setName(name)
   write(KEYS.onboarded, true)
+}
+
+// --- add-to-home-screen prompt ------------------------------------------
+
+export function isInstallDismissed() {
+  return read(KEYS.installDismissed, false) === true
+}
+
+export function dismissInstall() {
+  write(KEYS.installDismissed, true)
 }

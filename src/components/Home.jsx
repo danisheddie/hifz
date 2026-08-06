@@ -10,6 +10,7 @@ import { computeProgress } from '../utils/progress'
 import { daysAgo, formatLastRevised } from '../utils/dateUtils'
 import { useLang } from '../utils/i18n.jsx'
 import StatusBadge from './StatusBadge'
+import InstallPrompt from './InstallPrompt'
 
 // Keep the dashboard preview short — the full, sortable list lives at
 // /revision (or /bookmarks, or the filtered Surah Index) so these sections
@@ -105,6 +106,9 @@ export default function Home() {
         </p>
         <h1 className="mt-4 text-2xl font-semibold text-emerald">{greeting}</h1>
         <p className="mt-2 max-w-xs text-sm text-muted">{message}</p>
+        <div className="w-full max-w-xs">
+          <InstallPrompt />
+        </div>
         <Link to="/surahs" className="btn-primary mt-10">
           {t('home.browseSurahs')}
         </Link>
@@ -125,6 +129,7 @@ export default function Home() {
       </div>
       <h1 className="mt-3 text-2xl font-semibold text-emerald">{greeting}</h1>
       <p className="mt-1 text-sm text-muted">{message}</p>
+      <InstallPrompt />
 
       {progress && (
         <>
