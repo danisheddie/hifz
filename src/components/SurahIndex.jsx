@@ -50,12 +50,10 @@ export default function SurahIndex() {
     })
   }
 
-  function markSelectedMemorized() {
-    for (const number of selected) setSurahStatus(number, 'memorized')
+  function applySelectedStatus(status) {
+    for (const number of selected) setSurahStatus(number, status)
     schedulePush()
-    setSurahs((prev) =>
-      prev.map((s) => (selected.has(s.number) ? { ...s, status: 'memorized' } : s))
-    )
+    setSurahs((prev) => prev.map((s) => (selected.has(s.number) ? { ...s, status } : s)))
     setSelected(new Set())
     setSelectMode(false)
   }
@@ -206,19 +204,32 @@ export default function SurahIndex() {
 
       {selected.size > 0 && (
         <div className="fixed inset-x-0 bottom-0 mx-auto max-w-2xl border-t border-emerald/10 bg-paper/95 px-5 py-3 backdrop-blur">
-          <div className="flex items-center gap-3">
-            <p className="grow text-sm font-medium text-emerald">
+          <div className="flex items-center justify-between gap-3">
+            <p className="text-sm font-medium text-emerald">
               {t('index.selectedCount', { n: selected.size })}
             </p>
             <button
               type="button"
               onClick={() => setSelected(new Set())}
-              className="btn-ghost px-4 py-2 text-sm"
+              className="text-xs font-medium text-muted"
             >
               {t('index.clearSelection')}
             </button>
-            <button type="button" onClick={markSelectedMemorized} className="btn-primary px-4 py-2 text-sm">
+          </div>
+          <div className="mt-2.5 flex gap-2">
+            <button
+              type="button"
+              onClick={() => applySelectedStatus('memorized')}
+              className="btn-primary flex-1 px-4 py-2 text-sm"
+            >
               {t('index.markMemorized')}
+            </button>
+            <button
+              type="button"
+              onClick={() => applySelectedStatus('revision')}
+              className="flex-1 rounded-2xl border border-clay/30 bg-clay/10 px-4 py-2 text-sm font-medium text-clay transition active:scale-[0.98]"
+            >
+              {t('index.markRevision')}
             </button>
           </div>
         </div>
