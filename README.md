@@ -9,7 +9,7 @@ purpose: a tracker, not a page-a-day reader.
 No leaderboards, no streaks, no guilt-tripping — just a quiet place to keep
 track of your hifz journey at your own pace.
 
-**Live preview:** https://danisheddie.github.io/hifz/
+**Live:** https://hifz.danisheddie1405.workers.dev/
 
 <p float="left">
   <img src="docs/screenshots/dashboard.png" width="45%" alt="Dashboard showing progress, currently memorizing, and bookmarked ayat" />
@@ -83,10 +83,11 @@ history — it's the living design doc this project has been built from.
 
 ## Deployment
 
-- **Cloudflare Pages** (intended production target): `npm run build`,
-  publish `dist/`. SPA routing is handled by `public/_redirects`.
-- **GitHub Pages** (temporary preview, auto-deployed by
-  `.github/workflows/deploy.yml` on every push): https://danisheddie.github.io/hifz/
+Live at https://hifz.danisheddie1405.workers.dev/ — **Cloudflare Workers
+(static assets)**, git-connected: `npm run build`, deploy `npx wrangler
+deploy` (see root `wrangler.toml`). SPA routing is handled by
+`not_found_handling = "single-page-application"` in `wrangler.toml`. Pushes
+to `main` redeploy automatically.
 
 ## Cloud sync backend (optional)
 
