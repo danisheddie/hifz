@@ -14,7 +14,7 @@
 //                    Worker so it can verify the tokens. See worker/DEPLOY.md.
 
 export const WORKER_URL = 'https://hifz-sync.danisheddie1405.workers.dev'
-export const GOOGLE_CLIENT_ID = ''
+export const GOOGLE_CLIENT_ID = '515296416644-ema4raa8d8t1p1sk14ijai9gk5qqstc1.apps.googleusercontent.com'
 
 export const syncConfigured = () => Boolean(WORKER_URL)
 

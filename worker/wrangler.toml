@@ -2,14 +2,11 @@ name = "hifz-sync"
 main = "src/index.js"
 compatibility_date = "2024-09-23"
 
-# Public, non-secret config. Empty by default — leave as-is to keep Google
-# sign-in hidden and use the sync-code flow only.
+# Public, non-secret config.
 [vars]
-GOOGLE_CLIENT_ID = ""
+GOOGLE_CLIENT_ID = "515296416644-ema4raa8d8t1p1sk14ijai9gk5qqstc1.apps.googleusercontent.com"
 
-# KV namespace for synced snapshots. Create it with:
-#   npx wrangler kv namespace create HIFZ_KV
-# then paste the printed id below.
+# KV namespace for synced snapshots.
 [[kv_namespaces]]
 binding = "HIFZ_KV"
-id = "REPLACE_WITH_KV_NAMESPACE_ID"
+id = "5a27590b8df848ab81308a8f43e0fbc1"
