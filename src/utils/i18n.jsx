@@ -200,6 +200,14 @@ const en = {
   'google.signingIn': 'Signing in…',
   'google.loadFail': 'Could not load Google sign-in.',
   'google.signInFail': 'Sign-in failed.',
+
+  'install.title': 'Add Hifz to your Home Screen',
+  'install.body': 'Install the app for quick access and a smoother, full-screen experience.',
+  'install.button': 'Install',
+  'install.iosSteps': 'Tap the Share icon, then “Add to Home Screen.”',
+  'install.iosOpenBrowser':
+    'Open this page in Safari to install it — from the browser menu, choose “Open in Safari.”',
+  'install.dontShow': 'Don’t show this again',
 }
 
 const ms = {
@@ -391,6 +399,14 @@ const ms = {
   'google.signingIn': 'Sedang log masuk…',
   'google.loadFail': 'Tidak dapat memuatkan log masuk Google.',
   'google.signInFail': 'Log masuk gagal.',
+
+  'install.title': 'Tambah Hifz ke Skrin Utama',
+  'install.body': 'Pasang aplikasi ini untuk akses pantas dan pengalaman skrin penuh yang lebih lancar.',
+  'install.button': 'Pasang',
+  'install.iosSteps': 'Ketik ikon Kongsi, kemudian “Add to Home Screen.”',
+  'install.iosOpenBrowser':
+    'Buka halaman ini dalam Safari untuk memasangnya — dari menu pelayar, pilih “Open in Safari.”',
+  'install.dontShow': 'Jangan tunjuk lagi',
 }
 
 const id = {
@@ -582,6 +598,14 @@ const id = {
   'google.signingIn': 'Sedang masuk…',
   'google.loadFail': 'Tidak dapat memuat masuk dengan Google.',
   'google.signInFail': 'Gagal masuk.',
+
+  'install.title': 'Tambahkan Hifz ke Layar Utama',
+  'install.body': 'Instal aplikasi ini untuk akses cepat dan pengalaman layar penuh yang lebih lancar.',
+  'install.button': 'Instal',
+  'install.iosSteps': 'Ketuk ikon Bagikan, lalu “Add to Home Screen.”',
+  'install.iosOpenBrowser':
+    'Buka halaman ini di Safari untuk menginstalnya — dari menu browser, pilih “Open in Safari.”',
+  'install.dontShow': 'Jangan tampilkan lagi',
 }
 
 const DICT = { en, ms, id }
