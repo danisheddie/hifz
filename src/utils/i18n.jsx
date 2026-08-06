@@ -31,6 +31,9 @@ const en = {
   'onboarding.quickStartSub':
     'Pick any surahs you already know by heart. You can always update this later.',
   'onboarding.skipForNow': 'Skip for now',
+  'onboarding.syncTitle': 'Keep your progress synced?',
+  'onboarding.syncBody':
+    'Sign in with Google to back up your progress and keep it in sync across every device you use. Totally optional — you can turn it on anytime later from Settings, and everything works fine without it.',
   'onboarding.bismillahMeaning': 'In the name of Allah, the Most Gracious, the Most Merciful.',
   'onboarding.enter': 'Enter',
 
@@ -218,6 +221,9 @@ const ms = {
   'onboarding.quickStartSub':
     'Pilih mana-mana surah yang anda sudah hafal. Anda boleh kemas kini ini kemudian.',
   'onboarding.skipForNow': 'Langkau buat masa ini',
+  'onboarding.syncTitle': 'Segerakkan kemajuan anda?',
+  'onboarding.syncBody':
+    'Log masuk dengan Google untuk menyandarkan kemajuan anda dan mengekalkannya segerak merentas setiap peranti yang anda gunakan. Sepenuhnya pilihan — anda boleh hidupkannya bila-bila masa kemudian dari Tetapan, dan semuanya berfungsi dengan baik tanpanya.',
   'onboarding.bismillahMeaning': 'Dengan nama Allah Yang Maha Pemurah lagi Maha Mengasihani.',
   'onboarding.enter': 'Masuk',
 
@@ -405,6 +411,9 @@ const id = {
   'onboarding.quickStartSub':
     'Pilih surah yang sudah Anda hafal. Anda selalu bisa memperbarui ini nanti.',
   'onboarding.skipForNow': 'Lewati dulu',
+  'onboarding.syncTitle': 'Sinkronkan kemajuan Anda?',
+  'onboarding.syncBody':
+    'Masuk dengan Google untuk mencadangkan kemajuan Anda dan menjaganya tetap tersinkron di setiap perangkat yang Anda gunakan. Sepenuhnya opsional — Anda bisa mengaktifkannya kapan saja nanti dari Pengaturan, dan semuanya tetap berfungsi baik tanpanya.',
   'onboarding.bismillahMeaning': 'Dengan nama Allah Yang Maha Pengasih, Maha Penyayang.',
   'onboarding.enter': 'Masuk',
 

@@ -1,26 +1,38 @@
 // First-launch experience: welcome, a name (so the dashboard can greet you),
 // an optional quick-start for surahs already memorized (so the dashboard
-// isn't empty on day one), then a soft bismillah before entering the app.
-// Runs only when localStorage has no `onboarded` flag.
+// isn't empty on day one), an optional Google sign-in (only when sync is
+// actually deployed) so people know from the start that syncing exists, then
+// a soft bismillah before entering the app. Runs only when localStorage has
+// no `onboarded` flag.
 
 import { useEffect, useState } from 'react'
 import { listSurahs } from '../utils/api'
 import { completeOnboarding, setSurahStatus } from '../utils/storage'
-import { schedulePush } from '../utils/cloudSync'
+import { schedulePush, googleConfigured, isGoogleSignedIn } from '../utils/cloudSync'
 import { useLang } from '../utils/i18n.jsx'
 import BackButton from './BackButton'
+import GoogleSignIn from './GoogleSignIn'
 
 // Juz 30 (surahs 78–114) — the shortest surahs, and in practice where most
 // people's hifz journey actually starts.
 const QUICK_START_RANGE = [78, 114]
 
+// The sync step only makes sense (and only renders anything, per
+// GoogleSignIn's own guard) once the backend is actually deployed — skipping
+// it entirely otherwise keeps step numbering in sync with what's shown.
+const STEPS = googleConfigured()
+  ? ['welcome', 'name', 'quickstart', 'sync', 'bismillah']
+  : ['welcome', 'name', 'quickstart', 'bismillah']
+const TOTAL_STEPS = STEPS.length - 1
+
 export default function Onboarding({ onDone }) {
   const { t } = useLang()
-  // 0 welcome, 1 name, 2 quick-start, 3 bismillah
   const [step, setStep] = useState(0)
+  const stepId = STEPS[step]
   const [name, setName] = useState('')
   const [surahs, setSurahs] = useState([])
   const [picked, setPicked] = useState(() => new Set())
+  const [synced, setSynced] = useState(() => isGoogleSignedIn())
 
   useEffect(() => {
     listSurahs().then((list) =>
@@ -44,8 +56,6 @@ export default function Onboarding({ onDone }) {
     onDone?.()
   }
 
-  const TOTAL_STEPS = 3
-
   return (
     <div className="relative mx-auto flex min-h-screen max-w-md flex-col items-center justify-center px-6 py-12 text-center">
       {step >= 1 && (
@@ -65,7 +75,7 @@ export default function Onboarding({ onDone }) {
         </div>
       )}
 
-      {step === 0 && (
+      {stepId === 'welcome' && (
         // mb pulls the centered block upward within the screen rather than
         // sitting dead-center with a large, seemingly-accidental empty gap
         // below the button on tall viewports.
@@ -80,13 +90,13 @@ export default function Onboarding({ onDone }) {
           <p className="mx-auto mt-8 max-w-xs text-sm leading-relaxed text-muted">
             {t('onboarding.welcomeBody')}
           </p>
-          <button className="btn-primary mt-10 w-full" onClick={() => setStep(1)}>
+          <button className="btn-primary mt-10 w-full" onClick={() => setStep(step + 1)}>
             {t('onboarding.begin')}
           </button>
         </div>
       )}
 
-      {step === 1 && (
+      {stepId === 'name' && (
         <div className="w-full animate-fade-in">
           <h2 className="text-2xl font-semibold text-emerald">{t('onboarding.nameTitle')}</h2>
           <p className="mt-2 text-sm text-muted">{t('onboarding.nameSub')}</p>
@@ -95,7 +105,7 @@ export default function Onboarding({ onDone }) {
             value={name}
             onChange={(e) => setName(e.target.value)}
             onKeyDown={(e) => {
-              if (e.key === 'Enter' && name.trim()) setStep(2)
+              if (e.key === 'Enter' && name.trim()) setStep(step + 1)
             }}
             placeholder={t('onboarding.namePlaceholder')}
             autoFocus
@@ -105,14 +115,14 @@ export default function Onboarding({ onDone }) {
           <button
             className="btn-primary mt-8 w-full disabled:opacity-40"
             disabled={!name.trim()}
-            onClick={() => setStep(2)}
+            onClick={() => setStep(step + 1)}
           >
             {t('common.continue')}
           </button>
         </div>
       )}
 
-      {step === 2 && (
+      {stepId === 'quickstart' && (
         <div className="w-full animate-fade-in">
           <h2 className="text-2xl font-semibold text-emerald">{t('onboarding.quickStartTitle')}</h2>
           <p className="mt-2 text-sm text-muted">{t('onboarding.quickStartSub')}</p>
@@ -133,13 +143,24 @@ export default function Onboarding({ onDone }) {
               </button>
             ))}
           </div>
-          <button className="btn-primary mt-8 w-full" onClick={() => setStep(3)}>
+          <button className="btn-primary mt-8 w-full" onClick={() => setStep(step + 1)}>
             {picked.size > 0 ? t('common.continue') : t('onboarding.skipForNow')}
           </button>
         </div>
       )}
 
-      {step === 3 && (
+      {stepId === 'sync' && (
+        <div className="w-full animate-fade-in">
+          <h2 className="text-2xl font-semibold text-emerald">{t('onboarding.syncTitle')}</h2>
+          <p className="mt-2 text-sm text-muted">{t('onboarding.syncBody')}</p>
+          <GoogleSignIn onChange={setSynced} />
+          <button className="btn-primary mt-8 w-full" onClick={() => setStep(step + 1)}>
+            {synced ? t('common.continue') : t('onboarding.skipForNow')}
+          </button>
+        </div>
+      )}
+
+      {stepId === 'bismillah' && (
         <div className="animate-scale-in">
           <p
             className="font-quran text-3xl leading-loose text-emerald sm:text-4xl"
