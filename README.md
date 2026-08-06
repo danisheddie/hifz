@@ -9,7 +9,7 @@ purpose: a tracker, not a page-a-day reader.
 No leaderboards, no streaks, no guilt-tripping — just a quiet place to keep
 track of your hifz journey at your own pace.
 
-**Live:** https://hifz.danisheddie1405.workers.dev/
+**Live:** https://dailyhifz.app/
 
 <p float="left">
   <img src="docs/screenshots/dashboard.png" width="45%" alt="Dashboard showing progress, currently memorizing, and bookmarked ayat" />
@@ -83,11 +83,15 @@ history — it's the living design doc this project has been built from.
 
 ## Deployment
 
-Live at https://hifz.danisheddie1405.workers.dev/ — **Cloudflare Workers
-(static assets)**, git-connected: `npm run build`, deploy `npx wrangler
-deploy` (see root `wrangler.toml`). SPA routing is handled by
-`not_found_handling = "single-page-application"` in `wrangler.toml`. Pushes
-to `main` redeploy automatically.
+Live at https://dailyhifz.app/ (custom domain, routed through Cloudflare to
+the `hifz` Worker; the original `hifz.danisheddie1405.workers.dev` URL still
+works too) — **Cloudflare Workers (static assets)**: `npm run build`, deploy
+`npx wrangler deploy` (see root `wrangler.toml`). SPA routing is handled by
+`not_found_handling = "single-page-application"` in `wrangler.toml`.
+Nominally git-connected (pushes to `main` are meant to redeploy
+automatically) — if that connection ever shows "disconnected from Git" in
+the Cloudflare dashboard, redeploy manually with `npm run build && npx
+wrangler deploy` from the repo root until it's reconnected.
 
 ## Cloud sync backend (optional)
 
