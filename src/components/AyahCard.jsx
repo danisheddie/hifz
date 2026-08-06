@@ -49,6 +49,11 @@ export default function AyahCard({
   const [tafsirState, setTafsirState] = useState('closed') // closed | loading | open | error
   const [tafsir, setTafsir] = useState(null)
   const [revealed, setRevealed] = useState(false)
+  // A quick, ad-hoc per-ayah hide — independent of the global "Test
+  // yourself" mode, for testing just one ayah without leaving normal
+  // reading. Only offered while that mode is off, so there's never a
+  // confusing double control over the same ayah.
+  const [manuallyHidden, setManuallyHidden] = useState(false)
 
   function toggleTafsir() {
     if (tafsirState === 'open' || tafsirState === 'error') {
@@ -72,10 +77,11 @@ export default function AyahCard({
   function onArabicTap() {
     if (rangeSelectable) onSelectRange()
     else if (testMode !== 'off') setRevealed((r) => !r)
+    else if (manuallyHidden) setManuallyHidden(false)
   }
 
-  const hidden = testMode !== 'off' && !revealed
-  const tappable = rangeSelectable || testMode !== 'off'
+  const hidden = (testMode !== 'off' && !revealed) || manuallyHidden
+  const tappable = rangeSelectable || testMode !== 'off' || manuallyHidden
 
   return (
     <article
@@ -120,6 +126,29 @@ export default function AyahCard({
               >
                 <path d="M6 3a1 1 0 0 0-1 1v17l7-4 7 4V4a1 1 0 0 0-1-1H6Z" />
               </svg>
+            </button>
+          )}
+          {testMode === 'off' && (
+            <button
+              type="button"
+              onClick={() => setManuallyHidden((h) => !h)}
+              aria-pressed={manuallyHidden}
+              aria-label={manuallyHidden ? t('test.showAyah') : t('test.hideAyah')}
+              className={`rounded-full p-1 transition active:scale-90 ${
+                manuallyHidden ? 'text-amber' : 'text-muted'
+              }`}
+            >
+              {manuallyHidden ? (
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+                  <path d="M17.94 17.94A10.94 10.94 0 0 1 12 20c-7 0-11-8-11-8a18.5 18.5 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" />
+                  <path d="M1 1l22 22" />
+                </svg>
+              ) : (
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8Z" />
+                  <circle cx="12" cy="12" r="3" />
+                </svg>
+              )}
             </button>
           )}
         </div>

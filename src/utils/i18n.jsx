@@ -61,6 +61,7 @@ const en = {
   'index.done': 'Done',
   'index.selectedCount': '{n} selected',
   'index.markMemorized': 'Mark memorized',
+  'index.markRevision': 'Need revision',
   'index.clearSelection': 'Clear',
 
   'juz.title': 'Juz',
@@ -120,6 +121,8 @@ const en = {
   'test.mode.hide': 'Test yourself: Hidden',
   'test.mode.firstWord': 'Test yourself: First word',
   'test.tapToReveal': 'Tap to reveal',
+  'test.hideAyah': 'Hide this ayah',
+  'test.showAyah': 'Show this ayah',
 
   'audio.play': 'Play',
   'audio.pause': 'Pause',
@@ -260,6 +263,7 @@ const ms = {
   'index.done': 'Selesai',
   'index.selectedCount': '{n} dipilih',
   'index.markMemorized': 'Tandakan sudah dihafal',
+  'index.markRevision': 'Perlu diulang kaji',
   'index.clearSelection': 'Kosongkan',
 
   'juz.title': 'Juzuk',
@@ -319,6 +323,8 @@ const ms = {
   'test.mode.hide': 'Uji diri: Disembunyikan',
   'test.mode.firstWord': 'Uji diri: Perkataan pertama',
   'test.tapToReveal': 'Ketik untuk dedah',
+  'test.hideAyah': 'Sembunyikan ayat ini',
+  'test.showAyah': 'Tunjukkan ayat ini',
 
   'audio.play': 'Main',
   'audio.pause': 'Jeda',
@@ -459,6 +465,7 @@ const id = {
   'index.done': 'Selesai',
   'index.selectedCount': '{n} dipilih',
   'index.markMemorized': 'Tandai sudah dihafal',
+  'index.markRevision': 'Perlu diulang',
   'index.clearSelection': 'Hapus pilihan',
 
   'juz.title': 'Juz',
@@ -518,6 +525,8 @@ const id = {
   'test.mode.hide': 'Uji diri: Disembunyikan',
   'test.mode.firstWord': 'Uji diri: Kata pertama',
   'test.tapToReveal': 'Ketuk untuk tampilkan',
+  'test.hideAyah': 'Sembunyikan ayat ini',
+  'test.showAyah': 'Tampilkan ayat ini',
 
   'audio.play': 'Putar',
   'audio.pause': 'Jeda',
