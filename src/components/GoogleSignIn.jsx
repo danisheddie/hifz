@@ -29,7 +29,10 @@ function loadGis() {
   return gisPromise
 }
 
-export default function GoogleSignIn() {
+// `onChange(signedIn)` is optional — fired after a successful sign-in/out so
+// a parent that renders its own surrounding UI (e.g. Onboarding's sync step)
+// can react without duplicating GoogleSignIn's internal state.
+export default function GoogleSignIn({ onChange }) {
   const { t } = useLang()
   const btnRef = useRef(null)
   const [signedIn, setSignedIn] = useState(() => isGoogleSignedIn())
@@ -52,6 +55,7 @@ export default function GoogleSignIn() {
               const p = await googleSignIn(resp.credential)
               setProfile(p)
               setSignedIn(true)
+              onChange?.(true)
             } catch (e) {
               setError(e.message || t('google.signInFail'))
             } finally {
@@ -82,6 +86,7 @@ export default function GoogleSignIn() {
     setSignedIn(false)
     setProfile(null)
     setBusy(false)
+    onChange?.(false)
   }
 
   if (signedIn) {
