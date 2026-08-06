@@ -138,6 +138,7 @@ const en = {
   'settings.theme.dark': 'Dark',
   'settings.theme.sepia': 'Sepia',
   'settings.yourName': 'Your name',
+  'settings.reciter': 'Reciter',
 
   'help.title': 'Help & tips',
   'help.intro': 'A quick guide to what you can do in Hifz.',
@@ -328,6 +329,7 @@ const ms = {
   'settings.theme.dark': 'Gelap',
   'settings.theme.sepia': 'Sepia',
   'settings.yourName': 'Nama anda',
+  'settings.reciter': 'Qari',
 
   'help.title': 'Bantuan & petua',
   'help.intro': 'Panduan ringkas tentang apa yang boleh anda lakukan dalam Hifz.',
@@ -518,6 +520,7 @@ const id = {
   'settings.theme.dark': 'Gelap',
   'settings.theme.sepia': 'Sepia',
   'settings.yourName': 'Nama Anda',
+  'settings.reciter': 'Qari',
 
   'help.title': 'Bantuan & tips',
   'help.intro': 'Panduan singkat tentang apa yang bisa Anda lakukan di Hifz.',
