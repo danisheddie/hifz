@@ -60,6 +60,11 @@ const en = {
   'index.markMemorized': 'Mark memorized',
   'index.clearSelection': 'Clear',
 
+  'juz.title': 'Juz',
+  'juz.label': 'Juz {n}',
+  'juz.startsAt': 'Starts at {surah} {ayah}',
+  'juz.browseLink': 'Browse by Juz',
+
   'detail.translation': 'Translation',
   'detail.arabicOnly': 'Arabic only',
   'detail.loading': 'Loading…',
@@ -71,6 +76,9 @@ const en = {
   'detail.go': 'Go',
   'detail.hideOptions': 'Hide',
   'detail.showOptions': 'Show options',
+  'detail.ayahPosition': 'Ayah {n} of {total}',
+  'detail.previousSurah': 'Previous',
+  'detail.nextSurah': 'Next',
 
   'bookmark.add': 'Bookmark this ayah',
   'bookmark.remove': 'Remove bookmark',
@@ -239,6 +247,11 @@ const ms = {
   'index.markMemorized': 'Tandakan sudah dihafal',
   'index.clearSelection': 'Kosongkan',
 
+  'juz.title': 'Juzuk',
+  'juz.label': 'Juzuk {n}',
+  'juz.startsAt': 'Bermula pada {surah} {ayah}',
+  'juz.browseLink': 'Lihat mengikut Juzuk',
+
   'detail.translation': 'Terjemahan',
   'detail.arabicOnly': 'Arab sahaja',
   'detail.loading': 'Memuatkan…',
@@ -250,6 +263,9 @@ const ms = {
   'detail.go': 'Pergi',
   'detail.hideOptions': 'Sembunyi',
   'detail.showOptions': 'Tunjuk pilihan',
+  'detail.ayahPosition': 'Ayat {n} daripada {total}',
+  'detail.previousSurah': 'Sebelum',
+  'detail.nextSurah': 'Seterusnya',
 
   'bookmark.add': 'Tanda buku ayat ini',
   'bookmark.remove': 'Buang tanda buku',
@@ -418,6 +434,11 @@ const id = {
   'index.markMemorized': 'Tandai sudah dihafal',
   'index.clearSelection': 'Hapus pilihan',
 
+  'juz.title': 'Juz',
+  'juz.label': 'Juz {n}',
+  'juz.startsAt': 'Dimulai di {surah} {ayah}',
+  'juz.browseLink': 'Jelajahi berdasarkan Juz',
+
   'detail.translation': 'Terjemahan',
   'detail.arabicOnly': 'Arab saja',
   'detail.loading': 'Memuat…',
@@ -429,6 +450,9 @@ const id = {
   'detail.go': 'Pergi',
   'detail.hideOptions': 'Sembunyikan',
   'detail.showOptions': 'Tampilkan opsi',
+  'detail.ayahPosition': 'Ayat {n} dari {total}',
+  'detail.previousSurah': 'Sebelumnya',
+  'detail.nextSurah': 'Berikutnya',
 
   'bookmark.add': 'Bookmark ayat ini',
   'bookmark.remove': 'Hapus bookmark',

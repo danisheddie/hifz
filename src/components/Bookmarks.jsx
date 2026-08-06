@@ -9,6 +9,7 @@ import { schedulePush } from '../utils/cloudSync'
 import { useLang } from '../utils/i18n.jsx'
 import BackButton from './BackButton'
 import LoadingSpinner from './LoadingSpinner'
+import EmptyState from './EmptyState'
 
 export default function Bookmarks() {
   const { t } = useLang()
@@ -48,7 +49,16 @@ export default function Bookmarks() {
         {items === null && <LoadingSpinner />}
 
         {items !== null && items.length === 0 && (
-          <p className="py-16 text-center text-sm text-muted">{t('bookmarks.empty')}</p>
+          <EmptyState
+            icon={
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+                <path d="M6 3a1 1 0 0 0-1 1v17l7-4 7 4V4a1 1 0 0 0-1-1H6Z" />
+              </svg>
+            }
+            message={t('bookmarks.empty')}
+            actionLabel={t('home.browseSurahs')}
+            actionTo="/surahs"
+          />
         )}
 
         <ul className="flex flex-col gap-2 px-2 py-2">

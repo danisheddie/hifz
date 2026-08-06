@@ -12,6 +12,7 @@ import RevisionScreen from './components/RevisionScreen'
 import Settings from './components/Settings'
 import Help from './components/Help'
 import Bookmarks from './components/Bookmarks'
+import JuzIndex from './components/JuzIndex'
 import { syncNow } from './utils/cloudSync'
 
 export default function App() {
@@ -36,6 +37,7 @@ export default function App() {
       <Route path="/settings" element={<Settings />} />
       <Route path="/help" element={<Help />} />
       <Route path="/bookmarks" element={<Bookmarks />} />
+      <Route path="/juz" element={<JuzIndex />} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   )

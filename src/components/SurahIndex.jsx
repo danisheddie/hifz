@@ -2,7 +2,7 @@
 // status. Tapping one opens SurahDetail.
 
 import { useEffect, useMemo, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { listSurahs } from '../utils/api'
 import { STATUSES, getSurahStatusMap, setSurahStatus } from '../utils/storage'
 import { schedulePush } from '../utils/cloudSync'
@@ -17,9 +17,15 @@ const FILTERS = ['all', ...STATUSES]
 export default function SurahIndex() {
   const { t } = useLang()
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
   const [surahs, setSurahs] = useState(null)
   const [query, setQuery] = useState('')
-  const [filter, setFilter] = useState('all')
+  // Pre-selects the filter chip when arriving via a "see all" link (e.g. the
+  // dashboard's Currently Memorizing section) — /surahs?status=memorizing.
+  const [filter, setFilter] = useState(() => {
+    const s = searchParams.get('status')
+    return FILTERS.includes(s) ? s : 'all'
+  })
   const [selectMode, setSelectMode] = useState(false)
   const [selected, setSelected] = useState(() => new Set())
 
@@ -91,21 +97,36 @@ export default function SurahIndex() {
           placeholder={t('index.searchPlaceholder')}
           className="mt-3 w-full rounded-xl border border-emerald/15 bg-transparent px-4 py-2.5 text-sm text-emerald placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-emerald/20"
         />
-        <div className="mt-3 flex gap-1.5 overflow-x-auto pb-1">
-          {FILTERS.map((f) => (
-            <button
-              key={f}
-              onClick={() => setFilter(f)}
-              className={`shrink-0 rounded-full px-3 py-1.5 text-xs font-medium transition active:scale-95 ${
-                filter === f
-                  ? 'bg-emerald text-paper'
-                  : 'bg-emerald/5 text-muted'
-              }`}
-            >
-              {f === 'all' ? t('index.filterAll') : t(`status.${f}`)}
-            </button>
-          ))}
+        <div className="relative mt-3">
+          <div className="flex gap-1.5 overflow-x-auto pb-1">
+            {FILTERS.map((f) => (
+              <button
+                key={f}
+                onClick={() => setFilter(f)}
+                className={`shrink-0 rounded-full px-3 py-1.5 text-xs font-medium transition active:scale-95 ${
+                  filter === f
+                    ? 'bg-emerald text-paper'
+                    : 'bg-emerald/5 text-muted'
+                }`}
+              >
+                {f === 'all' ? t('index.filterAll') : t(`status.${f}`)}
+              </button>
+            ))}
+          </div>
+          {/* Signals there's more to scroll to — the row was clipping the
+              last chip mid-word with nothing hinting it was scrollable. */}
+          <div
+            className="pointer-events-none absolute inset-y-0 right-0 w-8 bg-gradient-to-l from-paper to-transparent"
+            aria-hidden="true"
+          />
         </div>
+        <button
+          type="button"
+          onClick={() => navigate('/juz')}
+          className="mt-2.5 text-xs font-medium text-muted underline decoration-emerald/25 underline-offset-2"
+        >
+          {t('juz.browseLink')}
+        </button>
       </header>
 
       <main className={`px-3 pt-2 ${selected.size > 0 ? 'pb-24' : 'pb-10'}`}>
