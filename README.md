@@ -59,7 +59,7 @@ npm run build-data
 npm run dev      # local dev server
 npm run build    # production build -> dist/
 npm run preview  # serve the production build locally
-npm run icons    # regenerate public/icons/ from assets/icon-master.svg
+npm run icons    # regenerate public/icons/ from assets/icon-master.png
 ```
 
 There's no test suite or lint script by design (see `CLAUDE.md`) — changes
