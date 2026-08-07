@@ -1,22 +1,22 @@
-// Generates the PWA icon set from the master mark (assets/icon-master.svg) —
-// an open Qur'an on a rehal with an amber revision-loop accent, on an emerald
-// tile. Run: npm run icons
+// Generates the PWA icon set from the master mark (assets/icon-master.png) —
+// an open Qur'an beneath a mosque-arch silhouette with "حفظ" (Hifz) in
+// Arabic, white on a dark emerald tile. Run: npm run icons
 import sharp from 'sharp'
 import { mkdirSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { dirname, resolve } from 'node:path'
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..')
-const MASTER = resolve(ROOT, 'assets/icon-master.svg')
+const MASTER = resolve(ROOT, 'assets/icon-master.png')
 const OUT = resolve(ROOT, 'public/icons')
 mkdirSync(OUT, { recursive: true })
 
-// Tile background emerald (the gradient's midpoint) — used to pad the
-// maskable icon so the art stays inside the platform's safe zone.
-const EMERALD = { r: 15, g: 101, b: 71, alpha: 1 }
+// The master's own background tile color (sampled from its edge), used to
+// fill the maskable icon's canvas so the recomposited art blends seamlessly.
+const EMERALD = { r: 4, g: 59, b: 25, alpha: 1 }
 
-function master(density = 288) {
-  return sharp(MASTER, { density })
+function master() {
+  return sharp(MASTER)
 }
 
 async function resizeTo(size, file) {
@@ -24,20 +24,10 @@ async function resizeTo(size, file) {
   console.log('wrote', file)
 }
 
-// Maskable: full-bleed emerald with the art scaled into the safe zone.
-async function maskable(size, file, inset = 0.84) {
-  const art = await master()
-    .resize(Math.round(size * inset), Math.round(size * inset), { kernel: 'lanczos3' })
-    .toBuffer()
-  await sharp({ create: { width: size, height: size, channels: 4, background: EMERALD } })
-    .composite([{ input: art, gravity: 'center' }])
-    .png()
-    .toFile(resolve(OUT, file))
-  console.log('wrote', file)
-}
-
-// Notification/app badge: white silhouette of the art on transparent.
-async function badge(size, file) {
+// Isolates the white line-art on a transparent background via luminance
+// thresholding, so it can be recomposited with fresh padding — the master
+// itself is a flat tile with no alpha channel to key off of.
+async function extractArt(size) {
   const { data, info } = await master()
     .resize(size, size, { kernel: 'lanczos3' })
     .ensureAlpha()
@@ -55,9 +45,27 @@ async function badge(size, file) {
     out[i * 4 + 2] = 255
     out[i * 4 + 3] = on ? 255 : 0
   }
-  await sharp(out, { raw: { width: info.width, height: info.height, channels: 4 } })
+  return sharp(out, { raw: { width: info.width, height: info.height, channels: 4 } }).png().toBuffer()
+}
+
+// Maskable: full-bleed emerald with the art re-inset into the safe zone —
+// the master's own built-in padding isn't guaranteed to match Android's
+// centered safe-zone requirement, so the art is extracted and recomposited
+// fresh rather than just resizing the flat master.
+async function maskable(size, file, inset = 0.72) {
+  const art = await sharp(await extractArt(size))
+    .resize(Math.round(size * inset), Math.round(size * inset), { kernel: 'lanczos3' })
+    .toBuffer()
+  await sharp({ create: { width: size, height: size, channels: 4, background: EMERALD } })
+    .composite([{ input: art, gravity: 'center' }])
     .png()
     .toFile(resolve(OUT, file))
+  console.log('wrote', file)
+}
+
+// Notification/app badge: white silhouette of the art on transparent.
+async function badge(size, file) {
+  await sharp(await extractArt(size)).toFile(resolve(OUT, file))
   console.log('wrote', file)
 }
 
