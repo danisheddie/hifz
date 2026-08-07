@@ -5,7 +5,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { getSettings, setSetting, getName, setName as saveName } from '../utils/storage'
-import { RECITERS } from '../utils/api'
+import { RECITERS, TRANSLATIONS } from '../utils/api'
 import { applyTheme } from '../utils/theme'
 import { LANGUAGES, useLang } from '../utils/i18n.jsx'
 import { schedulePush } from '../utils/cloudSync'
@@ -90,6 +90,21 @@ export default function Settings() {
               </button>
             ))}
           </div>
+        </section>
+
+        <section className="mt-8">
+          <h2 className="text-sm font-semibold text-emerald">{t('settings.translation')}</h2>
+          <select
+            value={settings.translationEdition}
+            onChange={(e) => setSettings(setSetting('translationEdition', e.target.value))}
+            className="mt-2 w-full rounded-xl border border-emerald/15 bg-transparent px-4 py-2.5 text-sm text-emerald outline-none transition focus:border-emerald"
+          >
+            {TRANSLATIONS.map((tr) => (
+              <option key={tr.id} value={tr.id}>
+                {tr.name}
+              </option>
+            ))}
+          </select>
         </section>
 
         <section className="mt-8">

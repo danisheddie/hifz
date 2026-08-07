@@ -141,6 +141,7 @@ const en = {
   'settings.theme.dark': 'Dark',
   'settings.theme.sepia': 'Sepia',
   'settings.yourName': 'Your name',
+  'settings.translation': 'Translation',
   'settings.reciter': 'Reciter',
 
   'help.title': 'Help & tips',
@@ -343,6 +344,7 @@ const ms = {
   'settings.theme.dark': 'Gelap',
   'settings.theme.sepia': 'Sepia',
   'settings.yourName': 'Nama anda',
+  'settings.translation': 'Terjemahan',
   'settings.reciter': 'Qari',
 
   'help.title': 'Bantuan & petua',
@@ -545,6 +547,7 @@ const id = {
   'settings.theme.dark': 'Gelap',
   'settings.theme.sepia': 'Sepia',
   'settings.yourName': 'Nama Anda',
+  'settings.translation': 'Terjemahan',
   'settings.reciter': 'Qari',
 
   'help.title': 'Bantuan & tips',

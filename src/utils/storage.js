@@ -27,7 +27,7 @@ export const DEFAULT_SETTINGS = {
   // Arabic reading size: 's' | 'm' | 'l'.
   readingSize: 'm',
   showTranslation: true,
-  translationEdition: 'en.asad',
+  translationEdition: 'en.sahih',
   showTafsir: false,
   reciter: 'ar.alafasy',
   // How many times a single ayah (or a looped range) repeats before
