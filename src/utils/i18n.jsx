@@ -19,7 +19,11 @@ const en = {
   'common.ayah': 'ayah',
   'common.ayahs': 'ayahs',
 
+  'nav.home': 'Home',
   'nav.surahs': 'Surahs',
+  'nav.reader': 'Reader',
+  'nav.profile': 'Profile',
+  'reader.empty': 'Nothing to resume yet — open a surah to start reading.',
 
   'onboarding.welcomeBody':
     'A calm space to memorize, revise, and reflect on the Qur’an — at your own pace.',
@@ -63,6 +67,9 @@ const en = {
   'index.markMemorized': 'Mark memorized',
   'index.markRevision': 'Need revision',
   'index.clearSelection': 'Clear',
+  'index.browseSurah': 'Surah',
+  'index.browseJuz': 'Juz',
+  'index.filter': 'Filter',
 
   'juz.title': 'Juz',
   'juz.label': 'Juz {n}',
@@ -105,6 +112,11 @@ const en = {
   'dashboard.lastRevisedDaysAgo': 'Revised {n} days ago',
   'dashboard.seeAll': 'See all {n}',
   'dashboard.bookmarkedAyat': 'Bookmarked ayat',
+  'dashboard.due': '{n} due',
+  'dashboard.viewAll': 'View all {n}',
+  'dashboard.bookmark': 'Bookmark',
+  'home.continueReading': 'Continue memorising',
+  'revision.revise': 'Revise',
 
   'revision.empty': 'Nothing needs revision right now.',
   'revision.markConfident': 'Mark confident',
@@ -143,6 +155,9 @@ const en = {
   'settings.yourName': 'Your name',
   'settings.translation': 'Translation',
   'settings.reciter': 'Reciter',
+  'settings.category.reading': 'Reading',
+  'settings.category.appearance': 'Appearance',
+  'settings.category.sync': 'Sync',
 
   'help.title': 'Help & tips',
   'help.intro': 'A quick guide to what you can do in Hifz.',
@@ -222,7 +237,11 @@ const ms = {
   'common.ayah': 'ayat',
   'common.ayahs': 'ayat',
 
+  'nav.home': 'Utama',
   'nav.surahs': 'Surah',
+  'nav.reader': 'Baca',
+  'nav.profile': 'Profil',
+  'reader.empty': 'Belum ada untuk disambung — buka satu surah untuk mula membaca.',
 
   'onboarding.welcomeBody':
     'Ruang yang tenang untuk menghafal, mengulang kaji, dan meneliti al-Qur’an — mengikut kadar anda sendiri.',
@@ -308,6 +327,11 @@ const ms = {
   'dashboard.lastRevisedDaysAgo': 'Diulang kaji {n} hari lalu',
   'dashboard.seeAll': 'Lihat semua {n}',
   'dashboard.bookmarkedAyat': 'Ayat ditanda buku',
+  'dashboard.due': '{n} perlu diulang kaji',
+  'dashboard.viewAll': 'Lihat semua {n}',
+  'dashboard.bookmark': 'Penanda buku',
+  'home.continueReading': 'Sambung menghafal',
+  'revision.revise': 'Ulang kaji',
 
   'revision.empty': 'Tiada apa yang perlu diulang kaji sekarang.',
   'revision.markConfident': 'Tandakan yakin',
@@ -346,6 +370,9 @@ const ms = {
   'settings.yourName': 'Nama anda',
   'settings.translation': 'Terjemahan',
   'settings.reciter': 'Qari',
+  'settings.category.reading': 'Bacaan',
+  'settings.category.appearance': 'Rupa',
+  'settings.category.sync': 'Segerak',
 
   'help.title': 'Bantuan & petua',
   'help.intro': 'Panduan ringkas tentang apa yang boleh anda lakukan dalam Hifz.',
@@ -425,7 +452,11 @@ const id = {
   'common.ayah': 'ayat',
   'common.ayahs': 'ayat',
 
+  'nav.home': 'Beranda',
   'nav.surahs': 'Surah',
+  'nav.reader': 'Baca',
+  'nav.profile': 'Profil',
+  'reader.empty': 'Belum ada yang bisa dilanjutkan — buka surah untuk mulai membaca.',
 
   'onboarding.welcomeBody':
     'Ruang tenang untuk menghafal, mengulang, dan merenungkan Al-Qur’an — sesuai kecepatan Anda sendiri.',
@@ -511,6 +542,11 @@ const id = {
   'dashboard.lastRevisedDaysAgo': 'Diulang {n} hari lalu',
   'dashboard.seeAll': 'Lihat semua {n}',
   'dashboard.bookmarkedAyat': 'Ayat yang di-bookmark',
+  'dashboard.due': '{n} perlu diulang',
+  'dashboard.viewAll': 'Lihat semua {n}',
+  'dashboard.bookmark': 'Markah',
+  'home.continueReading': 'Lanjutkan hafalan',
+  'revision.revise': 'Ulang',
 
   'revision.empty': 'Tidak ada yang perlu diulang saat ini.',
   'revision.markConfident': 'Tandai yakin',
@@ -549,6 +585,9 @@ const id = {
   'settings.yourName': 'Nama Anda',
   'settings.translation': 'Terjemahan',
   'settings.reciter': 'Qari',
+  'settings.category.reading': 'Bacaan',
+  'settings.category.appearance': 'Tampilan',
+  'settings.category.sync': 'Sinkron',
 
   'help.title': 'Bantuan & tips',
   'help.intro': 'Panduan singkat tentang apa yang bisa Anda lakukan di Hifz.',

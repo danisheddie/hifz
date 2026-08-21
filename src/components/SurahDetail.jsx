@@ -16,6 +16,7 @@ import {
   getMemorizedAyahCount,
   getBookmarks,
   toggleBookmark,
+  setLastRead,
   STATUSES,
   REPEAT_OPTIONS,
 } from '../utils/storage'
@@ -191,6 +192,19 @@ export default function SurahDetail() {
       if (scrollRafRef.current != null) cancelAnimationFrame(scrollRafRef.current)
     }
   }, [surah])
+
+  // Powers the Reader tab and Home's "Continue" card — a plain reading
+  // position, independent of memorization status. Debounced so fast
+  // scrolling doesn't spam localStorage writes.
+  const lastReadTimerRef = useRef(null)
+  useEffect(() => {
+    if (!surah) return
+    clearTimeout(lastReadTimerRef.current)
+    lastReadTimerRef.current = setTimeout(() => {
+      setLastRead(surahNumber, visibleAyahNum)
+    }, 800)
+    return () => clearTimeout(lastReadTimerRef.current)
+  }, [surah, surahNumber, visibleAyahNum])
 
   function changeStatus(next) {
     const updated = setSurahStatus(surahNumber, next)

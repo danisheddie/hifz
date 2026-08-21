@@ -8,6 +8,7 @@ const KEYS = {
   name: 'hifz:userName',
   bookmarks: 'hifz:bookmarks',
   installDismissed: 'hifz:installDismissed',
+  lastRead: 'hifz:lastRead',
 }
 
 // The four memorization states a surah (or an ayah range within it) can be in.
@@ -323,4 +324,18 @@ export function isInstallDismissed() {
 
 export function dismissInstall() {
   write(KEYS.installDismissed, true)
+}
+
+// --- last-read position (Reader tab, Home's "Continue" card) -------------
+// A single { surah, ayah } pointer, independent of any surah's memorization
+// status — purely "where you'd resume reading from", updated as SurahDetail
+// is read.
+
+export function getLastRead() {
+  const v = read(KEYS.lastRead, null)
+  return v && Number.isInteger(v.surah) && Number.isInteger(v.ayah) ? v : null
+}
+
+export function setLastRead(surah, ayah) {
+  write(KEYS.lastRead, { surah, ayah })
 }

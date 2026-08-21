@@ -13,6 +13,7 @@ import Settings from './components/Settings'
 import Help from './components/Help'
 import Bookmarks from './components/Bookmarks'
 import JuzIndex from './components/JuzIndex'
+import Reader from './components/Reader'
 import { syncNow } from './utils/cloudSync'
 
 export default function App() {
@@ -38,6 +39,7 @@ export default function App() {
       <Route path="/help" element={<Help />} />
       <Route path="/bookmarks" element={<Bookmarks />} />
       <Route path="/juz" element={<JuzIndex />} />
+      <Route path="/reader" element={<Reader />} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   )
