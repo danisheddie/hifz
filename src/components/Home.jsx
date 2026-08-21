@@ -179,12 +179,12 @@ export default function Home() {
                   className="flex items-center gap-3 rounded-2xl border border-amber/20 bg-amber/5 px-4 py-3.5 transition active:scale-[0.99]"
                 >
                   <span
-                    className="font-quran flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-amber/15 text-lg text-amber"
+                    className="font-quran flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full bg-amber/15 px-1 text-xs leading-none text-amber"
                     dir="rtl"
                     lang="ar"
                     aria-hidden="true"
                   >
-                    {continueItem.surah.name}
+                    <span className="whitespace-nowrap">{continueItem.surah.name}</span>
                   </span>
                   <span className="min-w-0 grow">
                     <span className="block text-[11px] font-semibold uppercase tracking-wide text-amber">
