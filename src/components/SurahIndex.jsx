@@ -6,11 +6,11 @@ import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { listSurahs } from '../utils/api'
 import { STATUSES, getSurahStatusMap, setSurahStatus } from '../utils/storage'
 import { schedulePush } from '../utils/cloudSync'
-import { STATUS_RING } from '../utils/statusStyle'
+import { STATUS_RING, STATUS_STYLE } from '../utils/statusStyle'
 import { useLang } from '../utils/i18n.jsx'
 import BackButton from './BackButton'
 import LoadingSpinner from './LoadingSpinner'
-import StatusBadge from './StatusBadge'
+import BottomNav from './BottomNav'
 
 const FILTERS = ['all', ...STATUSES]
 
@@ -28,6 +28,13 @@ export default function SurahIndex() {
   })
   const [selectMode, setSelectMode] = useState(false)
   const [selected, setSelected] = useState(() => new Set())
+  // The filter chip row lives behind a funnel icon so the header stays
+  // uncluttered; auto-opens when arriving with an active filter already set
+  // (e.g. a dashboard "see all" deep-link) so the active chip is visible.
+  const [filtersOpen, setFiltersOpen] = useState(() => {
+    const s = searchParams.get('status')
+    return FILTERS.includes(s) && s !== 'all'
+  })
 
   useEffect(() => {
     const statusMap = getSurahStatusMap()
@@ -73,7 +80,8 @@ export default function SurahIndex() {
   }, [surahs, query, filter])
 
   return (
-    <div className="mx-auto h-screen max-w-2xl overflow-y-auto">
+    <div className="mx-auto flex h-screen max-w-2xl flex-col">
+      <div className="flex-1 overflow-y-auto">
       <header className="sticky top-0 z-10 border-b border-emerald/5 bg-paper/90 px-5 py-4 backdrop-blur">
         <div className="flex items-center gap-2">
           <BackButton onClick={() => navigate('/')} />
@@ -88,43 +96,65 @@ export default function SurahIndex() {
             {selectMode ? t('index.done') : t('index.select')}
           </button>
         </div>
-        <input
-          type="search"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder={t('index.searchPlaceholder')}
-          className="mt-3 w-full rounded-xl border border-emerald/15 bg-transparent px-4 py-2.5 text-sm text-emerald placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-emerald/20"
-        />
-        <div className="relative mt-3">
-          <div className="flex gap-1.5 overflow-x-auto pb-1">
-            {FILTERS.map((f) => (
-              <button
-                key={f}
-                onClick={() => setFilter(f)}
-                className={`shrink-0 rounded-full px-3 py-1.5 text-xs font-medium transition active:scale-95 ${
-                  filter === f
-                    ? 'bg-emerald text-paper'
-                    : 'bg-emerald/5 text-muted'
-                }`}
-              >
-                {f === 'all' ? t('index.filterAll') : t(`status.${f}`)}
-              </button>
-            ))}
-          </div>
-          {/* Signals there's more to scroll to — the row was clipping the
-              last chip mid-word with nothing hinting it was scrollable. */}
-          <div
-            className="pointer-events-none absolute inset-y-0 right-0 w-8 bg-gradient-to-l from-paper to-transparent"
-            aria-hidden="true"
+        <div className="mt-3 flex items-center gap-2">
+          <input
+            type="search"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder={t('index.searchPlaceholder')}
+            className="w-full rounded-xl border border-emerald/15 bg-transparent px-4 py-2.5 text-sm text-emerald placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-emerald/20"
           />
+          <button
+            type="button"
+            onClick={() => setFiltersOpen((prev) => !prev)}
+            aria-pressed={filtersOpen}
+            aria-label={t('index.filter')}
+            className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border transition active:scale-95 ${
+              filtersOpen || filter !== 'all'
+                ? 'border-emerald bg-emerald text-paper'
+                : 'border-emerald/15 text-emerald'
+            }`}
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+              <path d="M4 5h16M7 12h10M10 19h4" strokeLinecap="round" />
+            </svg>
+          </button>
         </div>
-        <button
-          type="button"
-          onClick={() => navigate('/juz')}
-          className="mt-2.5 text-xs font-medium text-muted underline decoration-emerald/25 underline-offset-2"
+        {filtersOpen && (
+          <div className="relative mt-3">
+            <div className="flex gap-1.5 overflow-x-auto pb-1">
+              {FILTERS.map((f) => (
+                <button
+                  key={f}
+                  onClick={() => setFilter(f)}
+                  className={`shrink-0 rounded-full px-3 py-1.5 text-xs font-medium transition active:scale-95 ${
+                    filter === f
+                      ? 'bg-emerald text-paper'
+                      : 'bg-emerald/5 text-muted'
+                  }`}
+                >
+                  {f === 'all' ? t('index.filterAll') : t(`status.${f}`)}
+                </button>
+              ))}
+            </div>
+            {/* Signals there's more to scroll to — the row was clipping the
+                last chip mid-word with nothing hinting it was scrollable. */}
+            <div
+              className="pointer-events-none absolute inset-y-0 right-0 w-8 bg-gradient-to-l from-paper to-transparent"
+              aria-hidden="true"
+            />
+          </div>
+        )}
+        <select
+          value="surah"
+          onChange={(e) => {
+            if (e.target.value === 'juz') navigate('/juz')
+          }}
+          className="mt-2.5 rounded-lg border-none bg-transparent text-xs font-medium text-muted focus:outline-none"
         >
-          {t('juz.browseLink')}
-        </button>
+          <option value="surah">{t('index.browseSurah')}</option>
+          <option value="juz">{t('index.browseJuz')}</option>
+        </select>
       </header>
 
       <main className={`px-3 pt-2 ${selected.size > 0 ? 'pb-24' : 'pb-10'}`}>
@@ -157,8 +187,16 @@ export default function SurahIndex() {
                   )}
                 </span>
                 <span className="min-w-0 grow">
-                  <span className="block truncate text-[15px] font-medium text-emerald">
-                    {s.englishName}
+                  <span className="flex items-center gap-1.5">
+                    {s.status !== 'new' && (
+                      <span
+                        className={`h-1.5 w-1.5 shrink-0 rounded-full ${STATUS_STYLE[s.status].dot}`}
+                        aria-hidden="true"
+                      />
+                    )}
+                    <span className="truncate text-[15px] font-medium text-emerald">
+                      {s.englishName}
+                    </span>
                   </span>
                   <span className="block text-xs text-muted">
                     {s.ayahCount} {s.ayahCount === 1 ? t('common.ayah') : t('common.ayahs')}
@@ -188,12 +226,6 @@ export default function SurahIndex() {
                     className="block rounded-xl px-3 py-3.5 transition active:scale-[0.99] active:bg-emerald/5"
                   >
                     {row}
-                    {/* Only surahs with real progress get a badge — new stays uncluttered. */}
-                    {s.status !== 'new' && (
-                      <span className="ml-12 mt-1.5 block">
-                        <StatusBadge status={s.status} />
-                      </span>
-                    )}
                   </Link>
                 )}
               </li>
@@ -201,6 +233,7 @@ export default function SurahIndex() {
           })}
         </ul>
       </main>
+    </div>
 
       {selected.size > 0 && (
         <div className="fixed inset-x-0 bottom-0 mx-auto max-w-2xl border-t border-emerald/10 bg-paper/95 px-5 py-3 backdrop-blur">
@@ -234,6 +267,7 @@ export default function SurahIndex() {
           </div>
         </div>
       )}
+      <BottomNav />
     </div>
   )
 }

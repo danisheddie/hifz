@@ -16,6 +16,7 @@ import {
   getMemorizedAyahCount,
   getBookmarks,
   toggleBookmark,
+  setLastRead,
   STATUSES,
   REPEAT_OPTIONS,
 } from '../utils/storage'
@@ -63,10 +64,8 @@ export default function SurahDetail() {
   const [ayahRangeMode, setAyahRangeMode] = useState(false)
   const [ayahRange, setAyahRange] = useState({ start: null, end: null })
 
-  // --- options dropdown (status/reading/practice) -------------------------
-  // Sticky below the header so it stays reachable while scrolled deep into a
-  // long surah, and collapsible so it doesn't permanently eat reading space.
-  const [optionsOpen, setOptionsOpen] = useState(true)
+  // --- bottom toolbar "More" sheet (status, translation/tafsir, mark ayat) -
+  const [moreOpen, setMoreOpen] = useState(false)
 
   // --- bookmarks -----------------------------------------------------------
   const [bookmarkedSet, setBookmarkedSet] = useState(
@@ -127,7 +126,7 @@ export default function SurahDetail() {
     setRange({ start: null, end: null })
     setAyahRangeMode(false)
     setAyahRange({ start: null, end: null })
-    setOptionsOpen(true)
+    setMoreOpen(false)
     setBookmarkedSet(new Set(getBookmarks().filter((b) => b.surah === surahNumber).map((b) => b.ayah)))
     setAyahSearchOpen(false)
     setAyahSearchValue('')
@@ -191,6 +190,19 @@ export default function SurahDetail() {
       if (scrollRafRef.current != null) cancelAnimationFrame(scrollRafRef.current)
     }
   }, [surah])
+
+  // Powers the Reader tab and Home's "Continue" card — a plain reading
+  // position, independent of memorization status. Debounced so fast
+  // scrolling doesn't spam localStorage writes.
+  const lastReadTimerRef = useRef(null)
+  useEffect(() => {
+    if (!surah) return
+    clearTimeout(lastReadTimerRef.current)
+    lastReadTimerRef.current = setTimeout(() => {
+      setLastRead(surahNumber, visibleAyahNum)
+    }, 800)
+    return () => clearTimeout(lastReadTimerRef.current)
+  }, [surah, surahNumber, visibleAyahNum])
 
   function changeStatus(next) {
     const updated = setSurahStatus(surahNumber, next)
@@ -443,6 +455,11 @@ export default function SurahDetail() {
               {surah.name}
             </p>
           )}
+          {surah && (
+            <p className="text-[11px] text-muted">
+              {t('detail.ayahPosition', { n: visibleAyahNum, total: surah.ayahs.length })}
+            </p>
+          )}
         </div>
         <button
           type="button"
@@ -458,23 +475,6 @@ export default function SurahDetail() {
           </svg>
         </button>
       </header>
-
-      {surah && !optionsOpen && (
-        <button
-          type="button"
-          onClick={() => setOptionsOpen(true)}
-          className="sticky top-[77px] z-[5] flex w-full items-center justify-center gap-1.5 border-b border-emerald/5 bg-paper/95 py-2 text-xs font-medium text-muted backdrop-blur transition active:bg-emerald/5"
-        >
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" aria-hidden="true">
-            <path d="m6 9 6 6 6-6" />
-          </svg>
-          {t('detail.showOptions')}
-          <span className="text-muted/50" aria-hidden="true">·</span>
-          <span className="font-normal text-muted/80">
-            {t('detail.ayahPosition', { n: visibleAyahNum, total: surah.ayahs.length })}
-          </span>
-        </button>
-      )}
 
       {surah && ayahSearchOpen && (
         <div className="border-b border-emerald/5 px-5 py-3">
@@ -497,113 +497,17 @@ export default function SurahDetail() {
         </div>
       )}
 
-      {surah && optionsOpen && (
-        <div className="sticky top-[77px] z-[5] bg-paper/95 backdrop-blur">
-          <div className="border-b border-emerald/5 px-5 py-2.5">
-            <StatusControl status={status} onChange={changeStatus} />
-            {entry.ranges && entry.ranges.length > 0 && (
-              <p className="mt-2 text-xs text-muted">
-                {t('detail.ayahProgress', {
-                  done: getMemorizedAyahCount(entry, surah.ayahs.length),
-                  total: surah.ayahs.length,
-                })}
-              </p>
-            )}
-          </div>
-
-          <div className="border-b border-emerald/5 px-5 py-2.5">
-            <div className="flex flex-wrap gap-2">
-              <button
-                type="button"
-                onClick={() => toggleSetting('showTranslation')}
-                aria-pressed={settings.showTranslation}
-                className={`rounded-full px-3.5 py-1.5 text-xs font-medium transition active:scale-95 ${
-                  settings.showTranslation
-                    ? 'bg-amber/15 text-amber ring-1 ring-amber/40'
-                    : 'text-muted ring-1 ring-emerald/10'
-                }`}
-              >
-                {t('detail.translation')}
-              </button>
-              <button
-                type="button"
-                onClick={() => toggleSetting('showTafsir')}
-                aria-pressed={settings.showTafsir}
-                className={`rounded-full px-3.5 py-1.5 text-xs font-medium transition active:scale-95 ${
-                  settings.showTafsir
-                    ? 'bg-amber/15 text-amber ring-1 ring-amber/40'
-                    : 'text-muted ring-1 ring-emerald/10'
-                }`}
-              >
-                {t('tafsir.title')}
-              </button>
-              <button
-                type="button"
-                onClick={cycleTestMode}
-                aria-pressed={testMode !== 'off'}
-                className={`rounded-full px-3.5 py-1.5 text-xs font-medium transition active:scale-95 ${
-                  testMode !== 'off'
-                    ? 'bg-amber/15 text-amber ring-1 ring-amber/40'
-                    : 'text-muted ring-1 ring-emerald/10'
-                }`}
-              >
-                {t(`test.mode.${testMode}`)}
-              </button>
-              <button
-                type="button"
-                onClick={cycleRepeat}
-                className="rounded-full px-3.5 py-1.5 text-xs font-medium text-muted ring-1 ring-emerald/10 transition active:scale-95"
-              >
-                {t('audio.repeat', {
-                  n: settings.repeatCount === 'inf' ? '∞' : settings.repeatCount,
-                })}
-              </button>
-              <button
-                type="button"
-                onClick={toggleRangeMode}
-                aria-pressed={rangeMode || hasCommittedRange}
-                className={`rounded-full px-3.5 py-1.5 text-xs font-medium transition active:scale-95 ${
-                  rangeMode || hasCommittedRange
-                    ? 'bg-amber/15 text-amber ring-1 ring-amber/40'
-                    : 'text-muted ring-1 ring-emerald/10'
-                }`}
-              >
-                {t('audio.loopRange')}
-              </button>
-              <button
-                type="button"
-                onClick={toggleAyahRangeMode}
-                aria-pressed={ayahRangeMode || hasCommittedAyahRange}
-                className={`rounded-full px-3.5 py-1.5 text-xs font-medium transition active:scale-95 ${
-                  ayahRangeMode || hasCommittedAyahRange
-                    ? 'bg-amber/15 text-amber ring-1 ring-amber/40'
-                    : 'text-muted ring-1 ring-emerald/10'
-                }`}
-              >
-                {t('ayahRange.mark')}
-              </button>
-            </div>
-            {rangeMode && (
-              <p className="mt-2 text-xs text-muted">{t('audio.selectRangeHint')}</p>
-            )}
-            {ayahRangeMode && (
-              <p className="mt-2 text-xs text-muted">{t('ayahRange.selectHint')}</p>
-            )}
-          </div>
-
+      {surah && (rangeMode || ayahRangeMode) && (
+        <div className="border-b border-emerald/5 bg-amber/5 px-5 py-2.5 text-center">
+          <p className="text-xs text-muted">
+            {rangeMode ? t('audio.selectRangeHint') : t('ayahRange.selectHint')}
+          </p>
           <button
             type="button"
-            onClick={() => setOptionsOpen(false)}
-            className="flex w-full items-center justify-center gap-1.5 border-b border-emerald/10 py-2 text-xs font-medium text-muted transition active:bg-emerald/5"
+            onClick={rangeMode ? toggleRangeMode : toggleAyahRangeMode}
+            className="mt-1 text-xs font-medium text-emerald underline underline-offset-2"
           >
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" aria-hidden="true">
-              <path d="m6 15 6-6 6 6" />
-            </svg>
-            {t('detail.hideOptions')}
-            <span className="text-muted/50" aria-hidden="true">·</span>
-            <span className="font-normal text-muted/80">
-              {t('detail.ayahPosition', { n: visibleAyahNum, total: surah.ayahs.length })}
-            </span>
+            {t('common.cancel')}
           </button>
         </div>
       )}
@@ -821,6 +725,134 @@ export default function SurahDetail() {
                 {t(`status.${s}`)}
               </button>
             ))}
+          </div>
+        </div>
+      )}
+
+      {surah && !hasCommittedRange && !hasCommittedAyahRange && !rangeMode && !ayahRangeMode && (
+        <nav className="fixed inset-x-0 bottom-0 mx-auto flex w-full max-w-2xl border-t border-emerald/10 bg-paper/95 px-2 pb-[max(env(safe-area-inset-bottom),0.5rem)] pt-1.5 backdrop-blur">
+          <button
+            type="button"
+            onClick={toggleRangeMode}
+            aria-pressed={rangeMode}
+            className="flex flex-1 flex-col items-center gap-0.5 rounded-xl py-1.5 text-[11px] font-medium text-muted transition active:scale-95"
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+              <path d="M8 5.14v13.72a1 1 0 0 0 1.5.87l11-6.86a1 1 0 0 0 0-1.74l-11-6.86A1 1 0 0 0 8 5.14Z" />
+            </svg>
+            {t('detail.listen')}
+          </button>
+          <button
+            type="button"
+            onClick={cycleRepeat}
+            className="flex flex-1 flex-col items-center gap-0.5 rounded-xl py-1.5 text-[11px] font-medium text-muted transition active:scale-95"
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+              <path d="M17 2.1V6a5 5 0 0 1-5 5H4M7 21.9V18a5 5 0 0 1 5-5h8" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+            {t('audio.repeat', { n: settings.repeatCount === 'inf' ? '∞' : settings.repeatCount })}
+          </button>
+          <button
+            type="button"
+            onClick={cycleTestMode}
+            aria-pressed={testMode !== 'off'}
+            className={`flex flex-1 flex-col items-center gap-0.5 rounded-xl py-1.5 text-[11px] font-medium transition active:scale-95 ${
+              testMode !== 'off' ? 'text-amber' : 'text-muted'
+            }`}
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+              <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7Z" />
+              <circle cx="12" cy="12" r="3" />
+            </svg>
+            {t(`test.mode.${testMode}`)}
+          </button>
+          <button
+            type="button"
+            onClick={() => setMoreOpen(true)}
+            aria-pressed={moreOpen}
+            className="flex flex-1 flex-col items-center gap-0.5 rounded-xl py-1.5 text-[11px] font-medium text-muted transition active:scale-95"
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <circle cx="5" cy="12" r="1.75" />
+              <circle cx="12" cy="12" r="1.75" />
+              <circle cx="19" cy="12" r="1.75" />
+            </svg>
+            {t('detail.more')}
+          </button>
+        </nav>
+      )}
+
+      {surah && moreOpen && (
+        <div
+          className="fixed inset-0 z-30 flex items-end bg-black/30"
+          onClick={() => setMoreOpen(false)}
+        >
+          <div
+            className="mx-auto w-full max-w-2xl rounded-t-2xl bg-paper p-5 pb-[max(env(safe-area-inset-bottom),1.25rem)]"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="mb-4 flex items-center justify-between">
+              <p className="text-sm font-semibold text-emerald">{t('detail.more')}</p>
+              <button
+                type="button"
+                onClick={() => setMoreOpen(false)}
+                className="text-xs font-medium text-muted"
+              >
+                {t('common.done')}
+              </button>
+            </div>
+
+            <StatusControl status={status} onChange={changeStatus} />
+            {entry.ranges && entry.ranges.length > 0 && (
+              <p className="mt-2 text-xs text-muted">
+                {t('detail.ayahProgress', {
+                  done: getMemorizedAyahCount(entry, surah.ayahs.length),
+                  total: surah.ayahs.length,
+                })}
+              </p>
+            )}
+
+            <div className="mt-4 flex flex-wrap gap-2">
+              <button
+                type="button"
+                onClick={() => toggleSetting('showTranslation')}
+                aria-pressed={settings.showTranslation}
+                className={`rounded-full px-3.5 py-1.5 text-xs font-medium transition active:scale-95 ${
+                  settings.showTranslation
+                    ? 'bg-amber/15 text-amber ring-1 ring-amber/40'
+                    : 'text-muted ring-1 ring-emerald/10'
+                }`}
+              >
+                {t('detail.translation')}
+              </button>
+              <button
+                type="button"
+                onClick={() => toggleSetting('showTafsir')}
+                aria-pressed={settings.showTafsir}
+                className={`rounded-full px-3.5 py-1.5 text-xs font-medium transition active:scale-95 ${
+                  settings.showTafsir
+                    ? 'bg-amber/15 text-amber ring-1 ring-amber/40'
+                    : 'text-muted ring-1 ring-emerald/10'
+                }`}
+              >
+                {t('tafsir.title')}
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setMoreOpen(false)
+                  toggleAyahRangeMode()
+                }}
+                aria-pressed={ayahRangeMode || hasCommittedAyahRange}
+                className={`rounded-full px-3.5 py-1.5 text-xs font-medium transition active:scale-95 ${
+                  ayahRangeMode || hasCommittedAyahRange
+                    ? 'bg-amber/15 text-amber ring-1 ring-amber/40'
+                    : 'text-muted ring-1 ring-emerald/10'
+                }`}
+              >
+                {t('ayahRange.mark')}
+              </button>
+            </div>
           </div>
         </div>
       )}
