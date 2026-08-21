@@ -747,8 +747,11 @@ export default function SurahDetail() {
             onClick={cycleRepeat}
             className="flex flex-1 flex-col items-center gap-0.5 rounded-xl py-1.5 text-[11px] font-medium text-muted transition active:scale-95"
           >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-              <path d="M17 2.1V6a5 5 0 0 1-5 5H4M7 21.9V18a5 5 0 0 1 5-5h8" strokeLinecap="round" strokeLinejoin="round" />
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d="m17 2 4 4-4 4" />
+              <path d="M3 11V9a4 4 0 0 1 4-4h14" />
+              <path d="m7 22-4-4 4-4" />
+              <path d="M21 13v2a4 4 0 0 1-4 4H3" />
             </svg>
             {t('audio.repeat', { n: settings.repeatCount === 'inf' ? '∞' : settings.repeatCount })}
           </button>
