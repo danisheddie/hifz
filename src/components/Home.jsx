@@ -178,11 +178,13 @@ export default function Home() {
                   }
                   className="flex items-center gap-3 rounded-2xl border border-amber/20 bg-amber/5 px-4 py-3.5 transition active:scale-[0.99]"
                 >
-                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-amber/15 text-amber">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-                      <path d="M12 6.5c-2-1.4-5-1.8-8-1v13c3-.8 6-.4 8 1 2-1.4 5-1.8 8-1v-13c-3-.8-6-.4-8 1Z" />
-                      <path d="M12 6.5v13" />
-                    </svg>
+                  <span
+                    className="font-quran flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-amber/15 text-lg text-amber"
+                    dir="rtl"
+                    lang="ar"
+                    aria-hidden="true"
+                  >
+                    {continueItem.surah.name}
                   </span>
                   <span className="min-w-0 grow">
                     <span className="block text-[11px] font-semibold uppercase tracking-wide text-amber">
