@@ -25,8 +25,9 @@ export const DEFAULT_SETTINGS = {
   appLang: 'en',
   // Theme: 'light' | 'dark' | 'sepia'.
   theme: 'light',
-  // Arabic reading size: 's' | 'm' | 'l'.
-  readingSize: 'm',
+  // Arabic reading text scale, adjusted by pinching in SurahDetail. 1 is the
+  // default size; clamped to READING_SCALE_RANGE.
+  readingScale: 1,
   showTranslation: true,
   translationEdition: 'en.sahih',
   showTafsir: false,
@@ -37,6 +38,10 @@ export const DEFAULT_SETTINGS = {
 }
 
 export const REPEAT_OPTIONS = [1, 3, 5, 10, 'inf']
+
+// Clamp for readingScale — small enough to fit more on screen, large enough
+// to stay usable for low-vision reading.
+export const READING_SCALE_RANGE = [0.7, 1.9]
 
 function read(key, fallback = null) {
   try {

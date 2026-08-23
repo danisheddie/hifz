@@ -18,18 +18,17 @@ function toArabicNumber(n) {
     .join('')
 }
 
-const ARABIC_SIZE = {
-  s: 'text-2xl sm:text-3xl',
-  m: 'text-3xl sm:text-4xl',
-  l: 'text-4xl sm:text-5xl',
-}
+// Base Arabic text size in rem at scale 1 — matches the old "medium" tier;
+// `scale` (from settings.readingScale, pinch-adjustable in SurahDetail)
+// multiplies it continuously instead of snapping between fixed tiers.
+const BASE_ARABIC_REM = 1.875
 
 export default function AyahCard({
   ayah,
   showTranslation,
   showTafsirToggle,
   glyphs,
-  size = 'm',
+  scale = 1,
   isPlaying,
   isLoadingAudio,
   onTogglePlay,
@@ -45,7 +44,7 @@ export default function AyahCard({
   cardRef,
 }) {
   const { t } = useLang()
-  const arabicSize = ARABIC_SIZE[size] || ARABIC_SIZE.m
+  const arabicStyle = { fontSize: `${BASE_ARABIC_REM * scale}rem` }
   const [tafsirState, setTafsirState] = useState('closed') // closed | loading | open | error
   const [tafsir, setTafsir] = useState(null)
   const [revealed, setRevealed] = useState(false)
@@ -168,7 +167,7 @@ export default function AyahCard({
           {hidden ? (
             <p className="flex items-center gap-2 py-2 text-sm text-muted" dir="rtl">
               {testMode === 'firstWord' && (
-                <span className={`font-quran text-emerald ${arabicSize}`} dir="rtl" lang="ar">
+                <span className="font-quran text-emerald" style={arabicStyle} dir="rtl" lang="ar">
                   {glyphs ? (
                     <span style={{ fontFamily: `qcf2p${ayah.words[0].page}` }}>
                       {ayah.words[0].code}
@@ -184,7 +183,7 @@ export default function AyahCard({
           ) : glyphs ? (
             // Exact mushaf rendering: each word in its QCF v2 page glyph; the
             // ayah-end word carries the ornate number, shown in amber.
-            <p dir="rtl" lang="ar" className={`leading-[2.5] text-emerald ${arabicSize}`}>
+            <p dir="rtl" lang="ar" className="leading-[2.5] text-emerald" style={arabicStyle}>
               {ayah.words.map((w, i) => (
                 <span
                   key={i}
@@ -197,7 +196,7 @@ export default function AyahCard({
               ))}
             </p>
           ) : (
-            <p dir="rtl" lang="ar" className={`font-quran leading-[2.3] text-emerald ${arabicSize}`}>
+            <p dir="rtl" lang="ar" className="font-quran leading-[2.3] text-emerald" style={arabicStyle}>
               {ayah.arabic}{' '}
               <span className="font-arabic text-amber text-xl mx-1.5">
                 ﴿{toArabicNumber(ayah.numberInSurah)}﴾

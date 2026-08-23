@@ -19,6 +19,7 @@ import {
   setLastRead,
   STATUSES,
   REPEAT_OPTIONS,
+  READING_SCALE_RANGE,
 } from '../utils/storage'
 import { STATUS_STYLE } from '../utils/statusStyle'
 import { ensurePageFont } from '../utils/fonts'
@@ -66,6 +67,15 @@ export default function SurahDetail() {
 
   // --- bottom toolbar "More" sheet (status, translation/tafsir, mark ayat) -
   const [moreOpen, setMoreOpen] = useState(false)
+
+  // --- pinch-to-resize Arabic text ---------------------------------------
+  // Two-finger pinch over the ayah list live-adjusts settings.readingScale;
+  // native page zoom is disabled (viewport meta), so this is the only zoom
+  // gesture in play. Only the final value (on lift) is persisted — every
+  // touchmove would otherwise spam localStorage.
+  const mainRef = useRef(null)
+  const pinchStartRef = useRef(null) // { dist, scale }
+  const latestScaleRef = useRef(null) // live value during a pinch; read by the touchend handler so it never persists a stale settings.readingScale
 
   // --- bookmarks -----------------------------------------------------------
   const [bookmarkedSet, setBookmarkedSet] = useState(
@@ -224,6 +234,49 @@ export default function SurahDetail() {
     const next = REPEAT_OPTIONS[(i + 1) % REPEAT_OPTIONS.length]
     setSettings(setSetting('repeatCount', next))
   }
+
+  // --- pinch-to-resize Arabic text -----------------------------------------
+  // touchmove is attached natively with { passive: false } below — React's
+  // JSX touch handlers are passive by default, so calling preventDefault()
+  // on one is silently ignored (and logs a warning).
+
+  function pinchDistance(touches) {
+    const [a, b] = touches
+    return Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY)
+  }
+
+  function onTouchStart(e) {
+    if (e.touches.length === 2) {
+      pinchStartRef.current = { dist: pinchDistance(e.touches), scale: settings.readingScale }
+      latestScaleRef.current = settings.readingScale
+    }
+  }
+
+  function onTouchEnd(e) {
+    if (e.touches.length < 2 && pinchStartRef.current) {
+      pinchStartRef.current = null
+      if (latestScaleRef.current != null) {
+        setSettings(setSetting('readingScale', latestScaleRef.current))
+        latestScaleRef.current = null
+      }
+    }
+  }
+
+  useEffect(() => {
+    const el = mainRef.current
+    if (!el) return
+    function onTouchMove(e) {
+      if (e.touches.length !== 2 || !pinchStartRef.current) return
+      e.preventDefault()
+      const { dist, scale } = pinchStartRef.current
+      const [lo, hi] = READING_SCALE_RANGE
+      const next = Math.min(hi, Math.max(lo, scale * (pinchDistance(e.touches) / dist)))
+      latestScaleRef.current = next
+      setSettings((prev) => ({ ...prev, readingScale: next }))
+    }
+    el.addEventListener('touchmove', onTouchMove, { passive: false })
+    return () => el.removeEventListener('touchmove', onTouchMove)
+  }, [])
 
   // --- audio engine --------------------------------------------------------
   // Only one <audio> element plays at a time, shared by single-ayah repeat
@@ -514,7 +567,13 @@ export default function SurahDetail() {
 
       {surah && <NotesEditor surahNumber={surahNumber} />}
 
-      <main className={`px-5 pt-4 ${hasCommittedAyahRange ? 'pb-40' : 'pb-28'}`}>
+      <main
+        ref={mainRef}
+        className={`px-5 pt-4 ${hasCommittedAyahRange ? 'pb-40' : 'pb-28'}`}
+        onTouchStart={onTouchStart}
+        onTouchEnd={onTouchEnd}
+        onTouchCancel={onTouchEnd}
+      >
         {loading && <LoadingSpinner label={t('detail.loading')} />}
 
         {!loading && error && (
@@ -541,7 +600,7 @@ export default function SurahDetail() {
               <AyahCard
                 key={`${ayah.number}-${testMode}`}
                 ayah={ayah}
-                size={settings.readingSize}
+                scale={settings.readingScale}
                 glyphs={
                   !!ayah.words?.length && ayah.words.every((w) => glyphPages.has(w.page))
                 }
