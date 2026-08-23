@@ -31,6 +31,9 @@ export const DEFAULT_SETTINGS = {
   showTranslation: true,
   translationEdition: 'en.sahih',
   showTafsir: false,
+  // Renders the real printed-mushaf page layout (justified lines, no
+  // translation) instead of the per-ayah card list.
+  mushafView: false,
   reciter: 'ar.alafasy',
   // How many times a single ayah (or a looped range) repeats before
   // stopping: 1 | 3 | 5 | 10 | 'inf'.

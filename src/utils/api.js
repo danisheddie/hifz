@@ -357,6 +357,10 @@ export async function getMushafPage(page) {
       page,
       lines: localPage.lines,
       surahs: surahsFromVerses(localPage.verses, meta),
+      // Ordered per-ayah words, carried through so callers can cross-
+      // reference the flattened `lines` back to which surah:ayah each word
+      // belongs to (lines/words on their own don't carry ayah numbers).
+      verses: localPage.verses,
     }
   }
 
@@ -405,13 +409,47 @@ export async function getMushafPage(page) {
     englishName: SURAH_NAMES[id - 1] || `Surah ${id}`,
   }))
 
-  const result = { page, lines, surahs }
+  // Normalized to the same shape as the local-first branch's `verses`, so
+  // callers don't need to branch on which source served the page.
+  const normalizedVerses = verses.map((v) => ({
+    surah: v.chapter_id,
+    ayah: v.verse_number,
+    num: v.id,
+    words: (v.words || []).map((w) => ({
+      code: w.code_v2 || w.text || '',
+      page: w.page_number,
+      end: w.char_type_name === 'end',
+    })),
+    text: null,
+  }))
+
+  const result = { page, lines, surahs, verses: normalizedVerses }
   try {
     sessionStorage.setItem(key, JSON.stringify(result))
   } catch {
     /* non-fatal */
   }
   return result
+}
+
+// `lines` (grouped by physical line, for page layout) and `verses` (grouped
+// by ayah, for meaning) are two different flattenings of the same ordered
+// word sequence — neither carries the other's grouping. This walks both in
+// lockstep to tag each line's words with which surah:ayah they belong to,
+// so a mushaf page can offer per-ayah tap targets despite words from
+// several ayahs (or, at a page boundary, several surahs) sharing one line.
+export function attachAyahInfo({ lines, verses }) {
+  const flatWords = []
+  for (const v of verses) {
+    for (const w of v.words) {
+      flatWords.push({ surah: v.surah, ayah: v.ayah, num: v.num })
+    }
+  }
+  let cursor = 0
+  return lines.map((line) => ({
+    lineNumber: line.lineNumber,
+    words: line.words.map((w) => ({ ...w, ...flatWords[cursor++] })),
+  }))
 }
 
 // Resolve the mushaf page that a given surah:ayah falls on.

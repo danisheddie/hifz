@@ -3,7 +3,7 @@
 // with single-ayah repeat and range looping, and a "test yourself" recall
 // mode.
 
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { getSurah, audioUrlAt, AUDIO_BITRATES, SURAH_NAMES, TOTAL_SURAHS } from '../utils/api'
 import {
@@ -30,6 +30,7 @@ import BackButton from './BackButton'
 import LoadingSpinner from './LoadingSpinner'
 import StatusControl from './StatusControl'
 import NotesEditor from './NotesEditor'
+import MushafView from './MushafView'
 
 const TEST_MODES = ['off', 'hide', 'firstWord']
 
@@ -67,6 +68,15 @@ export default function SurahDetail() {
 
   // --- bottom toolbar "More" sheet (status, translation/tafsir, mark ayat) -
   const [moreOpen, setMoreOpen] = useState(false)
+
+  // --- mushaf view (real printed-page layout, tap-one-ayah actions only) --
+  const [mushafSelectedAyah, setMushafSelectedAyah] = useState(null)
+  const mushafPages = useMemo(() => {
+    if (!surah) return []
+    const pages = new Set()
+    for (const a of surah.ayahs) for (const w of a.words || []) pages.add(w.page)
+    return [...pages].sort((a, b) => a - b)
+  }, [surah])
 
   // --- pinch-to-resize Arabic text ---------------------------------------
   // Two-finger pinch over the ayah list live-adjusts settings.readingScale;
@@ -137,6 +147,7 @@ export default function SurahDetail() {
     setAyahRangeMode(false)
     setAyahRange({ start: null, end: null })
     setMoreOpen(false)
+    setMushafSelectedAyah(null)
     setBookmarkedSet(new Set(getBookmarks().filter((b) => b.surah === surahNumber).map((b) => b.ayah)))
     setAyahSearchOpen(false)
     setAyahSearchValue('')
@@ -457,6 +468,27 @@ export default function SurahDetail() {
   const ayahRangeLo = hasCommittedAyahRange ? Math.min(ayahRange.start, ayahRange.end) : null
   const ayahRangeHi = hasCommittedAyahRange ? Math.max(ayahRange.start, ayahRange.end) : null
 
+  // --- mushaf view ----------------------------------------------------------
+
+  function setMushafAyahStatus(newStatus) {
+    if (mushafSelectedAyah == null || !surah) return
+    const updated = setAyahRangeStatus(
+      surahNumber,
+      mushafSelectedAyah,
+      mushafSelectedAyah,
+      newStatus,
+      surah.ayahs.length
+    )
+    setEntry(updated)
+    schedulePush()
+    setMushafSelectedAyah(null)
+  }
+
+  const mushafSelectedIndex =
+    mushafSelectedAyah != null && surah
+      ? surah.ayahs.findIndex((a) => a.numberInSurah === mushafSelectedAyah)
+      : -1
+
   // --- bookmarks -----------------------------------------------------------
 
   function toggleBookmarkAt(numberInSurah) {
@@ -587,6 +619,16 @@ export default function SurahDetail() {
 
         {!loading && !error && surah && (
           <>
+            {settings.mushafView ? (
+              <MushafView
+                pages={mushafPages}
+                glyphPages={glyphPages}
+                surahNumber={surahNumber}
+                selectedAyah={mushafSelectedAyah}
+                onSelectAyah={setMushafSelectedAyah}
+              />
+            ) : (
+              <>
             {surahNumber !== 1 && surahNumber !== 9 && (
               <p
                 className="mb-4 mt-2 text-center font-quran text-2xl leading-loose text-emerald sm:text-3xl"
@@ -661,6 +703,8 @@ export default function SurahDetail() {
                 }}
               />
             ))}
+              </>
+            )}
 
             {/* Onboarding nudges people toward memorizing sequentially
                 (Juz 30 forward), so continuing to the next surah shouldn't
@@ -877,43 +921,150 @@ export default function SurahDetail() {
             <div className="mt-4 flex flex-wrap gap-2">
               <button
                 type="button"
-                onClick={() => toggleSetting('showTranslation')}
-                aria-pressed={settings.showTranslation}
+                onClick={() => toggleSetting('mushafView')}
+                aria-pressed={settings.mushafView}
                 className={`rounded-full px-3.5 py-1.5 text-xs font-medium transition active:scale-95 ${
-                  settings.showTranslation
+                  settings.mushafView
                     ? 'bg-amber/15 text-amber ring-1 ring-amber/40'
                     : 'text-muted ring-1 ring-emerald/10'
                 }`}
               >
-                {t('detail.translation')}
+                {t('detail.mushafView')}
+              </button>
+              {/* Translation/tafsir display and the ayah-range picker are
+                  list-view-specific — a real mushaf page has no translation,
+                  and highlighting a tap-to-select range across flowing,
+                  multi-line pages isn't supported yet (see MushafView.jsx). */}
+              {!settings.mushafView && (
+                <>
+                  <button
+                    type="button"
+                    onClick={() => toggleSetting('showTranslation')}
+                    aria-pressed={settings.showTranslation}
+                    className={`rounded-full px-3.5 py-1.5 text-xs font-medium transition active:scale-95 ${
+                      settings.showTranslation
+                        ? 'bg-amber/15 text-amber ring-1 ring-amber/40'
+                        : 'text-muted ring-1 ring-emerald/10'
+                    }`}
+                  >
+                    {t('detail.translation')}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => toggleSetting('showTafsir')}
+                    aria-pressed={settings.showTafsir}
+                    className={`rounded-full px-3.5 py-1.5 text-xs font-medium transition active:scale-95 ${
+                      settings.showTafsir
+                        ? 'bg-amber/15 text-amber ring-1 ring-amber/40'
+                        : 'text-muted ring-1 ring-emerald/10'
+                    }`}
+                  >
+                    {t('tafsir.title')}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setMoreOpen(false)
+                      toggleAyahRangeMode()
+                    }}
+                    aria-pressed={ayahRangeMode || hasCommittedAyahRange}
+                    className={`rounded-full px-3.5 py-1.5 text-xs font-medium transition active:scale-95 ${
+                      ayahRangeMode || hasCommittedAyahRange
+                        ? 'bg-amber/15 text-amber ring-1 ring-amber/40'
+                        : 'text-muted ring-1 ring-emerald/10'
+                    }`}
+                  >
+                    {t('ayahRange.mark')}
+                  </button>
+                </>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {mushafSelectedAyah != null && surah && (
+        <div
+          className="fixed inset-0 z-30 flex items-end bg-black/30"
+          onClick={() => setMushafSelectedAyah(null)}
+        >
+          <div
+            className="mx-auto w-full max-w-2xl rounded-t-2xl bg-paper p-5 pb-[max(env(safe-area-inset-bottom),1.25rem)]"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="mb-4 flex items-center justify-between">
+              <p className="text-sm font-semibold text-emerald">
+                {t('ayahRange.labelSingle', { n: mushafSelectedAyah })}
+              </p>
+              <button
+                type="button"
+                onClick={() => setMushafSelectedAyah(null)}
+                className="text-xs font-medium text-muted"
+              >
+                {t('common.done')}
+              </button>
+            </div>
+
+            <div className="flex items-center gap-3">
+              <button
+                type="button"
+                onClick={() => mushafSelectedIndex >= 0 && toggleAyahPlay(mushafSelectedIndex)}
+                className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-emerald text-paper transition active:scale-90"
+                aria-label={
+                  playing?.kind === 'ayah' && playing.index === mushafSelectedIndex
+                    ? t('audio.pause')
+                    : t('audio.play')
+                }
+              >
+                {loadingAudio && playing?.kind === 'ayah' && playing.index === mushafSelectedIndex ? (
+                  <span className="h-4 w-4 animate-spin rounded-full border-2 border-paper/30 border-t-paper" />
+                ) : playing?.kind === 'ayah' && playing.index === mushafSelectedIndex ? (
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                    <rect x="6" y="5" width="4" height="14" rx="1" />
+                    <rect x="14" y="5" width="4" height="14" rx="1" />
+                  </svg>
+                ) : (
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                    <path d="M8 5.14v13.72a1 1 0 0 0 1.5.87l11-6.86a1 1 0 0 0 0-1.74l-11-6.86A1 1 0 0 0 8 5.14Z" />
+                  </svg>
+                )}
               </button>
               <button
                 type="button"
-                onClick={() => toggleSetting('showTafsir')}
-                aria-pressed={settings.showTafsir}
-                className={`rounded-full px-3.5 py-1.5 text-xs font-medium transition active:scale-95 ${
-                  settings.showTafsir
-                    ? 'bg-amber/15 text-amber ring-1 ring-amber/40'
-                    : 'text-muted ring-1 ring-emerald/10'
+                onClick={() => toggleBookmarkAt(mushafSelectedAyah)}
+                aria-pressed={bookmarkedSet.has(mushafSelectedAyah)}
+                className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-full transition active:scale-90 ${
+                  bookmarkedSet.has(mushafSelectedAyah)
+                    ? 'bg-amber text-paper'
+                    : 'text-muted ring-1 ring-emerald/15'
                 }`}
+                aria-label={bookmarkedSet.has(mushafSelectedAyah) ? t('bookmark.remove') : t('bookmark.add')}
               >
-                {t('tafsir.title')}
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill={bookmarkedSet.has(mushafSelectedAyah) ? 'currentColor' : 'none'}
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  aria-hidden="true"
+                >
+                  <path d="M6 3h12a1 1 0 0 1 1 1v17l-7-4-7 4V4a1 1 0 0 1 1-1Z" />
+                </svg>
               </button>
-              <button
-                type="button"
-                onClick={() => {
-                  setMoreOpen(false)
-                  toggleAyahRangeMode()
-                }}
-                aria-pressed={ayahRangeMode || hasCommittedAyahRange}
-                className={`rounded-full px-3.5 py-1.5 text-xs font-medium transition active:scale-95 ${
-                  ayahRangeMode || hasCommittedAyahRange
-                    ? 'bg-amber/15 text-amber ring-1 ring-amber/40'
-                    : 'text-muted ring-1 ring-emerald/10'
-                }`}
-              >
-                {t('ayahRange.mark')}
-              </button>
+            </div>
+
+            <div className="mt-4 flex flex-wrap gap-2">
+              {STATUSES.map((s) => (
+                <button
+                  key={s}
+                  type="button"
+                  onClick={() => setMushafAyahStatus(s)}
+                  className={`rounded-full px-3.5 py-1.5 text-xs font-medium transition active:scale-95 ${STATUS_STYLE[s].active}`}
+                >
+                  {t(`status.${s}`)}
+                </button>
+              ))}
             </div>
           </div>
         </div>
