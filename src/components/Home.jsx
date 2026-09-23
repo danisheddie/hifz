@@ -109,7 +109,7 @@ export default function Home() {
 
   if (!hasProgress) {
     return (
-      <div className="mx-auto flex h-screen max-w-2xl flex-col">
+      <div className="mx-auto flex h-dvh max-w-2xl flex-col">
         <div className="relative flex flex-1 flex-col items-center px-6 pt-28 text-center">
           <div className="absolute right-5 top-5 flex items-center gap-1">
             <HelpLink t={t} />
@@ -133,7 +133,7 @@ export default function Home() {
   }
 
   return (
-    <div className="mx-auto flex h-screen max-w-2xl flex-col">
+    <div className="mx-auto flex h-dvh max-w-2xl flex-col">
       <div className="flex-1 overflow-y-auto px-6 pb-6 pt-10">
         <div className="flex items-start justify-between">
           <p className="font-quran text-2xl leading-none text-emerald" dir="rtl" lang="ar">

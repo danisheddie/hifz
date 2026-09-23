@@ -23,7 +23,7 @@ export default function JuzIndex() {
   }, [])
 
   return (
-    <div className="mx-auto h-screen max-w-2xl overflow-y-auto">
+    <div className="mx-auto h-dvh max-w-2xl overflow-y-auto">
       <header className="sticky top-0 z-10 flex items-center gap-2 border-b border-emerald/5 bg-paper/90 px-5 py-4 backdrop-blur">
         <BackButton onClick={() => navigate('/surahs')} />
         <h1 className="text-lg font-semibold text-emerald">{t('juz.title')}</h1>

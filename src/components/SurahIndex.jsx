@@ -80,7 +80,7 @@ export default function SurahIndex() {
   }, [surahs, query, filter])
 
   return (
-    <div className="mx-auto flex h-screen max-w-2xl flex-col">
+    <div className="mx-auto flex h-dvh max-w-2xl flex-col">
       <div className="flex-1 overflow-y-auto">
       <header className="sticky top-0 z-10 border-b border-emerald/5 bg-paper/90 px-5 py-4 backdrop-blur">
         <div className="flex items-center gap-2">

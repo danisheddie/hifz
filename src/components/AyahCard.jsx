@@ -21,7 +21,9 @@ function toArabicNumber(n) {
 // Base Arabic text size in rem at scale 1 — matches the old "medium" tier;
 // `scale` (from settings.readingScale, pinch-adjustable in SurahDetail)
 // multiplies it continuously instead of snapping between fixed tiers.
-const BASE_ARABIC_REM = 1.875
+// Exported so MushafView's per-line auto-fit starts from the same desired
+// size rather than an independent, driftable copy of the same number.
+export const BASE_ARABIC_REM = 1.875
 
 export default function AyahCard({
   ayah,

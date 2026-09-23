@@ -57,7 +57,7 @@ export default function Onboarding({ onDone }) {
   }
 
   return (
-    <div className="relative mx-auto flex min-h-screen max-w-md flex-col items-center justify-center px-6 py-12 text-center">
+    <div className="relative mx-auto flex min-h-dvh max-w-md flex-col items-center justify-center px-6 py-12 text-center">
       {step >= 1 && (
         <div className="absolute inset-x-0 top-0 mx-auto flex max-w-md items-center justify-between px-6 pt-6">
           <BackButton onClick={() => setStep(step - 1)} />
