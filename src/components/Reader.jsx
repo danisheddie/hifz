@@ -22,7 +22,7 @@ export default function Reader() {
   if (lastRead) return null
 
   return (
-    <div className="flex h-screen flex-col">
+    <div className="flex h-dvh flex-col">
       <div className="flex flex-1 flex-col items-center justify-center px-6 text-center">
         <p className="max-w-[220px] text-sm text-muted">{t('reader.empty')}</p>
         <Link to="/surahs" className="btn-primary mt-6">
