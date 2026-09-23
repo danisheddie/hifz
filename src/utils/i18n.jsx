@@ -89,9 +89,12 @@ const en = {
   'detail.go': 'Go',
   'detail.listen': 'Listen',
   'detail.more': 'More',
+  'detail.mushafView': 'Mushaf view',
   'detail.ayahPosition': 'Ayah {n} of {total}',
   'detail.previousSurah': 'Previous',
   'detail.nextSurah': 'Next',
+
+  'mushaf.pageLabel': 'Page {n}',
 
   'bookmark.add': 'Bookmark this ayah',
   'bookmark.remove': 'Remove bookmark',
@@ -306,9 +309,12 @@ const ms = {
   'detail.go': 'Pergi',
   'detail.listen': 'Dengar',
   'detail.more': 'Lagi',
+  'detail.mushafView': 'Paparan mushaf',
   'detail.ayahPosition': 'Ayat {n} daripada {total}',
   'detail.previousSurah': 'Sebelum',
   'detail.nextSurah': 'Seterusnya',
+
+  'mushaf.pageLabel': 'Muka surat {n}',
 
   'bookmark.add': 'Tanda buku ayat ini',
   'bookmark.remove': 'Buang tanda buku',
@@ -523,9 +529,12 @@ const id = {
   'detail.go': 'Pergi',
   'detail.listen': 'Dengar',
   'detail.more': 'Lainnya',
+  'detail.mushafView': 'Tampilan mushaf',
   'detail.ayahPosition': 'Ayat {n} dari {total}',
   'detail.previousSurah': 'Sebelumnya',
   'detail.nextSurah': 'Berikutnya',
+
+  'mushaf.pageLabel': 'Halaman {n}',
 
   'bookmark.add': 'Bookmark ayat ini',
   'bookmark.remove': 'Hapus bookmark',
