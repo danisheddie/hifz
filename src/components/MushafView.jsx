@@ -11,9 +11,10 @@
 // Switch back to list view for range actions; mushaf view only offers
 // single-ayah actions via the tap sheet.
 
-import { useEffect, useState } from 'react'
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { getMushafPage, attachAyahInfo } from '../utils/api'
 import { useLang } from '../utils/i18n.jsx'
+import { BASE_ARABIC_REM } from './AyahCard'
 import LoadingSpinner from './LoadingSpinner'
 
 function toArabicNumber(n) {
@@ -35,31 +36,86 @@ function wordClass(w, surahNumber, selectedAyah) {
     .join(' ')
 }
 
-function GlyphPage({ page, data, surahNumber, selectedAyah, onSelectAyah }) {
-  const lines = attachAyahInfo(data)
+// A physical mushaf line's word count varies a lot page to page, but the
+// QCF glyphs for a line are only guaranteed to fit the screen at *some*
+// font size — never a single fixed one, on any device. Rather than pick a
+// magic px value that overflows on dense lines (the bug this replaced:
+// text clipped at both edges, page unreadable), this renders at the
+// desired size, measures its own natural width against the space it
+// actually has, and — only if it doesn't fit — shrinks the font-size by
+// that exact ratio. Text width scales linearly with font-size for fixed
+// content, so one measurement is enough; no iterative re-measuring.
+function JustifiedLine({ words, page, desiredPx, surahNumber, selectedAyah, onSelectAyah }) {
+  const wrapRef = useRef(null)
+  const rowRef = useRef(null)
+  const [fontSize, setFontSize] = useState(desiredPx)
+  const fittedForRef = useRef(null)
+
+  useLayoutEffect(() => {
+    if (fittedForRef.current === desiredPx) return
+    const wrap = wrapRef.current
+    const row = rowRef.current
+    if (!wrap || !row) return
+    const availWidth = wrap.clientWidth
+    const naturalWidth = row.scrollWidth
+    setFontSize(
+      availWidth > 0 && naturalWidth > availWidth ? desiredPx * (availWidth / naturalWidth) : desiredPx
+    )
+    fittedForRef.current = desiredPx
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [desiredPx, words])
+
+  return (
+    <div ref={wrapRef} className="w-full overflow-hidden">
+      <div
+        ref={rowRef}
+        dir="rtl"
+        className="flex justify-between whitespace-nowrap"
+        style={{ fontSize: `${fontSize}px`, lineHeight: 2.2 }}
+      >
+        {words.map((w, i) => (
+          <span
+            key={i}
+            onClick={w.surah === surahNumber ? () => onSelectAyah(w.ayah) : undefined}
+            style={{ fontFamily: `qcf2p${page}` }}
+            className={wordClass(w, surahNumber, selectedAyah)}
+          >
+            {w.code}
+          </span>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+function GlyphPage({ page, data, scale, surahNumber, selectedAyah, onSelectAyah }) {
+  const lines = useMemo(() => attachAyahInfo(data), [data])
+  const desiredPx = BASE_ARABIC_REM * scale * 16
   return (
     <>
       {lines.map((line) => (
-        <div key={line.lineNumber} dir="rtl" className="flex justify-between text-3xl leading-[2.2]">
-          {line.words.map((w, i) => (
-            <span
-              key={i}
-              onClick={w.surah === surahNumber ? () => onSelectAyah(w.ayah) : undefined}
-              style={{ fontFamily: `qcf2p${page}` }}
-              className={wordClass(w, surahNumber, selectedAyah)}
-            >
-              {w.code}
-            </span>
-          ))}
-        </div>
+        <JustifiedLine
+          key={line.lineNumber}
+          words={line.words}
+          page={page}
+          desiredPx={desiredPx}
+          surahNumber={surahNumber}
+          selectedAyah={selectedAyah}
+          onSelectAyah={onSelectAyah}
+        />
       ))}
     </>
   )
 }
 
-function FallbackPage({ data, surahNumber, selectedAyah, onSelectAyah }) {
+function FallbackPage({ data, scale, surahNumber, selectedAyah, onSelectAyah }) {
   return (
-    <p dir="rtl" lang="ar" className="font-quran text-3xl leading-[2.3] text-emerald">
+    <p
+      dir="rtl"
+      lang="ar"
+      className="font-quran leading-[2.3] text-emerald"
+      style={{ fontSize: `${BASE_ARABIC_REM * scale}rem` }}
+    >
       {data.verses.map((v) => {
         const tappable = v.surah === surahNumber
         const selected = tappable && v.ayah === selectedAyah
@@ -83,7 +139,7 @@ function FallbackPage({ data, surahNumber, selectedAyah, onSelectAyah }) {
   )
 }
 
-export default function MushafView({ pages, glyphPages, surahNumber, selectedAyah, onSelectAyah }) {
+export default function MushafView({ pages, glyphPages, surahNumber, scale, selectedAyah, onSelectAyah }) {
   const { t } = useLang()
   const [pagesData, setPagesData] = useState({})
 
@@ -119,6 +175,7 @@ export default function MushafView({ pages, glyphPages, surahNumber, selectedAya
                   <GlyphPage
                     page={page}
                     data={data}
+                    scale={scale}
                     surahNumber={surahNumber}
                     selectedAyah={selectedAyah}
                     onSelectAyah={onSelectAyah}
@@ -126,6 +183,7 @@ export default function MushafView({ pages, glyphPages, surahNumber, selectedAya
                 ) : (
                   <FallbackPage
                     data={data}
+                    scale={scale}
                     surahNumber={surahNumber}
                     selectedAyah={selectedAyah}
                     onSelectAyah={onSelectAyah}

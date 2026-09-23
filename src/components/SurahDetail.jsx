@@ -624,6 +624,7 @@ export default function SurahDetail() {
                 pages={mushafPages}
                 glyphPages={glyphPages}
                 surahNumber={surahNumber}
+                scale={settings.readingScale}
                 selectedAyah={mushafSelectedAyah}
                 onSelectAyah={setMushafSelectedAyah}
               />
